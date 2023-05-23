@@ -1,0 +1,26 @@
+:root {
+    --mo-main-bg-color: #F2EFEF;
+    --mo-primary-color: #049196;
+    --mo-secondary-color: #00CDAC;
+    --mo-text-color: #212428;
+    --mo-sections-color: #ffffff;
+}
+
+/* body */
+body {
+    background-color: var(--mo-main-bg-color);
+    color: var(--mo-text-color);
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* side panel */
+.side-panel-div {
+    width: 20vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--mo-primary-color);
+}
