@@ -291,3 +291,18 @@ body {
     font-size: 18px;
     padding-left: 20px;
 }
+
+/* sub window */
+.sub-window {
+    margin-top: 20PX;
+    width: 100%;
+    height: 100%;
+}
+
+.wind {
+    width: 100%;
+    background-color: var(--mo-sections-color);
+    border-radius: 15px;
+    padding: 20px;
+    display: none;
+}

@@ -19,7 +19,7 @@
 
     <script src="{% static 'script/script.js' %}"></script>
 
-    <title>Document</title>
+    <title>AHDL Labs</title>
 </head>
 
 <body>
@@ -239,6 +239,106 @@
 
             </section>
 
+            <section class="sub-window">
+                <!-- create new patient -->
+                <div class="wind" id="patient-wind-1">
+                    <form id="patientForm" method="post" action="{% url 'add_patient' %}" class="container">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_patient_name">Patient Name</label>
+                                    <input type="text" id="id_patient_name" name="patient_name" class="form-control"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_mobile_number">Mobile Number</label>
+                                    <input type="tel" id="id_mobile_number" name="mobile_number" class="form-control"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_cnic_number">CNIC Number</label>
+                                    <input type="text" id="id_cnic_number" name="cnic_number" class="form-control"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_email">Email</label>
+                                    <input type="email" id="id_email" name="email" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_gender">Gender</label>
+                                    <select id="id_gender" name="gender" class="form-control" required>
+                                        <option value="">-- Select Gender --</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_city">City</label>
+                                    <input type="text" id="id_city" name="city" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id_age_years">Age (Years)</label>
+                                    <input type="number" id="id_age_years" name="age_years" class="form-control"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id_age_months">Age (Months)</label>
+                                    <input type="number" id="id_age_months" name="age_months" class="form-control"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id_age_days">Age (Days)</label>
+                                    <input type="number" id="id_age_days" name="age_days" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 1.5a.5.5 0 0 0-1 0v6H1.5a.5.5 0 0 0 0 1H7v6.5a.5.5 0 0 0 1 0V8h6.5a.5.5 0 0 0 0-1H8V1.5z" />
+                            </svg>
+                            Add Patient
+                        </button>
+                    </form>
+                </div>
+
+                <!-- all patient list -->
+                <div class="wind" id="patient-wind-2">
+
+                </div>
+
+                <!--  -->
+            </section>
         </div>
         <!-- END || main window -->
 
