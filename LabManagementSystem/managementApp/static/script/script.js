@@ -1,4 +1,5 @@
 var profileExpended = false;
+var buttonGroupExpended = false;
 
 $(document).ready(function () {
   $("#expend-profile-checkbox").click(function () {
@@ -14,9 +15,18 @@ $(document).ready(function () {
 
 //button groups
 function buttonGroup(n) {
-  $(".menu-btn-expended").hide();
-  $("#menu-btn-expended-" + n).show();
-  console.log("inside extended button");
+  if (buttonGroupExpended === false) {
+    $(".menu-btn-expended").hide();
+    $("#menu-btn-expended-" + n).show();
+    $("#menu-btn-expended-" + n + " .dropdown-svg").css("rotate", "90deg");
+    buttonGroupExpended = true;
+    console.log("inside if");
+  } else {
+    $(".menu-btn-expended").hide();
+    $("#menu-btn-expended-" + n + " .dropdown-svg").css("rotate", "-90deg");
+    buttonGroupExpended = false;
+    console.log("inside else");
+  }
 }
 
 // Patient Expended Menu

@@ -244,6 +244,22 @@
 
     </div>
 
+    <script>
+        // Get all buttons with the class "button-group"
+        var buttons = document.querySelectorAll('.button-group');
+
+        // Attach event listener to each button
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener('mouseleave', function () {
+                // hide extended button after mouse leave
+                $(".menu-btn-expended").hide();
+
+            });
+        }
+
+
+    </script>
+
 </body>
 
 </html>
