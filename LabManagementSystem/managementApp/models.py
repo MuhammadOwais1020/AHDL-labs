@@ -4,15 +4,20 @@ from django.db import models
 
 
 class Patient(models.Model):
-    patient_name = models.CharField(max_length=100)
-    mobile_number = models.CharField(max_length=20)
+    patient_name = models.CharField(max_length=255)
+    mobile_number = models.CharField(max_length=15)
     cnic_number = models.CharField(max_length=15)
     email = models.EmailField()
-    gender = models.CharField(max_length=10)
-    city = models.CharField(max_length=50)
-    age_years = models.IntegerField()
-    age_months = models.IntegerField()
-    age_days = models.IntegerField()
+    GENDER_CHOICES = [
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other'),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    city = models.CharField(max_length=255)
+    age_years = models.PositiveIntegerField()
+    age_months = models.PositiveIntegerField()
+    age_days = models.PositiveIntegerField()
 
     def __str__(self):
         return self.patient_name

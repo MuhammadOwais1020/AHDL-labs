@@ -242,8 +242,10 @@
             <section class="sub-window">
                 <!-- create new patient -->
                 <div class="wind" id="patient-wind-1">
-                    <form id="patientForm" method="post" action="{% url 'add_patient' %}" class="container">
+                    <form id="addPatientForm" role="form" class="container">
                         {% csrf_token %}
+
+                        {{ form.as_p }}
 
                         <div class="row">
                             <div class="col-md-6">
@@ -320,7 +322,8 @@
                                 </div>
                             </div>
                         </div>
-                        <br>
+                        <div id="addPatientAlert" class="mt-3"></div>
+
                         <button type="submit" class="btn btn-primary">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-plus" viewBox="0 0 16 16">
@@ -330,6 +333,7 @@
                             Add Patient
                         </button>
                     </form>
+
                 </div>
 
                 <!-- all patient list -->
@@ -358,6 +362,102 @@
         }
 
 
+        // url variables
+        var addPatientUrl = "";
+        // Form validation function
+
+        function validateForm() {
+            // Add your form validation logic here
+            var patientName = document.getElementById('id_patient_name').value;
+            var mobileNumber = document.getElementById('id_mobile_number').value;
+            var cnicNumber = document.getElementById('id_cnic_number').value;
+            var email = document.getElementById('id_email').value;
+            var gender = document.getElementById('id_gender').value;
+            var city = document.getElementById('id_city').value;
+            var ageYears = document.getElementById('id_age_years').value;
+            var ageMonths = document.getElementById('id_age_months').value;
+            var ageDays = document.getElementById('id_age_days').value;
+
+            // Perform your validation checks
+            // Example: Check if required fields are filled
+            if (patientName === '' || mobileNumber === '' || cnicNumber === '' || email === '' ||
+                gender === '' || city === '' || ageYears === '' || ageMonths === '' || ageDays === '') {
+                alert('Please fill in all required fields.');
+                return false;
+            }
+
+            // Add more validation logic as needed
+
+            return true; // Return true if the form is valid
+        }
+
+        function submitForm() {
+            var isValid = validateForm();
+            if (isValid) {
+                var patientName = document.getElementById('id_patient_name').value;
+                var mobileNumber = document.getElementById('id_mobile_number').value;
+                var cnicNumber = document.getElementById('id_cnic_number').value;
+                var email = document.getElementById('id_email').value;
+                var gender = document.getElementById('id_gender').value;
+                var city = document.getElementById('id_city').value;
+                var ageYears = document.getElementById('id_age_years').value;
+                var ageMonths = document.getElementById('id_age_months').value;
+                var ageDays = document.getElementById('id_age_days').value;
+
+                var formData = new FormData();
+                formData.append('patient_name', patientName);
+                formData.append('mobile_number', mobileNumber);
+                formData.append('cnic_number', cnicNumber);
+                formData.append('email', email);
+                formData.append('gender', gender);
+                formData.append('city', city);
+                formData.append('age_years', ageYears);
+                formData.append('age_months', ageMonths);
+                formData.append('age_days', ageDays);
+                formData.append('csrfmiddlewaretoken', document.getElementsByName('csrfmiddlewaretoken')[0].value);
+
+                $.ajax({
+                    url: "{% url 'add_patient' %}",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            $("#addPatientAlert").html(showAlert('success', response.message));
+                            hideAlert(3000);
+                            ;
+                            // Reset the form
+                            $('#addPatientForm')[0].reset();
+                        } else {
+                            $("#addPatientAlert").html(showAlert('danger', response.message + '<br><br>' + response.errors));
+                            hideAlert(300);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $("#addPatientAlert").html(showAlert('danger', 'An error occurred while processing the request. Please try again.'));
+                        hideAlert(3000);
+                    }
+                });
+            }
+        }
+
+        document.getElementById('addPatientForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            submitForm();
+        });
+
+        function showAlert(type, message) {
+            var alertDiv = '<div class="alert alert-' + type + '"><strong> ' + type.toUpperCase() + '!</strong> ' + message + '</div > ';
+            return alertDiv;
+        }
+
+        function hideAlert(time) {
+            setTimeout(function () {
+                $("#addPatientAlert").hide();
+            }, time); // Hide after time seconds
+
+        }
     </script>
 
 </body>
