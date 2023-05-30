@@ -21,3 +21,23 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.patient_name
+
+
+class Lab(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    datetime = models.DateTimeField()
+    pannel_case = models.BooleanField()
+    pannel_emp_id = models.CharField(max_length=100)
+    referred_by = models.CharField(max_length=100)
+    collected_by = models.CharField(max_length=100)
+    hospital = models.CharField(max_length=100)
+    special_refer = models.CharField(max_length=100)
+    phlebotomist = models.CharField(max_length=100)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    concession = models.DecimalField(max_digits=10, decimal_places=2)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
+    amount_due = models.DecimalField(max_digits=10, decimal_places=2)
+    pannel_amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"Lab ID: {self.id}"

@@ -301,8 +301,17 @@ body {
 
 .wind {
     width: 100%;
+}
+
+.sub-wind {
+    width: 100%;
     background-color: var(--mo-sections-color);
     border-radius: 15px;
     padding: 20px;
     display: none;
+    overflow: auto;
+}
+
+.info-icon {
+    width: 25px !important;
 }

@@ -21,5 +21,6 @@ from managementApp import views as ma
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", ma.index, name=""),
-    path("add_patient/", ma.add_patient, name="add_patient")
+    path("add_patient/", ma.add_patient, name="add_patient"),
+    path('get_patients_data/', ma.get_patients_data, name='get_patients_data')
 ]
