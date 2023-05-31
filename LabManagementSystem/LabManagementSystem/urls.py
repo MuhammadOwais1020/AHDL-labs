@@ -22,5 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", ma.index, name=""),
     path("add_patient/", ma.add_patient, name="add_patient"),
-    path('get_patients_data/', ma.get_patients_data, name='get_patients_data')
+    path('get_patients_data/', ma.get_patients_data, name='get_patients_data'),
+    path('get_doctors_names', ma.get_doctors_names, name="get_doctors_names"),
+    path('add_new_refered_by', ma.add_new_refered_by, name="add_new_refered_by"),
+    path('check_patient_id', ma.check_patient_id, name="check_patient_id")
 ]

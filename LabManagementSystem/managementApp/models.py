@@ -41,3 +41,10 @@ class Lab(models.Model):
 
     def __str__(self):
         return f"Lab ID: {self.id}"
+
+
+class Doctor(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name

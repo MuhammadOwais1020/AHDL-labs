@@ -134,12 +134,14 @@ body {
     height: 55px;
     border-radius: 50%;
     background-color: white;
+    overflow: hidden;
 }
 
 .right-side {
     display: flex;
     flex-direction: row;
     align-items: center;
+    cursor: pointer;
 }
 
 .profile-name {
@@ -301,6 +303,7 @@ body {
 
 .wind {
     width: 100%;
+    display: none;
 }
 
 .sub-wind {
@@ -308,10 +311,14 @@ body {
     background-color: var(--mo-sections-color);
     border-radius: 15px;
     padding: 20px;
-    display: none;
     overflow: auto;
+    margin: 15px 0px;
 }
 
 .info-icon {
     width: 25px !important;
+}
+
+.profile-logo {
+    width: 100%;
 }

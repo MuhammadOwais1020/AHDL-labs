@@ -2,6 +2,18 @@ var profileExpended = false;
 var buttonGroupExpended = false;
 
 $(document).ready(function () {
+  var btn = pannelCaseCheckBox;
+  btn.addEventListener("click", function () {
+    var pannelCheckbox = document.getElementById("pannelCase");
+    var pannelContent = document.getElementById("pannelContent");
+
+    if (pannelCheckbox.checked) {
+      pannelContent.style.display = "block";
+    } else {
+      pannelContent.style.display = "none";
+    }
+  });
+
   $("#expend-profile-checkbox").click(function () {
     if (profileExpended === false) {
       $(".less-than-down svg").css("rotate", "90deg");
@@ -140,6 +152,76 @@ $(document).ready(function () {
   }
 });
 
+// Fetch doctor names using AJAX
+function getDoctors() {
+  var url = getDoctorsName;
+
+  $.ajax({
+    url: url, // Replace with the appropriate URL
+    type: "GET",
+    success: function (data) {
+      // Clear the existing options
+      $("#referedBy").empty();
+
+      // Add the default option
+      $("#referedBy").append(
+        $("<option>", { value: "", text: "-- Select Refered By --" })
+      );
+
+      // Add the doctor names as options
+      $.each(data, function (index, name) {
+        $("#referedBy").append($("<option>", { value: name, text: name }));
+      });
+
+      // Add the "Add New" option
+      $("#referedBy").append(
+        $("<option>", { value: "__add_new__", text: "Add New" })
+      );
+    },
+    error: function (xhr, textStatus, error) {
+      console.log(xhr.statusText);
+    },
+  });
+}
+
+// Handle change event of the select element
+$("#referedBy").on("change", function () {
+  var selectedValue = $(this).val();
+
+  // If "Add New" option is selected
+  if (selectedValue === "__add_new__") {
+    // Show the modal dialog
+    $("#addDoctorModal").modal("show");
+  }
+});
+
+// Handle click event of the Add button in the modal
+$("#addDoctorBtn").on("click", function () {
+  var newDoctorName = $("#newDoctorName").val();
+  var url = addDoctor;
+  // Send the new doctor name to the server using AJAX
+  $.ajax({
+    url: url, // Replace with the appropriate URL
+    type: "POST",
+    data: { name: newDoctorName },
+    success: function (response) {
+      // Add the new option to the select element
+      $("#referedBy").append(
+        $("<option>", { value: newDoctorName, text: newDoctorName })
+      );
+
+      // Select the newly added option
+      $("#referedBy").val(newDoctorName);
+
+      // Hide the modal dialog
+      $("#addDoctorModal").modal("hide");
+    },
+    error: function (xhr, textStatus, error) {
+      console.log(xhr.statusText);
+    },
+  });
+});
+
 //button groups
 function buttonGroup(n) {
   if (buttonGroupExpended === false) {
@@ -180,6 +262,8 @@ function labExpendedMenu(n) {
 
   if (n == 1) {
     $("#main-heading").html("New Lab");
+    getDoctors();
+    console.log("expended function called");
   } else if (n == 2) {
     $("#main-heading").html("Lab History");
   }
@@ -331,3 +415,160 @@ function viewPatientProfile(patient) {
     $(this).remove();
   });
 }
+
+// Handle change event of the patientId field
+$("#patientId").on("change", function () {
+  console.log("patient id changed fucntion called");
+  var patientId = $(this).val();
+  var url = checkPatientId;
+  // Send the patient ID to the server using AJAX
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: { patientId: patientId },
+    success: function (response) {
+      if (response.status === "success") {
+        var patient = response.patient;
+        // Patient found, populate the HTML fields
+        $("#patientName").val(patient.name);
+        $("#gender").val(patient.gender);
+        $("#ageYears").val(patient.ageYears);
+        $("#ageMonths").val(patient.ageMonths);
+        $("#ageDays").val(patient.ageDays);
+        $("#contact").val(patient.contact);
+        $("#cnic").val(patient.cnic);
+
+        // Store patient information in JavaScript variables for temporary hold
+        b_patientId = patient.id;
+        b_patientName = patient.name;
+        b_gender = patient.gender;
+        b_ageYears = patient.ageYears;
+        b_ageMonths = patient.ageMonths;
+        b_ageDays = patient.ageDays;
+        b_contact = patient.contact;
+        b_cnic = patient.cnic;
+      } else {
+        // Show the patient registration modal
+        $("#patientNotFoundModal").modal("show");
+      }
+    },
+    error: function (xhr, textStatus, error) {
+      console.log(xhr.statusText);
+    },
+  });
+});
+
+$("#registerPatientBtn").on("click", function () {
+  console.log("inside patient register");
+  var patientName = $("#modalPatientName").val();
+  var mobileNumber = $("#modalContact").val();
+  var cnicNumber = $("#modalCnic").val();
+  var email = $("#modalEmail").val();
+  var gender = $("#modalGender").val();
+  var city = $("#modalCity").val();
+  var ageYears = $("#modalAgeYears").val();
+  var ageMonths = $("#modalAgeMonths").val();
+  var ageDays = $("#modalAgeDays").val();
+  var url = addPatientUrl;
+
+  // Check if all required fields are filled
+  if (patientName && mobileNumber && gender && city && ageYears) {
+    var formData = new FormData();
+    formData.append("patient_name", patientName);
+    formData.append("mobile_number", mobileNumber);
+    formData.append("cnic_number", cnicNumber);
+    formData.append("email", email);
+    formData.append("gender", gender);
+    formData.append("city", city);
+    formData.append("age_years", ageYears);
+    formData.append("age_months", ageMonths);
+    formData.append("age_days", ageDays);
+    formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+
+    $.ajax({
+      url: url, // Replace with the appropriate URL for the add_patient view
+      type: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        if (response.status === "success") {
+          // Patient added successfully
+          var patient_id = response.patient_id;
+          $("#patientId").val(patient_id);
+          $("#patientName").val(patientName);
+          $("#gender").val(gender);
+          $("#ageYears").val(ageYears);
+          $("#ageMonths").val(ageMonths);
+          $("#ageDays").val(ageDays);
+          $("#contact").val(mobileNumber);
+          $("#cnic").val(cnicNumber);
+          // Hide the modal
+          $("#patientNotFoundModal").modal("hide");
+
+          b_patientId = patient_id;
+          b_patientName = patientName;
+          b_gender = gender;
+          b_ageYears = ageYears;
+          b_ageMonths = ageMonths;
+          b_ageDays = ageDays;
+          b_contact = mobileNumber;
+          b_cnic = cnicNumber;
+        } else {
+          // Form validation failed
+          console.log(response.message);
+          console.log(response.errors);
+        }
+      },
+      error: function (xhr, textStatus, error) {
+        console.log(xhr.statusText);
+      },
+    });
+  } else {
+    alert("Please fill in all required fields.");
+  }
+});
+
+// Function to handle radio button change
+function handleRelationChange() {
+  var relativeRadio = document.getElementById("relativeRadio");
+  var selfRadio = document.getElementById("selfRadio");
+
+  var patientNameField = document.getElementById("patientName");
+  var genderField = document.getElementById("gender");
+  var ageYearsField = document.getElementById("ageYears");
+  var ageMonthsField = document.getElementById("ageMonths");
+  var ageDaysField = document.getElementById("ageDays");
+  var contactField = document.getElementById("contact");
+  var cnicField = document.getElementById("cnic");
+
+  // Check if "Relative" radio button is selected
+  if (relativeRadio.checked) {
+    // Empty the fields
+    patientNameField.value = "";
+    genderField.value = "";
+    ageYearsField.value = "";
+    ageMonthsField.value = "0";
+    ageDaysField.value = "0";
+    contactField.value = "";
+    cnicField.value = "";
+  } else if (selfRadio.checked) {
+    // Fill the fields with values
+    patientNameField.value = b_patientName;
+    genderField.value = b_gender;
+    ageYearsField.value = b_ageYears;
+    ageMonthsField.value = b_ageMonths;
+    ageDaysField.value = b_ageDays;
+    contactField.value = b_contact;
+    cnicField.value = b_cnic;
+  }
+}
+
+// Attach event listener to the radio buttons
+document
+  .getElementById("relativeRadio")
+  .addEventListener("change", handleRelationChange);
+
+document
+  .getElementById("selfRadio")
+  .addEventListener("change", handleRelationChange);
