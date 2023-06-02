@@ -156,7 +156,7 @@
                                     d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
                             </svg>
 
-                            <div onclick="TestExpendedMenu(1)">Add New Test</div>
+                            <div onclick="testExpendedMenu(1)">Add New Test</div>
                         </div>
                         <div class="menu-btn-expended-list">
                             <svg class="list-svg" xmlns="http://www.w3.org/2000/svg"
@@ -571,6 +571,88 @@
                         </div>
                     </form>
                 </div>
+
+                <!-- create TEST -->
+                <div class="wind" id="test-wind-1">
+                    <div class="sub-wind">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="selectParameter">Parameter</label>
+                                    <select id="selectParameter" name="selectParameter" class="form-select">
+                                        <!-- Add dynamic options using JavaScript or server-side code -->
+                                        <option value="">-- Select Parameter --</option>
+                                        <option value="__add_new__">Add New</option>
+                                    </select>
+                                    <span id="parameter_span" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="selectUnit">Unit</label>
+                                    <select id="selectUnit" name="selectUnit" class="form-select">
+                                        <!-- Add dynamic options using JavaScript or server-side code -->
+                                        <option value="">-- Select Unit --</option>
+                                        <option value="__add_new__">Add New</option>
+                                    </select>
+                                    <span id="unit_span" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button id="addParameterUnit" class="btn btn-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path
+                                            d="M8 1.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V2a.5.5 0 0 1 .5-.5zM2.5 8a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm5 5a.5.5 0 0 1-.5.5H3a.5.5 0 0 1 0-1h4a.5.5 0 0 1 .5.5zm8-5a.5.5 0 0 1-.5.5H9a.5.5 0 0 1 0-1h6a.5.5 0 0 1 .5.5z" />
+                                    </svg>
+                                    Add Parameter/Unit
+                                </button>
+                            </div>
+                        </div><br>
+                        <hr><br>
+                        <h2 class="h2 bold" id="parameter_heading" align="center">Parameter Not Selected....!!</h2><br>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="parameterType">Select Parameter Type: </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="parameterType" id="range"
+                                            value="range">
+                                        <label class="form-check-label" for="range">Range</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="parameterType"
+                                            id="positiveNegative" value="positiveNegative">
+                                        <label class="form-check-label" for="positiveNegative">Positive/Negative</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="parameterType"
+                                            id="detectedNotDetected" value="detectedNotDetected">
+                                        <label class="form-check-label" for="detectedNotDetected">Detected/Not
+                                            Detected</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="parameterType" id="text"
+                                            value="text">
+                                        <label class="form-check-label" for="text">Text</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-success">Make Parameter</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </section>
         </div>
         <!-- END || main window -->
@@ -594,7 +676,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- pation not availabe kindly register modal -->
         <div id="patientNotFoundModal" class="modal fade" tabindex="-1" role="dialog">
@@ -663,6 +744,59 @@
             </div>
         </div>
 
+        <!-- Add Parameter Modal -->
+        <div class="modal fade" id="addParameterModal" tabindex="-1" role="dialog"
+            aria-labelledby="addParameterModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addParameterModalLabel">Add New Parameter</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addParameterForm" role="form">
+                            <div class="form-group">
+                                <label for="newParameter">Parameter Name</label>
+                                <input type="text" class="form-control" id="newParameter" name="newParameter" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="saveParameterBtn">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addUnitModal" tabindex="-1" role="dialog" aria-labelledby="addUnitModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addUnitModalLabel">Add New Unit</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addUnitForm">
+                            <div class="form-group">
+                                <label for="newUnit">Unit:</label>
+                                <input type="text" class="form-control" id="newUnit" name="newUnit" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="saveUnitBtn">Save Unit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -687,6 +821,10 @@
         var getDoctorsName = "{% url 'get_doctors_names' %}"
         var addDoctor = "{% url 'add_new_refered_by' %}";
         var checkPatientId = "{% url 'check_patient_id' %}";
+        var getUnits = "{% url 'get_units' %}";
+        var getParameters = "{% url 'get_parameters' %}";
+        var addParameter = "{% url 'add_parameter' %}";
+        var addUnit = "{% url 'add_unit' %}";
 
         var b_patientId = 0;
         var b_patientName = "";

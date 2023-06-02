@@ -271,7 +271,13 @@ function labExpendedMenu(n) {
 
 // Test Menu
 function testExpendedMenu(n) {
-  // do something here
+  $(".wind").hide();
+
+  $("#test-wind-" + n).show();
+  if (n == 1) {
+    $("#main-heading").html("Create New Test Parameter");
+    c();
+  }
 }
 
 // get all patients data
@@ -572,3 +578,207 @@ document
 document
   .getElementById("selfRadio")
   .addEventListener("change", handleRelationChange);
+
+// Function to load data for Parameters and Units select dropdowns
+function loadParameterUnits() {
+  // Fetch Parameters data from the server
+  var url = getParameters;
+  $.ajax({
+    url: url, // Replace with the actual URL to fetch Parameters data
+    method: "GET",
+    success: function (response) {
+      var selectParameter = $("#selectParameter");
+
+      // Clear previous options
+      selectParameter.empty();
+
+      // Add default option
+      selectParameter.append(
+        $("<option></option>").val("").text("-- Select Parameter --")
+      );
+
+      // Add options from the response data
+      for (var i = 0; i < response.length; i++) {
+        var parameter = response[i];
+        selectParameter.append(
+          $("<option></option>").val(parameter.name).text(parameter.name)
+        );
+      }
+      // Add new option
+      selectParameter.append(
+        $("<option></option>").val("__add_new__").text("Add New")
+      );
+    },
+    error: function () {
+      console.log("Error occurred while fetching Parameters data.");
+    },
+  });
+  var url = getUnits;
+  // Fetch Units data from the server
+  $.ajax({
+    url: url, // Replace with the actual URL to fetch Units data
+    method: "GET",
+    success: function (response) {
+      var selectUnit = $("#selectUnit");
+
+      // Clear previous options
+      selectUnit.empty();
+
+      // Add default option
+      selectUnit.append(
+        $("<option></option>").val("").text("-- Select Unit --")
+      );
+
+      // Add options from the response data
+      for (var i = 0; i < response.length; i++) {
+        var unit = response[i];
+        selectUnit.append(
+          $("<option></option>").val(unit.name).text(unit.name)
+        );
+      }
+
+      // Add new option
+      selectUnit.append(
+        $("<option></option>").val("__add_new__").text("Add New")
+      );
+    },
+    error: function () {
+      console.log("Error occurred while fetching Units data.");
+    },
+  });
+}
+
+// Function to handle change event on Parameter dropdown
+$("#selectParameter").change(function () {
+  var selectedValue = $(this).val();
+  console.log("inside parameter change");
+  console.log("selected value: " + selectedValue);
+  // Check if the selected value is "new"
+  if (selectedValue === "__add_new__") {
+    // Display the modal box for adding a new parameter
+    $("#addParameterModal").modal("show");
+  }
+});
+
+// Handle click on "Save" button in Add Parameter modal
+$("#saveParameterBtn").click(function () {
+  // Get the parameter value from the input field
+  var parameter = $("#newParameter").val();
+  var url = addParameter;
+  // Make an AJAX request to add the parameter to the database
+  $.ajax({
+    url: url, // Replace with your server-side endpoint for adding parameters
+    type: "POST",
+    data: {
+      parameter: parameter,
+    },
+    success: function (response) {
+      // Handle the response from the server
+      if (response.status === "success") {
+        // Optionally, you can update the select dropdown with the new parameter option
+        $("#selectParameter").append(
+          "<option value='" + parameter + "'>" + parameter + "</option>"
+        );
+        // Close the modal
+        $("#addParameterModal").modal("hide");
+        loadParameterUnits();
+      } else {
+        // Error adding parameter
+        alert("Failed to add parameter. Please try again.");
+      }
+    },
+    error: function () {
+      // Error making the AJAX request
+      alert("Failed to add parameter. Please try again.");
+    },
+  });
+});
+
+function handleUnitChange() {
+  var selectUnit = document.getElementById("selectUnit");
+  var selectedOption = selectUnit.options[selectUnit.selectedIndex].value;
+
+  console.log("inside unit change");
+  console.log("selected value: " + selectedOption);
+
+  if (selectedOption === "__add_new__") {
+    // Open the modal box for adding a new unit
+    $("#addUnitModal").modal("show");
+  }
+}
+
+// Attach the event listener to the units select element
+var selectUnit = document.getElementById("selectUnit");
+selectUnit.addEventListener("change", handleUnitChange);
+
+// Handle click on "Save" button in Add Unit modal
+$("#saveUnitBtn").click(function () {
+  // Get the unit value from the input field
+  var unit = $("#newUnit").val();
+  var url = addUnit;
+
+  // Make an AJAX request to add the unit to the database
+  $.ajax({
+    url: url, // Replace with your server-side endpoint for adding units
+    type: "POST",
+    data: {
+      unit: unit,
+    },
+    success: function (response) {
+      // Handle the response from the server
+      if (response.status === "success") {
+        // Optionally, you can update the select dropdown with the new unit option
+        $("#selectUnit").append(
+          "<option value='" + unit + "'>" + unit + "</option>"
+        );
+        // Close the modal
+        $("#addUnitModal").modal("hide");
+        loadParameterUnits();
+      } else {
+        // Error adding unit
+        alert("Failed to add unit. Please try again.");
+      }
+    },
+    error: function () {
+      // Error making the AJAX request
+      alert("Failed to add unit. Please try again.");
+    },
+  });
+});
+
+// Handle click on "Add Parameter/Unit" button
+$("#addParameterUnit").click(function () {
+  var selectedParameter = $("#selectParameter").val();
+  var selectedUnit = $("#selectUnit").val();
+
+  if (
+    selectedParameter &&
+    selectedUnit &&
+    selectedParameter != "__add_new__" &&
+    selectUnit != "__add_new__"
+  ) {
+    // Both parameter and unit are selected
+    var headingText = selectedParameter + " with " + selectedUnit;
+    $("#parameter_heading").text(headingText);
+
+    // Clear any error messages
+    $("#parameter_span").text("");
+    $("#unit_span").text("");
+  } else {
+    // Show error messages for empty selections
+    if (!selectedParameter) {
+      $("#parameter_span").text("Select a parameter").css("color", "red");
+    } else {
+      $("#parameter_span").text("");
+    }
+
+    if (!selectedUnit) {
+      $("#unit_span").text("Select a unit").css("color", "red");
+    } else {
+      $("#unit_span").text("");
+    }
+
+    // Clear the heading text
+    $("#parameter_heading").text("Parameter Not Selected....!!");
+  }
+});

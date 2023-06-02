@@ -25,5 +25,9 @@ urlpatterns = [
     path('get_patients_data/', ma.get_patients_data, name='get_patients_data'),
     path('get_doctors_names', ma.get_doctors_names, name="get_doctors_names"),
     path('add_new_refered_by', ma.add_new_refered_by, name="add_new_refered_by"),
-    path('check_patient_id', ma.check_patient_id, name="check_patient_id")
+    path('check_patient_id', ma.check_patient_id, name="check_patient_id"),
+    path('get_units', ma.get_units, name="get_units"),
+    path('get_parameters', ma.get_parameters, name="get_parameters"),
+    path('add_parameter', ma.add_parameter, name="add_parameter"),
+    path('add_unit', ma.add_unit, name="add_unit")
 ]
