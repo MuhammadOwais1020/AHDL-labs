@@ -276,10 +276,19 @@ function testExpendedMenu(n) {
   $("#test-wind-" + n).show();
   if (n == 1) {
     $("#main-heading").html("Create New Test Parameter");
-    c();
+    loadParameterUnits();
   }
 }
 
+// accounts
+function financeExpendedMenu(n) {
+  $(".wind").hide();
+
+  $("#finance-wind-" + n).show();
+  if (n == 1) {
+    $("#main-heading").html("Accounts Cash Book");
+  }
+}
 // get all patients data
 function fetchPatientsData() {
   var url = getPatients;
@@ -782,3 +791,145 @@ $("#addParameterUnit").click(function () {
     $("#parameter_heading").text("Parameter Not Selected....!!");
   }
 });
+
+// Get the radio buttons and the "Make Parameter" button
+var rangeRadio = $("#range");
+var detectedNotDetectedRadio = $("#detectedNotDetected");
+var positiveNegativeRadio = $("#positiveNegative");
+var textRadio = $("#text");
+var makeParameterBtn = $("#makeParameterBtn");
+var parameterNormalValues = $("#parameterNormalValues");
+
+// Hide the "Make Parameter" button initially
+$("#makeParameterBtn").hide();
+$("#parameterNormalValues").hide();
+
+// Handle click events on the radio buttons
+rangeRadio.click(function () {
+  console.log("rande radio button clicked");
+  makeParameterBtn.hide();
+  parameterNormalValues.show();
+});
+
+detectedNotDetectedRadio.click(function () {
+  makeParameterBtn.toggle(detectedNotDetectedRadio.is(":checked"));
+  console.log("detected radio button clicked");
+  parameterNormalValues.hide();
+});
+
+positiveNegativeRadio.click(function () {
+  makeParameterBtn.toggle(positiveNegativeRadio.is(":checked"));
+  console.log("positive radio button clicked");
+  parameterNormalValues.hide();
+});
+
+textRadio.click(function () {
+  makeParameterBtn.toggle(textRadio.is(":checked"));
+  console.log("text radio button clicked");
+  parameterNormalValues.hide();
+});
+
+// Add Row button click event for Male section
+$("#addMaleRowBtn").click(function () {
+  var maleRow = `
+      <tr>
+        <td><input type="text" class="form-control" name="male_normal_from[]" placeholder="Value From" /></td>
+        <td><input type="text" class="form-control" name="male_normal_to[]" placeholder="Value To" /></td>
+        <td><input type="text" class="form-control" name="male_age_from[]" placeholder="Age From" /></td>
+        <td><input type="text" class="form-control" name="male_age_to[]" placeholder="Age To" /></td>
+        <td><button type="button" class="btn btn-danger btn-remove-row">Remove</button></td>
+      </tr>
+    `;
+  $("#maleTableBody").append(maleRow);
+});
+
+// Add Row button click event for Female section
+$("#addFemaleRowBtn").click(function () {
+  var femaleRow = `
+      <tr>
+        <td><input type="text" class="form-control" name="female_normal_from[]" placeholder="Value From" /></td>
+        <td><input type="text" class="form-control" name="female_normal_to[]" placeholder="Value To"/></td>
+        <td><input type="text" class="form-control" name="female_age_from[]" placeholder="Age From" /></td>
+        <td><input type="text" class="form-control" name="female_age_to[]" placeholder="Age To" /></td>
+        <td><button type="button" class="btn btn-danger btn-remove-row">Remove</button></td>
+      </tr>
+    `;
+  $("#femaleTableBody").append(femaleRow);
+});
+
+// Remove row button click event
+$(document).on("click", ".btn-remove-row", function () {
+  // Get the table body of the row
+  var tableBody = $(this).closest("tbody");
+  // Remove the parent row
+  $(this).closest("tr").remove();
+
+  // If no rows left, add an empty row
+  if (tableBody.children().length === 0) {
+    addEmptyRow(tableBody);
+  }
+});
+
+// Function to validate the income entry form
+function validateIncomeForm() {
+  var incomeSource = document.getElementById("incomeSource").value;
+  var incomeAmount = document.getElementById("incomeAmount").value;
+  var incomeDate = document.getElementById("incomeDate").value;
+  var incomeCategory = document.getElementById("incomeCategory").value;
+
+  // Perform validation checks
+  if (incomeSource === "") {
+    alert("Please enter the income source.");
+    return false;
+  }
+
+  if (incomeAmount === "") {
+    alert("Please enter the income amount.");
+    return false;
+  }
+
+  if (incomeDate === "") {
+    alert("Please select the income date.");
+    return false;
+  }
+
+  if (incomeCategory === null || incomeCategory === "") {
+    alert("Please select the income category.");
+    return false;
+  }
+
+  // All checks passed, form is valid
+  return true;
+}
+
+// Function to validate the expense entry form
+function validateExpenseForm() {
+  var expenseType = document.getElementById("expenseType").value;
+  var expenseAmount = document.getElementById("expenseAmount").value;
+  var expenseDate = document.getElementById("expenseDate").value;
+  var expenseCategory = document.getElementById("expenseCategory").value;
+
+  // Perform validation checks
+  if (expenseType === "") {
+    alert("Please enter the expense type.");
+    return false;
+  }
+
+  if (expenseAmount === "") {
+    alert("Please enter the expense amount.");
+    return false;
+  }
+
+  if (expenseDate === "") {
+    alert("Please select the expense date.");
+    return false;
+  }
+
+  if (expenseCategory === null || expenseCategory === "") {
+    alert("Please select the expense category.");
+    return false;
+  }
+
+  // All checks passed, form is valid
+  return true;
+}
