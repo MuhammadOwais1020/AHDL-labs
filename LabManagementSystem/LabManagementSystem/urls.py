@@ -29,5 +29,9 @@ urlpatterns = [
     path('get_units', ma.get_units, name="get_units"),
     path('get_parameters', ma.get_parameters, name="get_parameters"),
     path('add_parameter', ma.add_parameter, name="add_parameter"),
-    path('add_unit', ma.add_unit, name="add_unit")
+    path('add_unit', ma.add_unit, name="add_unit"),
+    path('add_account_entry', ma.add_account_entry, name="add_account_entry"),
+    path('get_account_entries', ma.get_account_entries, name="get_account_entries"),
+    path('get_filter_account_entries', ma.get_filter_account_entries,
+         name="get_filter_account_entries")
 ]

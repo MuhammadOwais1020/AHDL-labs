@@ -1,7 +1,11 @@
 var profileExpended = false;
 var buttonGroupExpended = false;
+var today = new Date().toLocaleDateString();
 
 $(document).ready(function () {
+  // Set the default heading text to today's date
+  $("#entriesHeading").text("Today's Account Entries - " + today);
+
   var btn = pannelCaseCheckBox;
   btn.addEventListener("click", function () {
     var pannelCheckbox = document.getElementById("pannelCase");
@@ -131,27 +135,27 @@ $(document).ready(function () {
       event.preventDefault();
       submitForm();
     });
-
-  // show alert box for feedback
-  function showAlert(type, message) {
-    var alertDiv =
-      '<div class="alert alert-' +
-      type +
-      '"><strong> ' +
-      type.toUpperCase() +
-      "!</strong> " +
-      message +
-      "</div > ";
-    return alertDiv;
-  }
-  // hide alert after n number of seconds
-  function hideAlert(time) {
-    setTimeout(function () {
-      $("#addPatientAlert").hide();
-    }, time); // Hide after time seconds
-  }
 });
-
+// show alert box for feedback
+function showAlert(type, message) {
+  var alertDiv =
+    '<div class="alert alert-' +
+    type +
+    '"><strong> ' +
+    type.toUpperCase() +
+    "!</strong> " +
+    message +
+    "</div > ";
+  return alertDiv;
+}
+// hide alert after n number of seconds
+function hideAlert(time) {
+  setTimeout(function () {
+    $("#addPatientAlert").hide();
+    $("#addIncomeAlert").hide();
+    $("#addExpenseAlert").hide();
+  }, time); // Hide after time seconds
+}
 // Fetch doctor names using AJAX
 function getDoctors() {
   var url = getDoctorsName;
@@ -283,10 +287,12 @@ function testExpendedMenu(n) {
 // accounts
 function financeExpendedMenu(n) {
   $(".wind").hide();
-
   $("#finance-wind-" + n).show();
   if (n == 1) {
     $("#main-heading").html("Accounts Cash Book");
+  } else if (n == 2) {
+    $("#main-heading").html("Account Entries");
+    loadAccountEntries();
   }
 }
 // get all patients data
@@ -872,16 +878,12 @@ $(document).on("click", ".btn-remove-row", function () {
 
 // Function to validate the income entry form
 function validateIncomeForm() {
-  var incomeSource = document.getElementById("incomeSource").value;
+  var incomeDescription = document.getElementById("incomeDescription").value;
   var incomeAmount = document.getElementById("incomeAmount").value;
   var incomeDate = document.getElementById("incomeDate").value;
   var incomeCategory = document.getElementById("incomeCategory").value;
 
   // Perform validation checks
-  if (incomeSource === "") {
-    alert("Please enter the income source.");
-    return false;
-  }
 
   if (incomeAmount === "") {
     alert("Please enter the income amount.");
@@ -904,16 +906,12 @@ function validateIncomeForm() {
 
 // Function to validate the expense entry form
 function validateExpenseForm() {
-  var expenseType = document.getElementById("expenseType").value;
+  var expenseDescription = document.getElementById("expenseDescription").value;
   var expenseAmount = document.getElementById("expenseAmount").value;
   var expenseDate = document.getElementById("expenseDate").value;
   var expenseCategory = document.getElementById("expenseCategory").value;
 
   // Perform validation checks
-  if (expenseType === "") {
-    alert("Please enter the expense type.");
-    return false;
-  }
 
   if (expenseAmount === "") {
     alert("Please enter the expense amount.");
@@ -933,3 +931,358 @@ function validateExpenseForm() {
   // All checks passed, form is valid
   return true;
 }
+
+// Attach event handler to the income form submit button
+$("#incomeForm").submit(function (event) {
+  event.preventDefault(); // Prevent the form from submitting
+
+  // Validate the income form
+  if (validateIncomeForm()) {
+    submitIncomeForm();
+  }
+});
+
+// Attach event handler to the expense form submit button
+$("#expenseForm").submit(function (event) {
+  event.preventDefault(); // Prevent the form from submitting
+
+  // Validate the expense form
+  if (validateExpenseForm()) {
+    submitExpenseForm();
+  }
+});
+
+// expence entry
+function submitExpenseForm() {
+  // Get the expense form data
+  var formData = {
+    transaction_type: "expense",
+    amount: $("#expenseAmount").val(),
+    date: $("#expenseDate").val(),
+    category: $("#expenseCategory").val(),
+    description: $("#expenseDescription").val(),
+  };
+  var url = addAccountEntry;
+  // Make an AJAX request to submit the expense form data
+  $.ajax({
+    url: url, // Replace with your server-side endpoint for submitting the form
+    type: "POST",
+    data: formData,
+    success: function (response) {
+      if (response.status === "success") {
+        console.log("expense success");
+        $("#addExpenseAlert").html(
+          showAlert("success", "Expense added successfully!")
+        );
+        hideAlert(3000);
+        $("#expenseForm")[0].reset();
+      } else {
+        $("#addExpenseAlert").html(
+          showAlert("danger", "Failed to add expense. Please try again.")
+        );
+        hideAlert(3000);
+      }
+    },
+    error: function () {
+      $("#addExpenseAlert").html(
+        showAlert("danger", "Failed to add expense. Please try again.")
+      );
+      hideAlert(3000);
+    },
+  });
+}
+
+// income entry
+function submitIncomeForm() {
+  // Get the income form data
+  var formData = {
+    transaction_type: "income",
+    amount: $("#incomeAmount").val(),
+    date: $("#incomeDate").val(),
+    category: $("#incomeCategory").val(),
+    description: $("#incomeDescription").val(),
+  };
+  var url = addAccountEntry;
+  // Make an AJAX request to submit the income form data
+  $.ajax({
+    url: url, // Replace with your server-side endpoint for submitting the form
+    type: "POST",
+    data: formData,
+    success: function (response) {
+      if (response.status === "success") {
+        console.log("income success");
+
+        $("#addIncomeAlert").html(
+          showAlert("success", "Income added successfully!")
+        );
+        hideAlert(3000);
+        $("#incomeForm")[0].reset();
+      } else {
+        $("#addIncomeAlert").html(
+          showAlert("danger", "Failed to add income. Please try again.")
+        );
+        hideAlert(3000);
+      }
+    },
+    error: function () {
+      $("#addIncomeAlert").html(
+        showAlert("danger", "Failed to add income. Please try again.")
+      );
+      hideAlert(3000);
+    },
+  });
+}
+
+// load account entries
+function loadAccountEntries() {
+  // Make an AJAX request to the server to fetch the account entries data
+  var url = getAccountEntries;
+  var balance = 0;
+
+  $.ajax({
+    url: url, // Replace with your server-side endpoint for fetching account entries
+    type: "GET",
+    success: function (response) {
+      // Clear the table body
+      $("#accountEntriesTable tbody").empty();
+
+      // Store the starting balance
+      var starting_balance = 0;
+      var totalDr = 0;
+      var totalCr = 0;
+
+      // Find the starting balance entry and store its value
+      for (var i = 0; i < response.length; i++) {
+        if (response[i].hasOwnProperty("starting_balance")) {
+          starting_balance = response[i].starting_balance;
+          response.splice(i, 1); // Remove the starting balance entry from the response
+          break;
+        }
+      }
+
+      var startingBalance = parseFloat(starting_balance);
+      var balance = startingBalance;
+
+      // Add the starting balance row
+      var startingRow = $("<tr>");
+      $("<td>").text("").appendTo(startingRow);
+      $("<td>").text("").appendTo(startingRow);
+      $("<td>").text("Starting Balance").addClass("bold").appendTo(startingRow);
+      $("<td>").text("").appendTo(startingRow);
+      $("<td>").text("").appendTo(startingRow);
+      $("<td>").text(starting_balance).addClass("bold").appendTo(startingRow);
+      startingRow.prependTo("#accountEntriesTable tbody");
+
+      // Iterate over the response data and populate the table
+      response.forEach(function (entry) {
+        var row = $("<tr>");
+        $("<td>").text(entry.date).appendTo(row);
+        $("<td>").text(entry.category).appendTo(row);
+        $("<td>").text(entry.description).appendTo(row);
+        if (entry.dr == 0) {
+          $("<td>").text("").addClass("bg-green").appendTo(row);
+        } else {
+          $("<td>").text(entry.dr).addClass("bg-green").appendTo(row);
+        }
+        if (entry.cr == 0) {
+          $("<td>").text("").addClass("bg-red").appendTo(row);
+        } else {
+          $("<td>").text(entry.cr).addClass("bg-red").appendTo(row);
+        }
+
+        // Calculate the balance in each row
+        balance += parseFloat(entry.dr);
+        balance -= parseFloat(entry.cr);
+
+        if (balance < 0) {
+          $("<td>").text(balance).addClass("text-red").appendTo(row);
+        } else {
+          $("<td>").text(balance).addClass("text-green").appendTo(row);
+        }
+        row.appendTo("#accountEntriesTable tbody");
+      });
+
+      // Calculate the sum of DR and CR amounts
+      var totalDr = response.reduce(function (sum, entry) {
+        return sum + parseFloat(entry.dr);
+      }, 0);
+      var totalCr = response.reduce(function (sum, entry) {
+        return sum + parseFloat(entry.cr);
+      }, 0);
+
+      // Calculate the closing balance
+      var closingBalance = startingBalance + totalDr - totalCr;
+
+      // Add the total row
+      var totalRow = $("<tr>");
+      $("<td>").text("").appendTo(totalRow);
+      $("<td>").text("").appendTo(totalRow);
+      $("<td>").text("Closing Balance").addClass("bold").appendTo(totalRow);
+      $("<td>").text(totalDr).addClass("bold bg-green").appendTo(totalRow);
+      $("<td>").text(totalCr).addClass("bold bg-red").appendTo(totalRow);
+      $("<td>").text(closingBalance).addClass("bold").appendTo(totalRow);
+
+      totalRow.appendTo("#accountEntriesTable tbody");
+    },
+    error: function () {
+      // Error handling
+      alert("Failed to fetch account entries. Please try again.");
+    },
+  });
+}
+
+$("#filter-option").change(function () {
+  var selectedFilter = $(this).val();
+  if (selectedFilter === "custom") {
+    $("#from-date").show();
+    $("#to-date").show();
+  } else {
+    $("#from-date").hide();
+    $("#to-date").hide();
+  }
+});
+
+// Function to get the heading text based on the filter option
+function getHeadingText(filterOption) {
+  switch (filterOption) {
+    case "today":
+      return "Today's Account Entries - " + today;
+    case "all":
+      return "All Account Entries";
+    case "custom":
+      fromDate = $("#from-date").val();
+      toDate = $("#to-date").val();
+      return "Account Entries - from " + fromDate + " to " + toDate;
+    default:
+      return "";
+  }
+}
+
+function handleFilter() {
+  // Get the selected filter type
+  var filterType = $("#filter-option").val();
+
+  // Check the filter type and perform the appropriate action
+  if (filterType === "today") {
+    // Filter by today's date
+    var today = new Date().toISOString().split("T")[0]; // Get today's date in the format YYYY-MM-DD
+    getDataFromServer(filterType, today, today); // Call the function to retrieve data from the server
+  } else if (filterType === "all") {
+    // Filter for all entries
+    getDataFromServer(filterType, null, null); // Pass null dates to retrieve all data
+  } else if (filterType === "custom") {
+    // Filter by custom date range
+    var fromDate = $("#from-date").val();
+    var toDate = $("#to-date").val();
+    getDataFromServer(filterType, fromDate, toDate); // Call the function to retrieve data from the server with custom dates
+  }
+}
+
+function getDataFromServer(filterType, fromDate, toDate) {
+  // Make an AJAX request to the Python function with the selected filter parameters
+  var url = getFilterAccountEntries;
+  $.ajax({
+    url: url,
+    type: "GET",
+    data: {
+      filterType: filterType,
+      fromDate: fromDate,
+      toDate: toDate,
+    },
+    success: function (response) {
+      // Clear the table body
+      $("#accountEntriesTable tbody").empty();
+
+      // Store the starting balance
+      var starting_balance = 0;
+      var totalDr = 0;
+      var totalCr = 0;
+
+      // Find the starting balance entry and store its value
+      for (var i = 0; i < response.length; i++) {
+        if (response[i].hasOwnProperty("starting_balance")) {
+          starting_balance = response[i].starting_balance;
+          response.splice(i, 1); // Remove the starting balance entry from the response
+          break;
+        }
+      }
+
+      var startingBalance = parseFloat(starting_balance);
+      var balance = startingBalance;
+
+      // Add the starting balance row
+      var startingRow = $("<tr>");
+      $("<td>").text("").appendTo(startingRow);
+      $("<td>").text("").appendTo(startingRow);
+      $("<td>").text("Starting Balance").addClass("bold").appendTo(startingRow);
+      $("<td>").text("").appendTo(startingRow);
+      $("<td>").text("").appendTo(startingRow);
+      $("<td>").text(starting_balance).addClass("bold").appendTo(startingRow);
+      startingRow.prependTo("#accountEntriesTable tbody");
+
+      // Iterate over the response data and populate the table
+      response.forEach(function (entry) {
+        var row = $("<tr>");
+        $("<td>").text(entry.date).appendTo(row);
+        $("<td>").text(entry.category).appendTo(row);
+        $("<td>").text(entry.description).appendTo(row);
+        if (entry.dr == 0) {
+          $("<td>").text("").addClass("bg-green").appendTo(row);
+        } else {
+          $("<td>").text(entry.dr).addClass("bg-green").appendTo(row);
+        }
+        if (entry.cr == 0) {
+          $("<td>").text("").addClass("bg-red").appendTo(row);
+        } else {
+          $("<td>").text(entry.cr).addClass("bg-red").appendTo(row);
+        }
+
+        // Calculate the balance in each row
+        balance += parseFloat(entry.dr);
+        balance -= parseFloat(entry.cr);
+
+        if (balance < 0) {
+          $("<td>").text(balance).addClass("text-red").appendTo(row);
+        } else {
+          $("<td>").text(balance).addClass("text-green").appendTo(row);
+        }
+        row.appendTo("#accountEntriesTable tbody");
+      });
+
+      // Calculate the sum of DR and CR amounts
+      var totalDr = response.reduce(function (sum, entry) {
+        return sum + parseFloat(entry.dr);
+      }, 0);
+      var totalCr = response.reduce(function (sum, entry) {
+        return sum + parseFloat(entry.cr);
+      }, 0);
+
+      // Calculate the closing balance
+      var closingBalance = startingBalance + totalDr - totalCr;
+
+      // Add the total row
+      var totalRow = $("<tr>");
+      $("<td>").text("").appendTo(totalRow);
+      $("<td>").text("").appendTo(totalRow);
+      $("<td>").text("Closing Balance").addClass("bold").appendTo(totalRow);
+      $("<td>").text(totalDr).addClass("bold bg-green").appendTo(totalRow);
+      $("<td>").text(totalCr).addClass("bold bg-red").appendTo(totalRow);
+      $("<td>").text(closingBalance).addClass("bold").appendTo(totalRow);
+
+      totalRow.appendTo("#accountEntriesTable tbody");
+    },
+    error: function () {
+      // Error handling
+      alert("Failed to fetch account entries. Please try again.");
+    },
+  });
+}
+
+$("#filterButton").click(function () {
+  handleFilter();
+  // Update the heading text based on the selected filter
+  var selectedFilter = $("#filter-option").val();
+  var headingText = getHeadingText(selectedFilter);
+  $("#entriesHeading").text(headingText);
+  console.log("insise entries fucntion");
+});

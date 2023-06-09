@@ -62,3 +62,11 @@ class Units(models.Model):
 
     def __str__(self):
         return self.unit
+
+
+class AccountEntry(models.Model):
+    date = models.DateField()
+    category = models.CharField(max_length=100)
+    description = models.TextField()
+    dr = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    cr = models.DecimalField(max_digits=10, decimal_places=2, default=0)

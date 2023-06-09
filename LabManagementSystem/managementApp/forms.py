@@ -1,5 +1,6 @@
 from django import forms
 from .models import Patient
+from .models import AccountEntry
 
 
 class PatientForm(forms.ModelForm):

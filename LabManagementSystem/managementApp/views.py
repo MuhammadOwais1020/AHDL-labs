@@ -5,8 +5,13 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.shortcuts import render
 from .models import Patient, Doctor, Parameters, Units
+from .models import AccountEntry
 from django.views.decorators.http import require_POST
 from .forms import PatientForm
+from datetime import datetime
+from datetime import date
+from django.db.models import Sum
+from django.db.models import Q
 import os
 
 # Create your views here.
@@ -187,3 +192,116 @@ def add_unit(request):
                              'message': 'Invalid unit value.'}
 
         return JsonResponse(response_data)
+
+
+@csrf_exempt
+def add_account_entry(request):
+    if request.method == 'POST':
+        form_type = request.POST.get('transaction_type')
+        date = request.POST.get('date')
+        category = request.POST.get('category')
+        description = request.POST.get('description')
+        amount = request.POST.get('amount')
+        dr_amount = 0
+        cr_amount = 0
+
+        if form_type == 'income':
+            dr_amount = amount
+            cr_amount = 0
+        elif form_type == 'expense':
+            dr_amount = 0
+            cr_amount = amount
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid form type.'})
+
+        entry = AccountEntry(date=date, category=category,
+                             description=description, dr=dr_amount, cr=cr_amount)
+        entry.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Account entry added successfully.'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+
+@csrf_exempt
+def get_account_entries(request):
+    today = date.today()
+    # Retrieve all account entries for today from the database
+    entries = AccountEntry.objects.filter(date=today)
+
+    today_str = today.strftime('%Y-%m-%d')
+    starting_balance = calculate_starting_balance(today_str)
+    print(f'starting balance: {starting_balance}')
+
+    # Process the entries and create a list of dictionaries
+    data = []
+    for entry in entries:
+        entry_data = {
+            'date': entry.date,
+            'category': entry.category,
+            'description': entry.description,
+            'dr': entry.dr,
+            'cr': entry.cr
+        }
+        data.append(entry_data)
+
+    # Append the starting balance to the data
+    data.append({'starting_balance': starting_balance})
+
+    return JsonResponse(data, safe=False)
+
+
+def get_filter_account_entries(request):
+    filter_type = request.GET.get('filterType')
+    from_date = request.GET.get('fromDate')
+    to_date = request.GET.get('toDate')
+
+    today = date.today()
+    starting_balance = 0
+
+    if filter_type == 'today':
+        entries = AccountEntry.objects.filter(date=today)
+        today_str = today.strftime('%Y-%m-%d')
+        starting_balance = calculate_starting_balance(today_str)
+    elif filter_type == 'all':
+        entries = AccountEntry.objects.all()
+        starting_balance = 0
+    elif filter_type == 'custom':
+        entries = AccountEntry.objects.filter(date__range=[from_date, to_date])
+        today_str = from_date
+        starting_balance = calculate_starting_balance(today_str)
+    else:
+        return JsonResponse([], safe=False)
+
+    data = []
+    for entry in entries:
+        entry_data = {
+            'date': entry.date.strftime('%Y-%m-%d'),
+            'category': entry.category,
+            'description': entry.description,
+            'dr': entry.dr,
+            'cr': entry.cr,
+        }
+        data.append(entry_data)
+
+    # Append the starting balance to the data
+    data.append({'starting_balance': starting_balance})
+
+    return JsonResponse(data, safe=False)
+
+
+def calculate_starting_balance(from_date):
+    # Convert the from_date string to a datetime object
+    date_obj = datetime.strptime(from_date, '%Y-%m-%d').date()
+
+    # Retrieve the sum of dr and cr columns for entries before the given date
+    balance = AccountEntry.objects.filter(
+        date__lt=date_obj).aggregate(dr=Sum('dr'), cr=Sum('cr'))
+
+    dr_sum = balance['dr'] or 0  # If dr_sum is None, set it to 0
+    cr_sum = balance['cr'] or 0  # If cr_sum is None, set it to 0
+
+    # Calculate the starting balance by subtracting cr_sum from dr_sum
+    starting_balance = dr_sum - cr_sum
+
+    return starting_balance

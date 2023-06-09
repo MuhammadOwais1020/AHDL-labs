@@ -5,6 +5,10 @@
     --mo-secondary-color: #00CDAC;
     --mo-text-color: #212428;
     --mo-sections-color: #ffffff;
+    --mo-green: #198754;
+    --mo-red: #DC3545;
+    --mo-bg-green: #E5FFF2;
+    --mo-bg-red: #FFEDED;
 }
 
 /* fonts */
@@ -321,4 +325,29 @@ body {
 
 .profile-logo {
     width: 100%;
+}
+
+.text-green {
+    color: var(--mo-green) !important;
+}
+
+.text-red {
+    color: var(--mo-red) !important;
+}
+
+.bg-green {
+    background-color: var(--mo-bg-green) !important;
+}
+
+.bg-red {
+    background-color: var(--mo-bg-red) !important;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+#filterButton {
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
 }
