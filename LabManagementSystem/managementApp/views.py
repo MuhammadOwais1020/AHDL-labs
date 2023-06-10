@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.shortcuts import render
-from .models import Patient, Doctor, Parameters, Units
+from .models import Patient, Doctor, Parameters, Units, StaffProfile
 from .models import AccountEntry
 from django.views.decorators.http import require_POST
 from .forms import PatientForm
@@ -305,3 +305,56 @@ def calculate_starting_balance(from_date):
     starting_balance = dr_sum - cr_sum
 
     return starting_balance
+
+
+@csrf_exempt
+def save_staff_profile(request):
+    if request.method == 'POST':
+        full_name = request.POST.get('full_name')
+        father_name = request.POST.get('father_name')
+        cast = request.POST.get('cast')
+        cnic = request.POST.get('cnic')
+        mobile_number = request.POST.get('mobile_number')
+        address = request.POST.get('address')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        designation = request.POST.get('designation')
+
+        # Create a new StaffProfile object and save it to the database
+        staff_profile = StaffProfile(
+            full_name=full_name,
+            father_name=father_name,
+            cast=cast,
+            cnic=cnic,
+            mobile_number=mobile_number,
+            address=address,
+            username=username,
+            password=password,
+            designation=designation
+        )
+        staff_profile.save()
+
+        return JsonResponse({'message': 'Staff profile created successfully.'})
+
+    return JsonResponse({'message': 'Invalid request method.'})
+
+
+def get_staff_profiles(request):
+    profiles = StaffProfile.objects.all()
+
+    # Convert the queryset to a list of dictionaries
+    data = []
+    for profile in profiles:
+        data.append({
+            'full_name': profile.full_name,
+            'father_name': profile.father_name,
+            'cast': profile.cast,
+            'cnic': profile.cnic,
+            'mobile_number': profile.mobile_number,
+            'address': profile.address,
+            'username': profile.username,
+            'designation': profile.designation
+        })
+
+    # Return the data as a JSON response
+    return JsonResponse(data, safe=False)

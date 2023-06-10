@@ -195,7 +195,8 @@
 
 
                     </div>
-                    <div class="menu-btn-expended" id="menu-btn-expended-3">
+
+                    <div class="menu-btn-expended" id="menu-btn-expended-4">
                         <div class="menu-btn-expended-list">
                             <svg class="list-svg" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 640 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
@@ -203,7 +204,7 @@
                                     d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
                             </svg>
 
-                            <div onclick="testExpendedMenu(1)">Add New Test</div>
+                            <div onclick="staffExpendedMenu(1)">Create Staff Profile</div>
                         </div>
                         <div class="menu-btn-expended-list">
                             <svg class="list-svg" xmlns="http://www.w3.org/2000/svg"
@@ -212,7 +213,7 @@
                                     d="M64 144a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM64 464a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm48-208a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z" />
                             </svg>
 
-                            <div onclick="testExpendedMenu(2)">All Test List</div>
+                            <div onclick="staffExpendedMenu(2)">Staff List</div>
                         </div>
                     </div>
                 </div>
@@ -817,6 +818,110 @@
                     </div>
                 </div>
 
+                <!-- create staff -->
+                <div class="wind" id="staff-wind-1">
+                    <div class="sub-wind">
+                        <form id="staffProfileForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="staffFullName" class="form-label">Full Name:</label>
+                                    <input type="text" class="form-control" id="staffFullName" name="staffFullName"
+                                        required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="staffFatherName" class="form-label">Father's Name:</label>
+                                    <input type="text" class="form-control" id="staffFatherName" name="staffFatherName"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="staffCast" class="form-label">Cast:</label>
+                                    <input type="text" class="form-control" id="staffCast" name="staffCast" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="staffCNIC" class="form-label">CNIC:</label>
+                                    <input type="text" class="form-control" id="staffCNIC" name="staffCNIC" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="staffMobileNumber" class="form-label">Mobile Number:</label>
+                                    <input type="text" class="form-control" id="staffMobileNumber"
+                                        name="staffMobileNumber" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="staffAddress" class="form-label">Address:</label>
+                                    <input type="text" class="form-control" id="staffAddress" name="staffAddress"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="staffUsername" class="form-label">Username:</label>
+                                    <input type="text" class="form-control" id="staffUsername" name="staffUsername"
+                                        required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="staffPassword" class="form-label">Password:</label>
+                                    <input type="password" class="form-control" id="staffPassword" name="staffPassword"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="staffDesignation" class="form-label">Designation:</label>
+                                    <select class="form-select" id="staffDesignation" name="staffDesignation" required>
+                                        <option value="">Select Designation</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="pathologist">Pathologist</option>
+                                        <option value="receptionist">Receptionist</option>
+                                        <option value="clerk">Clerk</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row md-3">
+                                <div id="staffProfileAlert" class="mt-3"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">Create Staff Profile</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- staff list -->
+                <div class="wind" id="staff-wind-2">
+                    <div class="sub-wind">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Father Name</th>
+                                    <th>Cast</th>
+                                    <th>CNIC</th>
+                                    <th>Mobile Number</th>
+                                    <th>Address</th>
+                                    <th>Username</th>
+                                    <th>Designation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffTableBody">
+                                <!-- Staff profile data will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- accounts -->
                 <div class="wind" id="finance-wind-1">
                     <div class="sub-wind">
@@ -942,6 +1047,7 @@
 
                     </div>
                 </div>
+
             </section>
         </div>
         <!-- END || main window -->
@@ -1117,6 +1223,8 @@
         var addAccountEntry = "{% url 'add_account_entry' %}";
         var getAccountEntries = "{% url 'get_account_entries' %}";
         var getFilterAccountEntries = "{% url 'get_filter_account_entries' %}";
+        var saveStaffProfile = "{% url 'save_staff_profile' %}";
+        var getStaffProfiles = "{% url 'get_staff_profiles' %}"
 
         var b_patientId = 0;
         var b_patientName = "";

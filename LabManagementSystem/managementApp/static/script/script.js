@@ -154,6 +154,7 @@ function hideAlert(time) {
     $("#addPatientAlert").hide();
     $("#addIncomeAlert").hide();
     $("#addExpenseAlert").hide();
+    $("#staffProfileAlert").hide();
   }, time); // Hide after time seconds
 }
 // Fetch doctor names using AJAX
@@ -281,6 +282,19 @@ function testExpendedMenu(n) {
   if (n == 1) {
     $("#main-heading").html("Create New Test Parameter");
     loadParameterUnits();
+  }
+}
+
+// Staff Menu
+function staffExpendedMenu(n) {
+  $(".wind").hide();
+
+  $("#staff-wind-" + n).show();
+  if (n == 1) {
+    $("#main-heading").html("Create Staff Profile");
+  } else if (n == 2) {
+    $("#main-heading").html("Staff List");
+    loadStaffProfiles();
   }
 }
 
@@ -1286,3 +1300,148 @@ $("#filterButton").click(function () {
   $("#entriesHeading").text(headingText);
   console.log("insise entries fucntion");
 });
+
+function validateStaffProfileForm() {
+  // Get form fields
+  var fullName = document.getElementById("staffFullName").value;
+  var fatherName = document.getElementById("staffFatherName").value;
+  var cast = document.getElementById("staffCast").value;
+  var cnic = document.getElementById("staffCNIC").value;
+  var mobileNumber = document.getElementById("staffMobileNumber").value;
+  var address = document.getElementById("staffAddress").value;
+  var username = document.getElementById("staffUsername").value;
+  var password = document.getElementById("staffPassword").value;
+  var designation = document.getElementById("staffDesignation").value;
+
+  // Validate form fields
+  if (fullName === "") {
+    alert("Please enter the full name.");
+    return false;
+  }
+  if (fatherName === "") {
+    alert("Please enter the father's name.");
+    return false;
+  }
+  if (cast === "") {
+    alert("Please enter the cast.");
+    return false;
+  }
+  if (cnic === "") {
+    alert("Please enter the CNIC.");
+    return false;
+  }
+  if (mobileNumber === "") {
+    alert("Please enter the mobile number.");
+    return false;
+  }
+  if (address === "") {
+    alert("Please enter the address.");
+    return false;
+  }
+  if (username === "") {
+    alert("Please enter the username.");
+    return false;
+  }
+  if (password === "") {
+    alert("Please enter the password.");
+    return false;
+  }
+  if (designation === "") {
+    alert("Please select the designation.");
+    return false;
+  }
+
+  // Form validation passed, submit the form
+  return true;
+}
+
+// Prevent form submission and handle submit event
+$("#staffProfileForm").submit(function (event) {
+  event.preventDefault(); // Prevent the default form submission
+
+  // Validate the form
+  if (!validateStaffProfileForm()) {
+    return; // Stop form submission if validation fails
+  }
+
+  // Get the form data
+  var fullName = $("#staffFullName").val();
+  var fatherName = $("#staffFatherName").val();
+  var cast = $("#staffCast").val();
+  var cnic = $("#staffCNIC").val();
+  var mobileNumber = $("#staffMobileNumber").val();
+  var address = $("#staffAddress").val();
+  var username = $("#staffUsername").val();
+  var password = $("#staffPassword").val();
+  var designation = $("#staffDesignation").val();
+
+  // Create the data object
+  var formData = {
+    full_name: fullName,
+    father_name: fatherName,
+    cast: cast,
+    cnic: cnic,
+    mobile_number: mobileNumber,
+    address: address,
+    username: username,
+    password: password,
+    designation: designation,
+  };
+  var url = saveStaffProfile;
+  // Send the AJAX request
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: formData,
+    success: function (response) {
+      $("#staffProfileAlert").html(
+        showAlert("success", "Staff Profile created successfully!")
+      );
+      hideAlert(3000);
+      // Reset the form
+      $("#staffProfileForm")[0].reset();
+    },
+    error: function () {
+      alert("");
+
+      $("#staffProfileAlert").html(
+        showAlert(
+          "error",
+          "An error occurred while creating the staff profile.!"
+        )
+      );
+      hideAlert(3000);
+    },
+  });
+});
+
+function loadStaffProfiles() {
+  // Make the AJAX request
+  var url = getStaffProfiles;
+  $.ajax({
+    url: url,
+    method: "GET",
+    dataType: "json",
+    success: function (response) {
+      // Clear the table body
+      $("#staffTableBody").empty();
+
+      // Iterate over the response data and populate the table
+      response.forEach(function (profile) {
+        var row = $("<tr>");
+        $("<td>").text(profile.full_name).appendTo(row);
+        $("<td>").text(profile.father_name).appendTo(row);
+        $("<td>").text(profile.cast).appendTo(row);
+        $("<td>").text(profile.cnic).appendTo(row);
+        $("<td>").text(profile.mobile_number).appendTo(row);
+        $("<td>").text(profile.address).appendTo(row);
+        $("<td>").text(profile.username).appendTo(row);
+        $("<td>").text(profile.designation).appendTo(row);
+        row.appendTo("#staffTableBody");
+      });
+    },
+    error: function () {
+      alert("An error occurred while loading staff profiles.");
+    },
+  });
+}

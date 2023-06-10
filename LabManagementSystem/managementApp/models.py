@@ -70,3 +70,23 @@ class AccountEntry(models.Model):
     description = models.TextField()
     dr = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     cr = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+
+class StaffProfile(models.Model):
+    full_name = models.CharField(max_length=100)
+    father_name = models.CharField(max_length=100)
+    cast = models.CharField(max_length=50)
+    cnic = models.CharField(max_length=15)
+    mobile_number = models.CharField(max_length=15)
+    address = models.TextField()
+    username = models.CharField(max_length=50)
+    password = models.CharField(max_length=100)
+    designation = models.CharField(
+        max_length=50,
+        choices=[
+            ('admin', 'Admin'),
+            ('pathologist', 'Pathologist'),
+            ('receptionist', 'Receptionist'),
+            ('clerk', 'Clerk')
+        ]
+    )

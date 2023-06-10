@@ -31,7 +31,10 @@ urlpatterns = [
     path('add_parameter', ma.add_parameter, name="add_parameter"),
     path('add_unit', ma.add_unit, name="add_unit"),
     path('add_account_entry', ma.add_account_entry, name="add_account_entry"),
-    path('get_account_entries', ma.get_account_entries, name="get_account_entries"),
+    path('get_account_entries', ma.get_account_entries,
+         name="get_account_entries"),
     path('get_filter_account_entries', ma.get_filter_account_entries,
-         name="get_filter_account_entries")
+         name="get_filter_account_entries"),
+    path('save_staff_profile', ma.save_staff_profile, name="save_staff_profile"),
+    path('get_staff_profiles', ma.get_staff_profiles, name="get_staff_profiles")
 ]
