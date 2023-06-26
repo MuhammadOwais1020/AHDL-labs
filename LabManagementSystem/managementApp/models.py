@@ -90,3 +90,14 @@ class StaffProfile(models.Model):
             ('clerk', 'Clerk')
         ]
     )
+
+
+class Parameter(models.Model):
+    parameter_name = models.CharField(max_length=255)
+    parameter_unit = models.CharField(max_length=50)
+    parameter_result_type = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.parameter_name
+
+#

@@ -155,6 +155,7 @@ function hideAlert(time) {
     $("#addIncomeAlert").hide();
     $("#addExpenseAlert").hide();
     $("#staffProfileAlert").hide();
+    $("#addParameterAlert").hide();
   }, time); // Hide after time seconds
 }
 // Fetch doctor names using AJAX
@@ -576,7 +577,7 @@ function handleRelationChange() {
   var ageDaysField = document.getElementById("ageDays");
   var contactField = document.getElementById("contact");
   var cnicField = document.getElementById("cnic");
-
+  //
   // Check if "Relative" radio button is selected
   if (relativeRadio.checked) {
     // Empty the fields
@@ -875,6 +876,20 @@ $("#addFemaleRowBtn").click(function () {
       </tr>
     `;
   $("#femaleTableBody").append(femaleRow);
+});
+
+// Add Row button click event for Child section
+$("#addChildRowBtn").click(function () {
+  var childRow = `
+        <tr>
+            <td><input type="number" class="form-control" name="childNormalValueFrom[]" placeholder="Value From"></td>
+            <td><input type="number" class="form-control" name="childNormalValueTo[]" placeholder="Value To"></td>
+            <td><input type="number" class="form-control" name="childAgeFrom[]" placeholder="Age From"></td>
+            <td><input type="number" class="form-control" name="childAgeTo[]" placeholder="Age To"></td>
+            <td><button type="button" class="btn btn-danger btn-remove-row">Remove</button></td>
+        </tr>
+    `;
+  $("#childTableBody").append(childRow);
 });
 
 // Remove row button click event
@@ -1445,3 +1460,42 @@ function loadStaffProfiles() {
     },
   });
 }
+
+$("#makeParameterBtn").click(function () {
+  console.log("btn clicked");
+  // Get the selected parameter name and unit
+  var parameterName = $("#selectParameter").val();
+  var parameterUnit = $("#selectUnit").val();
+
+  // Get the selected parameter result type
+  var parameterResultType = $("input[name='parameterType']:checked").val();
+
+  // Create the data object
+  var data = {
+    parameter_name: parameterName,
+    parameter_unit: parameterUnit,
+    parameter_result_type: parameterResultType,
+  };
+  var url = make_parameter_vrbl;
+  // Make the AJAX request to the Python file
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: data,
+    success: function (response) {
+      console.log("1");
+      $("#addParameterAlert").show();
+      $("#addParameterAlert").html(
+        showAlert(response.status, response.message)
+      );
+      hideAlert(3000);
+    },
+    error: function (xhr, status, error) {
+      $("#addParameterAlert").show();
+      $("#addParameterAlert").html(
+        showAlert(response.status, response.message)
+      );
+      hideAlert(3000);
+    },
+  });
+});

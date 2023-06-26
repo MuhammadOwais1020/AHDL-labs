@@ -13,6 +13,7 @@ from datetime import date
 from django.db.models import Sum
 from django.db.models import Q
 import os
+from .models import Parameter
 
 # Create your views here.
 
@@ -339,6 +340,7 @@ def save_staff_profile(request):
     return JsonResponse({'message': 'Invalid request method.'})
 
 
+@csrf_exempt
 def get_staff_profiles(request):
     profiles = StaffProfile.objects.all()
 
@@ -358,3 +360,29 @@ def get_staff_profiles(request):
 
     # Return the data as a JSON response
     return JsonResponse(data, safe=False)
+
+
+@csrf_exempt
+def make_parameter(request):
+    if request.method == 'POST':
+        parameter_name = request.POST.get('parameter_name')
+        parameter_unit = request.POST.get('parameter_unit')
+        parameter_result_type = request.POST.get('parameter_result_type')
+
+        # Check if the parameter name already exists
+        if Parameter.objects.filter(parameter_name=parameter_name).exists():
+            return JsonResponse({'status': 'warning', 'message': 'Parameter name already exists.'})
+
+        # Create a new Parameter object
+        parameter = Parameter(parameter_name=parameter_name,
+                              parameter_unit=parameter_unit,
+                              parameter_result_type=parameter_result_type)
+
+        try:
+            # Save the parameter in the database
+            parameter.save()
+            return JsonResponse({'status': 'success', 'message': 'Parameter information saved successfully!'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': 'An error occurred while saving the parameter information.', 'error': str(e)})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})

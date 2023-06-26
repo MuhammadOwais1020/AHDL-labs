@@ -351,3 +351,7 @@ body {
     border-top-left-radius: 0px !important;
     border-bottom-left-radius: 0px !important;
 }
+
+.max-width {
+    width: 100% !important;
+}
