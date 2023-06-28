@@ -355,3 +355,8 @@ body {
 .max-width {
     width: 100% !important;
 }
+
+#parameter-type-section {
+    display: none;
+    background-color: #00CDAC;
+}

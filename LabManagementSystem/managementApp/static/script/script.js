@@ -156,6 +156,7 @@ function hideAlert(time) {
     $("#addExpenseAlert").hide();
     $("#staffProfileAlert").hide();
     $("#addParameterAlert").hide();
+    $("#parameterEditALert").hide();
   }, time); // Hide after time seconds
 }
 // Fetch doctor names using AJAX
@@ -280,9 +281,13 @@ function testExpendedMenu(n) {
   $(".wind").hide();
 
   $("#test-wind-" + n).show();
+
   if (n == 1) {
     $("#main-heading").html("Create New Test Parameter");
     loadParameterUnits();
+  } else if (n == 2) {
+    loadAllParameters();
+    $("#main-heading").html("All Test Parameters");
   }
 }
 
@@ -650,14 +655,17 @@ function loadParameterUnits() {
     method: "GET",
     success: function (response) {
       var selectUnit = $("#selectUnit");
+      var editUnit = $("#editParameterUnit");
 
       // Clear previous options
       selectUnit.empty();
+      editUnit.empty();
 
       // Add default option
       selectUnit.append(
         $("<option></option>").val("").text("-- Select Unit --")
       );
+      editUnit.append($("<option></option>").val("").text("-- Select Unit --"));
 
       // Add options from the response data
       for (var i = 0; i < response.length; i++) {
@@ -665,6 +673,7 @@ function loadParameterUnits() {
         selectUnit.append(
           $("<option></option>").val(unit.name).text(unit.name)
         );
+        editUnit.append($("<option></option>").val(unit.name).text(unit.name));
       }
 
       // Add new option
@@ -794,6 +803,8 @@ $("#addParameterUnit").click(function () {
     // Clear any error messages
     $("#parameter_span").text("");
     $("#unit_span").text("");
+
+    $("#parameter-type-section").show();
   } else {
     // Show error messages for empty selections
     if (!selectedParameter) {
@@ -810,6 +821,7 @@ $("#addParameterUnit").click(function () {
 
     // Clear the heading text
     $("#parameter_heading").text("Parameter Not Selected....!!");
+    $("#parameter-type-section").hide();
   }
 });
 
@@ -1499,3 +1511,88 @@ $("#makeParameterBtn").click(function () {
     },
   });
 });
+
+function loadAllParameters() {
+  var url = get_all_parameters;
+  $.ajax({
+    url: url,
+    type: "GET",
+    dataType: "json",
+    success: function (response) {
+      if (response.status === "success") {
+        var parameterTableBody = $("#parameterTableBody");
+        parameterTableBody.empty();
+
+        // Iterate over the parameter records and append rows to the table
+        for (var i = 0; i < response.parameters.length; i++) {
+          var parameter = response.parameters[i];
+          var row = $("<tr>");
+          row.append($("<td>").text(parameter.id));
+          row.append($("<td>").text(parameter.parameter_name));
+          row.append($("<td>").text(parameter.parameter_unit));
+          row.append($("<td>").text(parameter.parameter_result_type));
+          var editButton = $("<button>")
+            .addClass("btn btn-primary")
+            .text("Edit");
+          editButton.click(
+            (function (param) {
+              return function () {
+                openEditModal(param);
+              };
+            })(parameter)
+          );
+          row.append($("<td>").append(editButton));
+          parameterTableBody.append(row);
+        }
+      } else {
+        alert("An error occurred while loading parameters.");
+      }
+    },
+    error: function () {
+      alert("An error occurred while loading parameters.");
+    },
+  });
+}
+
+function openEditModal(parameter) {
+  // Populate the modal with the parameter details
+
+  $("#editParameterId").val(parameter.id);
+  $("#editParameterName").val(parameter.parameter_name);
+  $("#editParameterUnit").val(parameter.parameter_unit);
+  $("#editParameterResultType").val(parameter.parameter_result_type);
+
+  // Show the modal
+  $("#editParameterModal").modal("show");
+}
+
+function saveEditedParameter() {
+  console.log("inside edit parameter function");
+  // Get the updated parameter values
+  var parameterId = document.getElementById("editParameterId").value;
+  var parameterName = document.getElementById("editParameterName").value;
+  var parameterUnit = document.getElementById("editParameterUnit").value;
+  var parameterType = document.getElementById("editParameterResultType").value;
+
+  // Create the data object
+
+  var url = update_parameter;
+  // Make the AJAX request
+  $.ajax({
+    url: url, // Replace with the actual URL to update the parameter
+    type: "POST",
+    data: {
+      id: parameterId,
+      name: parameterName,
+      unit: parameterUnit,
+      type: parameterType,
+    },
+    success: function (response) {
+      $("#parameterEditALert").show();
+      $("#parameterEditALert").html(
+        showAlert(response.status, response.message)
+      );
+      hideAlert(3000);
+    },
+  });
+}

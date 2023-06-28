@@ -386,3 +386,69 @@ def make_parameter(request):
             return JsonResponse({'status': 'error', 'message': 'An error occurred while saving the parameter information.', 'error': str(e)})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+
+@csrf_exempt
+def get_all_parameters(request):
+    if request.method == 'GET':
+        try:
+            # Retrieve all parameters from the database
+            parameters = Parameter.objects.all()
+
+            # Prepare the parameter data as a list of dictionaries
+            parameter_data = []
+            for parameter in parameters:
+                parameter_data.append({
+                    'id': parameter.id,
+                    'parameter_name': parameter.parameter_name,
+                    'parameter_unit': parameter.parameter_unit,
+                    'parameter_result_type': parameter.parameter_result_type
+                })
+
+            return JsonResponse({'status': 'success', 'parameters': parameter_data})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': 'An error occurred while retrieving parameters.', 'error': str(e)})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+
+@csrf_exempt
+def update_parameters(request):
+    if request.method == 'POST':
+        # Get the parameter data from the AJAX request
+        parameter_id = request.POST.get('id')
+        parameter_name = request.POST.get('name')
+        parameter_unit = request.POST.get('unit')
+        parameter_type = request.POST.get('type')
+
+        try:
+            # Check if the parameter exists
+            parameter = Parameter.objects.get(id=parameter_id)
+
+            # Update the parameter values
+            parameter.name = parameter_name
+            parameter.unit = parameter_unit
+            parameter.type = parameter_type
+            parameter.save()
+
+            # Return a JSON response with success message
+            response_data = {
+                'status': 'success',
+                'message': 'Parameter updated successfully!'
+            }
+            return JsonResponse(response_data)
+
+        except Parameter.DoesNotExist:
+            # Return a JSON response with error message if parameter does not exist
+            response_data = {
+                'status': 'error',
+                'message': 'Parameter not found!'
+            }
+            return JsonResponse(response_data, status=404)
+
+    # Return a JSON response with error message for invalid request method
+    response_data = {
+        'status': 'error',
+        'message': 'Invalid request method!'
+    }
+    return JsonResponse(response_data, status=400)
