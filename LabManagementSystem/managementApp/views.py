@@ -14,6 +14,7 @@ from django.db.models import Sum
 from django.db.models import Q
 import os
 from .models import Parameter
+from .models import Parameter, RangeParameter
 
 # Create your views here.
 
@@ -420,16 +421,10 @@ def update_parameters(request):
         parameter_name = request.POST.get('name')
         parameter_unit = request.POST.get('unit')
         parameter_type = request.POST.get('type')
-
+        print(parameter_type)
         try:
-            # Check if the parameter exists
-            parameter = Parameter.objects.get(id=parameter_id)
-
-            # Update the parameter values
-            parameter.name = parameter_name
-            parameter.unit = parameter_unit
-            parameter.type = parameter_type
-            parameter.save()
+             # Update the parameter values using the update() method
+            Parameter.objects.filter(id=parameter_id).update(parameter_name=parameter_name, parameter_unit=parameter_unit, parameter_result_type=parameter_type)
 
             # Return a JSON response with success message
             response_data = {
@@ -452,3 +447,111 @@ def update_parameters(request):
         'message': 'Invalid request method!'
     }
     return JsonResponse(response_data, status=400)
+
+
+@csrf_exempt
+def save_range_parameters(request):
+    print('inside save range parameter')
+    # Get the parameter and unit values from the AJAX request
+    parameter_name = request.POST.get('parameter')
+    unit = request.POST.get('unit')
+
+    try:
+        # Check if the parameter already exists
+        parameter = Parameter.objects.filter(parameter_name=parameter_name).first()
+
+        if parameter:
+            # Return a JSON response with a warning message
+            response_data = {
+                'status': 'warning',
+                'message': 'Parameter already exists.'
+            }
+            return JsonResponse(response_data)
+
+        # Save the parameter and unit in the Parameter model
+        parameter = Parameter.objects.create(
+            parameter_name=parameter_name,
+            parameter_unit=unit,
+            parameter_result_type="range"
+        )
+
+        # Get the last inserted parameter ID
+        parameter_id = parameter.id
+
+        # Get the child parameters from the AJAX request
+        child_parameters = request.POST.getlist('childParameters[]')
+
+        # Save the child parameters in the RangeParameter model
+        for child_parameter in child_parameters:
+            print('child')
+            gender = child_parameter['gender']
+            normal_value_from = child_parameter['normalValueFrom']
+            normal_value_to = child_parameter['normalValueTo']
+            age_from = child_parameter['ageFrom']
+            age_to = child_parameter['ageTo']
+
+            RangeParameter.objects.create(
+                parameter_id=parameter_id,
+                gender=gender,
+                normal_value_from=normal_value_from,
+                normal_value_to=normal_value_to,
+                age_from=age_from,
+                age_to=age_to
+            )
+
+        # Get the female parameters from the AJAX request
+        female_parameters = request.POST.getlist('femaleParameters[]')
+
+        # Save the female parameters in the RangeParameter model
+        for female_parameter in female_parameters:
+            print('female')
+            gender = female_parameter['gender']
+            normal_value_from = female_parameter['normalValueFrom']
+            normal_value_to = female_parameter['normalValueTo']
+            age_from = female_parameter['ageFrom']
+            age_to = female_parameter['ageTo']
+
+            RangeParameter.objects.create(
+                parameter_id=parameter_id,
+                gender=gender,
+                normal_value_from=normal_value_from,
+                normal_value_to=normal_value_to,
+                age_from=age_from,
+                age_to=age_to
+            )
+
+        # Get the male parameters from the AJAX request
+        male_parameters = request.POST.getlist('maleParameters[]')
+
+        # Save the male parameters in the RangeParameter model
+        for male_parameter in male_parameters:
+            print('male')
+            gender = male_parameter['gender']
+            normal_value_from = male_parameter['normalValueFrom']
+            normal_value_to = male_parameter['normalValueTo']
+            age_from = male_parameter['ageFrom']
+            age_to = male_parameter['ageTo']
+
+            RangeParameter.objects.create(
+                parameter_id=parameter_id,
+                gender=gender,
+                normal_value_from=normal_value_from,
+                normal_value_to=normal_value_to,
+                age_from=age_from,
+                age_to=age_to
+            )
+
+        # Return a JSON response with success message
+        response_data = {
+            'status': 'success',
+            'message': 'Range parameters saved successfully!'
+        }
+        return JsonResponse(response_data)
+
+    except Exception as e:
+        # Return a JSON response with error message
+        response_data = {
+            'status': 'error',
+            'message': 'Failed to save range parameters.'
+        }
+        return JsonResponse(response_data, status=500)

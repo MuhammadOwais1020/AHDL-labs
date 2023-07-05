@@ -99,3 +99,12 @@ class Parameter(models.Model):
 
     def __str__(self):
         return self.parameter_name
+
+
+class RangeParameter(models.Model):
+    parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
+    gender = models.CharField(max_length=10)
+    normal_value_from = models.DecimalField(max_digits=10, decimal_places=2)
+    normal_value_to = models.DecimalField(max_digits=10, decimal_places=2)
+    age_from = models.IntegerField()
+    age_to = models.IntegerField()

@@ -39,5 +39,6 @@ urlpatterns = [
     path('get_staff_profiles', ma.get_staff_profiles, name="get_staff_profiles"),
     path('make_parameter', ma.make_parameter, name="make_parameter"),
     path('get_all_parameters', ma.get_all_parameters, name="get_all_parameters"),
-    path('update_parameters/', ma.update_parameters, name="update_parameters")
+    path('update_parameters/', ma.update_parameters, name="update_parameters"),
+    path('save_range_parameters', ma.save_range_parameters, name="save_range_parameters")
 ]

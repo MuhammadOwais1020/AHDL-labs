@@ -1,1349 +1,2117 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- font icons -->
-    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet" />
+    <link
+      href="https://use.fontawesome.com/releases/v5.0.6/css/all.css"
+      rel="stylesheet"
+    />
     <!-- bootstrap -->
-    <link rel="stylesheet" href="{% static 'bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap.css' %}" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- custom CSS -->
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
     <title>AHDL Labs</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- complete page container -->
     <div class="container-fluid">
-
-        <!-- START || side panel -->
-        <div class="side-panel-div">
-
-            <!-- logo -->
-            <div class="logo">
-                <img src="{% static 'img/icon/logo.png' %}" alt="AHDL Labs Logo">
-            </div>
-            <span class="logo-text">AHDL LABS</span>
-
-            <!-- menu buttons -->
-            <section class="menu-box">
-                <!-- Patient Button -->
-                <div class="button-group" onclick="buttonGroup(1)">
-                    <div class="menu-btn">
-                        <div class="menu-btn-icon-text">
-                            <div>
-                                <svg class="main-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                    viewBox="0 0 640 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                    <path
-                                        d="M483.2 9.6L524 64h92c13.3 0 24 10.7 24 24s-10.7 24-24 24H512c-7.6 0-14.7-3.6-19.2-9.6L468.7 70.3l-47 99.9c-3.7 7.8-11.3 13.1-19.9 13.7s-16.9-3.4-21.7-10.6L339.2 112H216c-13.3 0-24-10.7-24-24s10.7-24 24-24H352c8 0 15.5 4 20 10.7l24.4 36.6 45.9-97.5C445.9 6.2 453.2 1 461.6 .1s16.6 2.7 21.6 9.5zM320 160h12.7l20.7 31.1c11.2 16.8 30.6 26.3 50.7 24.8s37.9-13.7 46.5-32L461.9 160H544c53 0 96 43 96 96V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V448H352 320 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V96C0 78.3 14.3 64 32 64s32 14.3 32 32V352H288V192c0-17.7 14.3-32 32-32zm-144 0a80 80 0 1 1 0 160 80 80 0 1 1 0-160z" />
-                                </svg>
-                            </div>
-                            <div class="txt">
-                                Patient
-                            </div>
-                        </div>
-
-                        <svg class="dropdown-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.875 7.438 12 17.563 22.125 7.438" stroke="currentColor" stroke-width="2">
-                            </path>
-                        </svg>
-
-
-                    </div>
-                    <div class="menu-btn-expended" id="menu-btn-expended-1">
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 640 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
-                            </svg>
-
-                            <div onclick="patientExpendedMenu(1)">Add New Patient</div>
-                        </div>
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 512 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M64 144a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM64 464a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm48-208a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z" />
-                            </svg>
-
-                            <div onclick="patientExpendedMenu(2)">All Patient List</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LAB Button -->
-                <div class="button-group" onclick="buttonGroup(2)">
-                    <div class="menu-btn">
-                        <div class="menu-btn-icon-text">
-                            <div>
-                                <svg class="main-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                    viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                    <path
-                                        d="M160 32c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32c17.7 0 32 14.3 32 32V288c0 17.7-14.3 32-32 32c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32zM32 448H320c70.7 0 128-57.3 128-128s-57.3-128-128-128V128c106 0 192 86 192 192c0 49.2-18.5 94-48.9 128H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H320 32c-17.7 0-32-14.3-32-32s14.3-32 32-32zm80-64H304c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z" />
-                                </svg>
-
-
-                            </div>
-                            <div class="txt">
-                                Lab
-                            </div>
-                        </div>
-
-                        <svg class="dropdown-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.875 7.438 12 17.563 22.125 7.438" stroke="currentColor" stroke-width="2">
-                            </path>
-                        </svg>
-
-
-                    </div>
-                    <div class="menu-btn-expended" id="menu-btn-expended-2">
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M288 0H160 128C110.3 0 96 14.3 96 32s14.3 32 32 32V196.8c0 11.8-3.3 23.5-9.5 33.5L10.3 406.2C3.6 417.2 0 429.7 0 442.6C0 480.9 31.1 512 69.4 512H378.6c38.3 0 69.4-31.1 69.4-69.4c0-12.8-3.6-25.4-10.3-36.4L329.5 230.4c-6.2-10.1-9.5-21.7-9.5-33.5V64c17.7 0 32-14.3 32-32s-14.3-32-32-32H288zM192 196.8V64h64V196.8c0 23.7 6.6 46.9 19 67.1L309.5 320h-171L173 263.9c12.4-20.2 19-43.4 19-67.1z" />
-                            </svg>
-
-                            <div onclick="labExpendedMenu(1)">New Lab</div>
-                        </div>
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM112 192H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z" />
-                            </svg>
-
-                            <div onclick="labExpendedMenu(2)">Lab History</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Test Button -->
-                <div class="button-group" onclick="buttonGroup(3)">
-                    <div class="menu-btn">
-                        <div class="menu-btn-icon-text">
-                            <div>
-                                <svg class="main-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                    viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                    <path
-                                        d="M0 64C0 46.3 14.3 32 32 32H96h64 64c17.7 0 32 14.3 32 32s-14.3 32-32 32V266.8c-20.2 28.6-32 63.5-32 101.2c0 25.2 5.3 49.1 14.8 70.8C189.5 463.7 160.6 480 128 480c-53 0-96-43-96-96V96C14.3 96 0 81.7 0 64zM96 96v96h64V96H96zM224 368a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm211.3-43.3c-6.2-6.2-16.4-6.2-22.6 0L352 385.4l-28.7-28.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l40 40c6.2 6.2 16.4 6.2 22.6 0l72-72c6.2-6.2 6.2-16.4 0-22.6z" />
-                                </svg>
-                            </div>
-                            <div class="txt">
-                                Test
-                            </div>
-                        </div>
-
-                        <svg class="dropdown-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.875 7.438 12 17.563 22.125 7.438" stroke="currentColor" stroke-width="2">
-                            </path>
-                        </svg>
-
-
-                    </div>
-                    <div class="menu-btn-expended" id="menu-btn-expended-3">
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z" />
-                            </svg>
-
-                            <div onclick="testExpendedMenu(1)">Add New Test Parameter</div>
-                        </div>
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M0 96C0 60.7 28.7 32 64 32H512c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM128 288a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm32-128a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM128 384a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm96-248c-13.3 0-24 10.7-24 24s10.7 24 24 24H448c13.3 0 24-10.7 24-24s-10.7-24-24-24H224zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H448c13.3 0 24-10.7 24-24s-10.7-24-24-24H224zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H448c13.3 0 24-10.7 24-24s-10.7-24-24-24H224z" />
-                            </svg>
-
-                            <div onclick="testExpendedMenu(2)">All Test Parameters</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Employee -->
-                <div class="button-group" onclick="buttonGroup(4)">
-                    <div class="menu-btn">
-                        <div class="menu-btn-icon-text">
-                            <div>
-                                <svg class="main-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                    viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                    <path
-                                        d="M96 128V70.2c0-13.3 8.3-25.3 20.8-30l96-36c7.2-2.7 15.2-2.7 22.5 0l96 36c12.5 4.7 20.8 16.6 20.8 30V128h-.3c.2 2.6 .3 5.3 .3 8v40c0 70.7-57.3 128-128 128s-128-57.3-128-128V136c0-2.7 .1-5.4 .3-8H96zm48 48c0 44.2 35.8 80 80 80s80-35.8 80-80V160H144v16zM111.9 327.7c10.5-3.4 21.8 .4 29.4 8.5l71 75.5c6.3 6.7 17 6.7 23.3 0l71-75.5c7.6-8.1 18.9-11.9 29.4-8.5C401 348.6 448 409.4 448 481.3c0 17-13.8 30.7-30.7 30.7H30.7C13.8 512 0 498.2 0 481.3c0-71.9 47-132.7 111.9-153.6zM208 48V64H192c-4.4 0-8 3.6-8 8V88c0 4.4 3.6 8 8 8h16v16c0 4.4 3.6 8 8 8h16c4.4 0 8-3.6 8-8V96h16c4.4 0 8-3.6 8-8V72c0-4.4-3.6-8-8-8H240V48c0-4.4-3.6-8-8-8H216c-4.4 0-8 3.6-8 8z" />
-                                </svg>
-                            </div>
-                            <div class="txt">
-                                Staff
-                            </div>
-                        </div>
-
-                        <svg class="dropdown-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.875 7.438 12 17.563 22.125 7.438" stroke="currentColor" stroke-width="2">
-                            </path>
-                        </svg>
-
-
-                    </div>
-
-                    <div class="menu-btn-expended" id="menu-btn-expended-4">
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 640 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
-                            </svg>
-
-                            <div onclick="staffExpendedMenu(1)">Create Staff Profile</div>
-                        </div>
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 512 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M64 144a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM64 464a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm48-208a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z" />
-                            </svg>
-
-                            <div onclick="staffExpendedMenu(2)">Staff List</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- accounts -->
-                <div class="button-group" onclick="buttonGroup(5)">
-                    <div class="menu-btn">
-                        <div class="menu-btn-icon-text">
-                            <div>
-                                <svg class="main-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                    viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                    <path
-                                        d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V192c0-35.3-28.7-64-64-64H80c-8.8 0-16-7.2-16-16s7.2-16 16-16H448c17.7 0 32-14.3 32-32s-14.3-32-32-32H64zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-                                </svg>
-                            </div>
-                            <div class="txt">
-                                Accounts
-                            </div>
-                        </div>
-
-                        <svg class="dropdown-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.875 7.438 12 17.563 22.125 7.438" stroke="currentColor" stroke-width="2">
-                            </path>
-                        </svg>
-
-
-                    </div>
-                    <div class="menu-btn-expended" id="menu-btn-expended-5">
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M64 64C28.7 64 0 92.7 0 128V384c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H64zm64 320H64V320c35.3 0 64 28.7 64 64zM64 192V128h64c0 35.3-28.7 64-64 64zM448 384c0-35.3 28.7-64 64-64v64H448zm64-192c-35.3 0-64-28.7-64-64h64v64zM288 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" />
-                            </svg>
-
-                            <div onclick="financeExpendedMenu(1)">Income/Expense Entry</div>
-                        </div>
-                        <div class="menu-btn-expended-list">
-                            <svg class="list-svg" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M14 2.2C22.5-1.7 32.5-.3 39.6 5.8L80 40.4 120.4 5.8c9-7.7 22.3-7.7 31.2 0L192 40.4 232.4 5.8c9-7.7 22.3-7.7 31.2 0L304 40.4 344.4 5.8c7.1-6.1 17.1-7.5 25.6-3.6s14 12.4 14 21.8V488c0 9.4-5.5 17.9-14 21.8s-18.5 2.5-25.6-3.6L304 471.6l-40.4 34.6c-9 7.7-22.3 7.7-31.2 0L192 471.6l-40.4 34.6c-9 7.7-22.3 7.7-31.2 0L80 471.6 39.6 506.2c-7.1 6.1-17.1 7.5-25.6 3.6S0 497.4 0 488V24C0 14.6 5.5 6.1 14 2.2zM96 144c-8.8 0-16 7.2-16 16s7.2 16 16 16H288c8.8 0 16-7.2 16-16s-7.2-16-16-16H96zM80 352c0 8.8 7.2 16 16 16H288c8.8 0 16-7.2 16-16s-7.2-16-16-16H96c-8.8 0-16 7.2-16 16zM96 240c-8.8 0-16 7.2-16 16s7.2 16 16 16H288c8.8 0 16-7.2 16-16s-7.2-16-16-16H96z" />
-                            </svg>
-
-                            <div onclick="financeExpendedMenu(2)">Account Entries</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- <span>Software Developed by Qonkar Technologies</span> -->
+      <!-- START || side panel -->
+      <div class="side-panel-div">
+        <!-- logo -->
+        <div class="logo">
+          <img src="{% static 'img/icon/logo.png' %}" alt="AHDL Labs Logo" />
         </div>
-        <!-- END || side panel -->
+        <span class="logo-text">AHDL LABS</span>
 
-        <!-- START || main window -->
-        <div class="main-window">
-
-            <section class="main-baar">
-                <div class="main-heading" id="main-heading">
-                    Overview
-                </div>
+        <!-- menu buttons -->
+        <section class="menu-box">
+          <!-- Patient Button -->
+          <div class="button-group" onclick="buttonGroup(1)">
+            <div class="menu-btn">
+              <div class="menu-btn-icon-text">
                 <div>
-                    <input type="checkbox" id="expend-profile-checkbox">
-                    <label for="expend-profile-checkbox">
-                        <div class="right-side">
-                            <div class="profile-section">
-                                <img src="{% static 'img/profile/superadmin.jpg' %}" alt="" class="profile-logo"
-                                    id="profile-logo">
-                            </div>
-                            <div class="profile-text">
-                                <p class="profile-name" id="profile-name">Muhammad Owais</p>
-                                <p class="profile-desigation" id="profile-designation">Supper Admin</p>
-                            </div>
-                            <p class="less-than-down">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1.875 7.438 12 17.563 22.125 7.438" stroke="currentColor"
-                                        stroke-width="2">
-                                    </path>
-                                </svg>
-                            </p>
-                        </div>
-                    </label>
-                    <div class="profile-expended">
-                        <div class="profile-expended-list">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path opacity="0.4"
-                                        d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
-                                        fill="#292D32"></path>
-                                    <path
-                                        d="M12.0002 14.5C6.99015 14.5 2.91016 17.86 2.91016 22C2.91016 22.28 3.13016 22.5 3.41016 22.5H20.5901C20.8701 22.5 21.0901 22.28 21.0901 22C21.0901 17.86 17.0102 14.5 12.0002 14.5Z"
-                                        fill="#292D32"></path>
-                                </g>
-                            </svg>
-                            <a href="">Profile</a>
-                        </div>
-                        <div class="profile-expended-list">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path
-                                        d="M15 4H18C19.1046 4 20 4.89543 20 6V18C20 19.1046 19.1046 20 18 20H15M8 8L4 12M4 12L8 16M4 12L16 12"
-                                        stroke="#000000" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round"></path>
-                                </g>
-                            </svg>
-                            <a href="">Log out</a>
-                        </div>
+                  <svg
+                    class="main-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    viewBox="0 0 640 512"
+                  >
+                    <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                    <path
+                      d="M483.2 9.6L524 64h92c13.3 0 24 10.7 24 24s-10.7 24-24 24H512c-7.6 0-14.7-3.6-19.2-9.6L468.7 70.3l-47 99.9c-3.7 7.8-11.3 13.1-19.9 13.7s-16.9-3.4-21.7-10.6L339.2 112H216c-13.3 0-24-10.7-24-24s10.7-24 24-24H352c8 0 15.5 4 20 10.7l24.4 36.6 45.9-97.5C445.9 6.2 453.2 1 461.6 .1s16.6 2.7 21.6 9.5zM320 160h12.7l20.7 31.1c11.2 16.8 30.6 26.3 50.7 24.8s37.9-13.7 46.5-32L461.9 160H544c53 0 96 43 96 96V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V448H352 320 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V96C0 78.3 14.3 64 32 64s32 14.3 32 32V352H288V192c0-17.7 14.3-32 32-32zm-144 0a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"
+                    />
+                  </svg>
+                </div>
+                <div class="txt">Patient</div>
+              </div>
+
+              <svg
+                class="dropdown-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.875 7.438 12 17.563 22.125 7.438"
+                  stroke="currentColor"
+                  stroke-width="2"
+                ></path>
+              </svg>
+            </div>
+            <div class="menu-btn-expended" id="menu-btn-expended-1">
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 640 512"
+                >
+                  <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"
+                  />
+                </svg>
+
+                <div onclick="patientExpendedMenu(1)">Add New Patient</div>
+              </div>
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                >
+                  <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M64 144a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM64 464a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm48-208a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z"
+                  />
+                </svg>
+
+                <div onclick="patientExpendedMenu(2)">All Patient List</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LAB Button -->
+          <div class="button-group" onclick="buttonGroup(2)">
+            <div class="menu-btn">
+              <div class="menu-btn-icon-text">
+                <div>
+                  <svg
+                    class="main-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    viewBox="0 0 512 512"
+                  >
+                    <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                    <path
+                      d="M160 32c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32c17.7 0 32 14.3 32 32V288c0 17.7-14.3 32-32 32c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32zM32 448H320c70.7 0 128-57.3 128-128s-57.3-128-128-128V128c106 0 192 86 192 192c0 49.2-18.5 94-48.9 128H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H320 32c-17.7 0-32-14.3-32-32s14.3-32 32-32zm80-64H304c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+                    />
+                  </svg>
+                </div>
+                <div class="txt">Lab</div>
+              </div>
+
+              <svg
+                class="dropdown-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.875 7.438 12 17.563 22.125 7.438"
+                  stroke="currentColor"
+                  stroke-width="2"
+                ></path>
+              </svg>
+            </div>
+            <div class="menu-btn-expended" id="menu-btn-expended-2">
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 448 512"
+                >
+                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M288 0H160 128C110.3 0 96 14.3 96 32s14.3 32 32 32V196.8c0 11.8-3.3 23.5-9.5 33.5L10.3 406.2C3.6 417.2 0 429.7 0 442.6C0 480.9 31.1 512 69.4 512H378.6c38.3 0 69.4-31.1 69.4-69.4c0-12.8-3.6-25.4-10.3-36.4L329.5 230.4c-6.2-10.1-9.5-21.7-9.5-33.5V64c17.7 0 32-14.3 32-32s-14.3-32-32-32H288zM192 196.8V64h64V196.8c0 23.7 6.6 46.9 19 67.1L309.5 320h-171L173 263.9c12.4-20.2 19-43.4 19-67.1z"
+                  />
+                </svg>
+
+                <div onclick="labExpendedMenu(1)">New Lab</div>
+              </div>
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 384 512"
+                >
+                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM112 192H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+                  />
+                </svg>
+
+                <div onclick="labExpendedMenu(2)">Lab History</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Test Button -->
+          <div class="button-group" onclick="buttonGroup(3)">
+            <div class="menu-btn">
+              <div class="menu-btn-icon-text">
+                <div>
+                  <svg
+                    class="main-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    viewBox="0 0 512 512"
+                  >
+                    <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                    <path
+                      d="M0 64C0 46.3 14.3 32 32 32H96h64 64c17.7 0 32 14.3 32 32s-14.3 32-32 32V266.8c-20.2 28.6-32 63.5-32 101.2c0 25.2 5.3 49.1 14.8 70.8C189.5 463.7 160.6 480 128 480c-53 0-96-43-96-96V96C14.3 96 0 81.7 0 64zM96 96v96h64V96H96zM224 368a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm211.3-43.3c-6.2-6.2-16.4-6.2-22.6 0L352 385.4l-28.7-28.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l40 40c6.2 6.2 16.4 6.2 22.6 0l72-72c6.2-6.2 6.2-16.4 0-22.6z"
+                    />
+                  </svg>
+                </div>
+                <div class="txt">Test</div>
+              </div>
+
+              <svg
+                class="dropdown-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.875 7.438 12 17.563 22.125 7.438"
+                  stroke="currentColor"
+                  stroke-width="2"
+                ></path>
+              </svg>
+            </div>
+            <div class="menu-btn-expended" id="menu-btn-expended-3">
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 384 512"
+                >
+                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+                  />
+                </svg>
+
+                <div onclick="testExpendedMenu(1)">Add New Test Parameter</div>
+              </div>
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 576 512"
+                >
+                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M0 96C0 60.7 28.7 32 64 32H512c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM128 288a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm32-128a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM128 384a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm96-248c-13.3 0-24 10.7-24 24s10.7 24 24 24H448c13.3 0 24-10.7 24-24s-10.7-24-24-24H224zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H448c13.3 0 24-10.7 24-24s-10.7-24-24-24H224zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H448c13.3 0 24-10.7 24-24s-10.7-24-24-24H224z"
+                  />
+                </svg>
+
+                <div onclick="testExpendedMenu(2)">All Test Parameters</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employee -->
+          <div class="button-group" onclick="buttonGroup(4)">
+            <div class="menu-btn">
+              <div class="menu-btn-icon-text">
+                <div>
+                  <svg
+                    class="main-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    viewBox="0 0 448 512"
+                  >
+                    <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                    <path
+                      d="M96 128V70.2c0-13.3 8.3-25.3 20.8-30l96-36c7.2-2.7 15.2-2.7 22.5 0l96 36c12.5 4.7 20.8 16.6 20.8 30V128h-.3c.2 2.6 .3 5.3 .3 8v40c0 70.7-57.3 128-128 128s-128-57.3-128-128V136c0-2.7 .1-5.4 .3-8H96zm48 48c0 44.2 35.8 80 80 80s80-35.8 80-80V160H144v16zM111.9 327.7c10.5-3.4 21.8 .4 29.4 8.5l71 75.5c6.3 6.7 17 6.7 23.3 0l71-75.5c7.6-8.1 18.9-11.9 29.4-8.5C401 348.6 448 409.4 448 481.3c0 17-13.8 30.7-30.7 30.7H30.7C13.8 512 0 498.2 0 481.3c0-71.9 47-132.7 111.9-153.6zM208 48V64H192c-4.4 0-8 3.6-8 8V88c0 4.4 3.6 8 8 8h16v16c0 4.4 3.6 8 8 8h16c4.4 0 8-3.6 8-8V96h16c4.4 0 8-3.6 8-8V72c0-4.4-3.6-8-8-8H240V48c0-4.4-3.6-8-8-8H216c-4.4 0-8 3.6-8 8z"
+                    />
+                  </svg>
+                </div>
+                <div class="txt">Staff</div>
+              </div>
+
+              <svg
+                class="dropdown-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.875 7.438 12 17.563 22.125 7.438"
+                  stroke="currentColor"
+                  stroke-width="2"
+                ></path>
+              </svg>
+            </div>
+
+            <div class="menu-btn-expended" id="menu-btn-expended-4">
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 640 512"
+                >
+                  <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"
+                  />
+                </svg>
+
+                <div onclick="staffExpendedMenu(1)">Create Staff Profile</div>
+              </div>
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                >
+                  <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M64 144a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM64 464a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm48-208a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z"
+                  />
+                </svg>
+
+                <div onclick="staffExpendedMenu(2)">Staff List</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- accounts -->
+          <div class="button-group" onclick="buttonGroup(5)">
+            <div class="menu-btn">
+              <div class="menu-btn-icon-text">
+                <div>
+                  <svg
+                    class="main-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    viewBox="0 0 512 512"
+                  >
+                    <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                    <path
+                      d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V192c0-35.3-28.7-64-64-64H80c-8.8 0-16-7.2-16-16s7.2-16 16-16H448c17.7 0 32-14.3 32-32s-14.3-32-32-32H64zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"
+                    />
+                  </svg>
+                </div>
+                <div class="txt">Accounts</div>
+              </div>
+
+              <svg
+                class="dropdown-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.875 7.438 12 17.563 22.125 7.438"
+                  stroke="currentColor"
+                  stroke-width="2"
+                ></path>
+              </svg>
+            </div>
+            <div class="menu-btn-expended" id="menu-btn-expended-5">
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 576 512"
+                >
+                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M64 64C28.7 64 0 92.7 0 128V384c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H64zm64 320H64V320c35.3 0 64 28.7 64 64zM64 192V128h64c0 35.3-28.7 64-64 64zM448 384c0-35.3 28.7-64 64-64v64H448zm64-192c-35.3 0-64-28.7-64-64h64v64zM288 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"
+                  />
+                </svg>
+
+                <div onclick="financeExpendedMenu(1)">Income/Expense Entry</div>
+              </div>
+              <div class="menu-btn-expended-list">
+                <svg
+                  class="list-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 384 512"
+                >
+                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M14 2.2C22.5-1.7 32.5-.3 39.6 5.8L80 40.4 120.4 5.8c9-7.7 22.3-7.7 31.2 0L192 40.4 232.4 5.8c9-7.7 22.3-7.7 31.2 0L304 40.4 344.4 5.8c7.1-6.1 17.1-7.5 25.6-3.6s14 12.4 14 21.8V488c0 9.4-5.5 17.9-14 21.8s-18.5 2.5-25.6-3.6L304 471.6l-40.4 34.6c-9 7.7-22.3 7.7-31.2 0L192 471.6l-40.4 34.6c-9 7.7-22.3 7.7-31.2 0L80 471.6 39.6 506.2c-7.1 6.1-17.1 7.5-25.6 3.6S0 497.4 0 488V24C0 14.6 5.5 6.1 14 2.2zM96 144c-8.8 0-16 7.2-16 16s7.2 16 16 16H288c8.8 0 16-7.2 16-16s-7.2-16-16-16H96zM80 352c0 8.8 7.2 16 16 16H288c8.8 0 16-7.2 16-16s-7.2-16-16-16H96c-8.8 0-16 7.2-16 16zM96 240c-8.8 0-16 7.2-16 16s7.2 16 16 16H288c8.8 0 16-7.2 16-16s-7.2-16-16-16H96z"
+                  />
+                </svg>
+
+                <div onclick="financeExpendedMenu(2)">Account Entries</div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- <span>Software Developed by Qonkar Technologies</span> -->
+      </div>
+      <!-- END || side panel -->
+
+      <!-- START || main window -->
+      <div class="main-window">
+        <section class="main-baar">
+          <div class="main-heading" id="main-heading">Overview</div>
+          <div>
+            <input type="checkbox" id="expend-profile-checkbox" />
+            <label for="expend-profile-checkbox">
+              <div class="right-side">
+                <div class="profile-section">
+                  <img
+                    src="{% static 'img/profile/superadmin.jpg' %}"
+                    alt=""
+                    class="profile-logo"
+                    id="profile-logo"
+                  />
+                </div>
+                <div class="profile-text">
+                  <p class="profile-name" id="profile-name">Muhammad Owais</p>
+                  <p class="profile-desigation" id="profile-designation">
+                    Supper Admin
+                  </p>
+                </div>
+                <p class="less-than-down">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1.875 7.438 12 17.563 22.125 7.438"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </p>
+              </div>
+            </label>
+            <div class="profile-expended">
+              <div class="profile-expended-list">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      opacity="0.4"
+                      d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+                      fill="#292D32"
+                    ></path>
+                    <path
+                      d="M12.0002 14.5C6.99015 14.5 2.91016 17.86 2.91016 22C2.91016 22.28 3.13016 22.5 3.41016 22.5H20.5901C20.8701 22.5 21.0901 22.28 21.0901 22C21.0901 17.86 17.0102 14.5 12.0002 14.5Z"
+                      fill="#292D32"
+                    ></path>
+                  </g>
+                </svg>
+                <a href="">Profile</a>
+              </div>
+              <div class="profile-expended-list">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M15 4H18C19.1046 4 20 4.89543 20 6V18C20 19.1046 19.1046 20 18 20H15M8 8L4 12M4 12L8 16M4 12L16 12"
+                      stroke="#000000"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+                <a href="">Log out</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="sub-window">
+          <!-- create new patient -->
+          <div class="wind" id="patient-wind-1">
+            <div class="sub-wind">
+              <form id="addPatientForm" role="form" class="container">
+                {% csrf_token %} {{ form.as_p }}
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="id_patient_name">Patient Name</label>
+                      <input
+                        type="text"
+                        id="id_patient_name"
+                        name="patient_name"
+                        class="form-control"
+                        required
+                      />
                     </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="id_mobile_number">Mobile Number</label>
+                      <input
+                        type="tel"
+                        id="id_mobile_number"
+                        name="mobile_number"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
-            </section>
-
-            <section class="sub-window">
-                <!-- create new patient -->
-                <div class="wind" id="patient-wind-1">
-                    <div class="sub-wind">
-                        <form id="addPatientForm" role="form" class="container">
-                            {% csrf_token %}
-
-                            {{ form.as_p }}
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="id_patient_name">Patient Name</label>
-                                        <input type="text" id="id_patient_name" name="patient_name" class="form-control"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="id_mobile_number">Mobile Number</label>
-                                        <input type="tel" id="id_mobile_number" name="mobile_number"
-                                            class="form-control" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="id_cnic_number">CNIC Number</label>
-                                        <input type="text" id="id_cnic_number" name="cnic_number" class="form-control"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="id_email">Email</label>
-                                        <input type="email" id="id_email" name="email" class="form-control" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="id_gender">Gender</label>
-                                        <select id="id_gender" name="gender" class="form-select" required>
-                                            <option value="">-- Select Gender --</option>
-                                            <option value="Male">Male</option>
-                                            <option value="Female">Female</option>
-                                            <option value="Other">Other</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="id_city">City</label>
-                                        <input type="text" id="id_city" name="city" class="form-control" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="id_age_years">Age (Years)</label>
-                                        <input type="number" id="id_age_years" name="age_years" class="form-control"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="id_age_months">Age (Months)</label>
-                                        <input type="number" id="id_age_months" name="age_months" class="form-control"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="id_age_days">Age (Days)</label>
-                                        <input type="number" id="id_age_days" name="age_days" class="form-control"
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="addPatientAlert" class="mt-3"></div>
-                            <br>
-                            <button type="submit" class="btn btn-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-plus" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 1.5a.5.5 0 0 0-1 0v6H1.5a.5.5 0 0 0 0 1H7v6.5a.5.5 0 0 0 1 0V8h6.5a.5.5 0 0 0 0-1H8V1.5z" />
-                                </svg>
-                                Add Patient
-                            </button>
-                        </form>
-
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="id_cnic_number">CNIC Number</label>
+                      <input
+                        type="text"
+                        id="id_cnic_number"
+                        name="cnic_number"
+                        class="form-control"
+                        required
+                      />
                     </div>
-                </div>
-                <!-- all patient list -->
-                <div class="wind" id="patient-wind-2">
-                    <div class="sub-wind">
-                        <table id="patientsTable" class="table table-hover" style="text-align: center;">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>PATIENT NAME</th>
-                                    <th>MOBILE NUMBER</th>
-                                    <th>CNIC NUMBER</th>
-                                    <th>GENDER</th>
-                                    <th>CITY</th>
-                                    <th>AGE</th>
-                                    <th>PROFILE</th>
-                                    <th>PRINT CARD</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Table rows will be dynamically populated using JavaScript -->
-                            </tbody>
-                        </table>
-
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="id_email">Email</label>
+                      <input
+                        type="email"
+                        id="id_email"
+                        name="email"
+                        class="form-control"
+                        required
+                      />
                     </div>
+                  </div>
                 </div>
 
-                <!-- new LAB -->
-                <div class="wind" id="lab-wind-1">
-                    <form>
-                        <div class="sub-wind">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="patientId">Patient ID</label>
-                                        <input type="text" id="patientId" name="patientId" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="relation" id="selfRadio"
-                                            value="self">
-                                        <label class="form-check-label" for="selfRadio">Self</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="relation" id="relativeRadio"
-                                            value="relative">
-                                        <label class="form-check-label" for="relativeRadio">Relative</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="dateTime">Date Time</label>
-                                        <input type="datetime-local" id="dateTime" name="dateTime" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="patientName">Patient Name</label>
-                                        <input type="text" id="patientName" name="patientName" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="gender">Gender</label>
-                                        <select id="gender" name="gender" class="form-select">
-                                            <option value="">-- Select Gender --</option>
-                                            <option value="Male">Male</option>
-                                            <option value="Female">Female</option>
-                                            <option value="Other">Other</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="ageYears">Age (Years)</label>
-                                                <input type="number" id="ageYears" name="ageYears" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="ageMonths">Age (Months)</label>
-                                                <input type="number" id="ageMonths" name="ageMonths"
-                                                    class="form-control" value="0">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="ageDays">Age (Days)</label>
-                                                <input type="number" id="ageDays" name="ageDays" class="form-control"
-                                                    value="0">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="contact">Contact</label>
-                                        <input type="text" id="contact" name="contact" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="cnic">CNIC</label>
-                                        <input type="text" id="cnic" name="cnic" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="id_gender">Gender</label>
+                      <select
+                        id="id_gender"
+                        name="gender"
+                        class="form-select"
+                        required
+                      >
+                        <option value="">-- Select Gender --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="id_city">City</label>
+                      <input
+                        type="text"
+                        id="id_city"
+                        name="city"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="id_age_years">Age (Years)</label>
+                      <input
+                        type="number"
+                        id="id_age_years"
+                        name="age_years"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="id_age_months">Age (Months)</label>
+                      <input
+                        type="number"
+                        id="id_age_months"
+                        name="age_months"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="id_age_days">Age (Days)</label>
+                      <input
+                        type="number"
+                        id="id_age_days"
+                        name="age_days"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div id="addPatientAlert" class="mt-3"></div>
+                <br />
+                <button type="submit" class="btn btn-primary">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-plus"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 1.5a.5.5 0 0 0-1 0v6H1.5a.5.5 0 0 0 0 1H7v6.5a.5.5 0 0 0 1 0V8h6.5a.5.5 0 0 0 0-1H8V1.5z"
+                    />
+                  </svg>
+                  Add Patient
+                </button>
+              </form>
+            </div>
+          </div>
+          <!-- all patient list -->
+          <div class="wind" id="patient-wind-2">
+            <div class="sub-wind">
+              <table
+                id="patientsTable"
+                class="table table-hover"
+                style="text-align: center"
+              >
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>PATIENT NAME</th>
+                    <th>MOBILE NUMBER</th>
+                    <th>CNIC NUMBER</th>
+                    <th>GENDER</th>
+                    <th>CITY</th>
+                    <th>AGE</th>
+                    <th>PROFILE</th>
+                    <th>PRINT CARD</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Table rows will be dynamically populated using JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- new LAB -->
+          <div class="wind" id="lab-wind-1">
+            <form>
+              <div class="sub-wind">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="patientId">Patient ID</label>
+                      <input
+                        type="text"
+                        id="patientId"
+                        name="patientId"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="relation"
+                        id="selfRadio"
+                        value="self"
+                      />
+                      <label class="form-check-label" for="selfRadio"
+                        >Self</label
+                      >
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="relation"
+                        id="relativeRadio"
+                        value="relative"
+                      />
+                      <label class="form-check-label" for="relativeRadio"
+                        >Relative</label
+                      >
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="dateTime">Date Time</label>
+                      <input
+                        type="datetime-local"
+                        id="dateTime"
+                        name="dateTime"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="patientName">Patient Name</label>
+                      <input
+                        type="text"
+                        id="patientName"
+                        name="patientName"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="gender">Gender</label>
+                      <select id="gender" name="gender" class="form-select">
+                        <option value="">-- Select Gender --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="ageYears">Age (Years)</label>
+                          <input
+                            type="number"
+                            id="ageYears"
+                            name="ageYears"
+                            class="form-control"
+                          />
                         </div>
-                        <div class="sub-wind">
-                            <div class="form-group">
-                                <div id="pannelCaseCheckbox">
-                                    <div class="form-check">
-                                        <input type="checkbox" id="pannelCase" name="pannelCase"
-                                            class="form-check-input">
-                                        <label class="form-check-label" for="pannelCase">Pannel Case</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div id="pannelContent" style="display: none;">
-                                    <div class="form-group">
-                                        <label for="pannelEmp">Pannel EMP</label>
-                                        <input type="text" id="pannelEmp" name="pannelEmp" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="ageMonths">Age (Months)</label>
+                          <input
+                            type="number"
+                            id="ageMonths"
+                            name="ageMonths"
+                            class="form-control"
+                            value="0"
+                          />
                         </div>
-                        <div class="sub-wind">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="referedBy">Refered By</label>
-                                        <select id="referedBy" name="referedBy" class="form-select">
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- <div class="col-sm-4">
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="ageDays">Age (Days)</label>
+                          <input
+                            type="number"
+                            id="ageDays"
+                            name="ageDays"
+                            class="form-control"
+                            value="0"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="contact">Contact</label>
+                      <input
+                        type="text"
+                        id="contact"
+                        name="contact"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="cnic">CNIC</label>
+                      <input
+                        type="text"
+                        id="cnic"
+                        name="cnic"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="sub-wind">
+                <div class="form-group">
+                  <div id="pannelCaseCheckbox">
+                    <div class="form-check">
+                      <input
+                        type="checkbox"
+                        id="pannelCase"
+                        name="pannelCase"
+                        class="form-check-input"
+                      />
+                      <label class="form-check-label" for="pannelCase"
+                        >Pannel Case</label
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div id="pannelContent" style="display: none">
+                    <div class="form-group">
+                      <label for="pannelEmp">Pannel EMP</label>
+                      <input
+                        type="text"
+                        id="pannelEmp"
+                        name="pannelEmp"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="sub-wind">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="referedBy">Refered By</label>
+                      <select
+                        id="referedBy"
+                        name="referedBy"
+                        class="form-select"
+                      ></select>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-4">
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#addDoctorModal">
                                         Add New Doctor
                                     </button>
                                 </div> -->
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="collectionBy">Collection By</label>
-                                        <select id="collectionBy" name="collectionBy" class="form-select">
-                                            <option value="">-- Select Collection By --</option>
-                                            <option value="qazi ahmed more branch">Qazi Ahmed More Branch</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="hospital">Hospital</label>
-                                        <input type="text" id="hospital" name="hospital" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="specialRefer">Special Refer</label>
-                                        <input type="text" id="specialRefer" name="specialRefer" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="phlebotomist">Phlebotomist</label>
-                                        <input type="text" id="phlebotomist" name="phlebotomist" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="testCode">Test Code</label>
-                                        <select id="testCode" name="testCode" class="form-select">
-                                            <option value="">-- Select Test Code --</option>
-                                            <option value="TC001">Test Code 1</option>
-                                            <option value="TC002">Test Code 2</option>
-                                            <option value="TC003">Test Code 3</option>
-                                        </select>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sub-wind">
-                            <div class="row">
-                                <div class="col-md-9">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>TEST NAME</th>
-                                                <th>CATEGORY</th>
-                                                <th>REPORT DAY</th>
-                                                <th>ETA</th>
-                                                <th>RATE</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="totalAmount">Total Amount</label>
-                                        <input type="number" id="totalAmount" name="totalAmount" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="concession">Concession</label>
-                                        <input type="number" id="concession" name="concession" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="amountPaid">Amount Paid</label>
-                                        <input type="number" id="amountPaid" name="amountPaid" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="amountDue">Amount Due</label>
-                                        <input type="number" id="amountDue" name="amountDue" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="pannelAmount">Pannel Amount</label>
-                                        <input type="number" id="pannelAmount" name="pannelAmount" class="form-control">
-                                    </div>
-
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">Save</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- create TEST -->
-                <div class="wind" id="test-wind-1">
-                    <div class="sub-wind">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="selectParameter">Parameter</label>
-                                    <select id="selectParameter" name="selectParameter" class="form-select">
-                                        <!-- Add dynamic options using JavaScript or server-side code -->
-                                        <option value="">-- Select Parameter --</option>
-                                        <option value="__add_new__">Add New</option>
-                                    </select>
-                                    <span id="parameter_span" style="color: red;"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="selectUnit">Unit</label>
-                                    <select id="selectUnit" name="selectUnit" class="form-select">
-                                        <!-- Add dynamic options using JavaScript or server-side code -->
-                                        <option value="">-- Select Unit --</option>
-                                        <option value="__add_new__">Add New</option>
-                                    </select>
-                                    <span id="unit_span" style="color: red;"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <button id="addParameterUnit" class="btn btn-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-plus" viewBox="0 0 16 16">
-                                        <path
-                                            d="M8 1.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V2a.5.5 0 0 1 .5-.5zM2.5 8a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm5 5a.5.5 0 0 1-.5.5H3a.5.5 0 0 1 0-1h4a.5.5 0 0 1 .5.5zm8-5a.5.5 0 0 1-.5.5H9a.5.5 0 0 1 0-1h6a.5.5 0 0 1 .5.5z" />
-                                    </svg>
-                                    Add Parameter/Unit
-                                </button>
-                            </div>
-                        </div><br>
-                        <hr><br>
-                        <h2 class="h2 bold" id="parameter_heading" align="center">Parameter Not Selected....!!</h2><br>
-                        <div class="form-group" id="parameter-type-section">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <label for="parameterType">Select Parameter Type: </label>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="parameterType" id="range"
-                                            value="range">
-                                        <label class="form-check-label" for="range">Range</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="parameterType"
-                                            id="positiveNegative" value="positiveNegative">
-                                        <label class="form-check-label" for="positiveNegative">Positive/Negative</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="parameterType"
-                                            id="detectedNotDetected" value="detectedNotDetected">
-                                        <label class="form-check-label" for="detectedNotDetected">Detected/Not
-                                            Detected</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="parameterType" id="text"
-                                            value="text">
-                                        <label class="form-check-label" for="text">Text</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <button class="btn btn-success" id="makeParameterBtn">Make Parameter</button>
-                                </div>
-
-                                <div id="addParameterAlert" class="mt-3"></div>
-                            </div>
-                        </div>
-
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="collectionBy">Collection By</label>
+                      <select
+                        id="collectionBy"
+                        name="collectionBy"
+                        class="form-select"
+                      >
+                        <option value="">-- Select Collection By --</option>
+                        <option value="qazi ahmed more branch">
+                          Qazi Ahmed More Branch
+                        </option>
+                      </select>
                     </div>
-
-                    <div class="sub-wind" id="parameterNormalValues">
-                        <div class="row">
-                            <!-- Male section -->
-                            <div class="col-md-6">
-                                <h2 align="center">Male</h2>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Normal Value From</th>
-                                            <th>Normal Value To</th>
-                                            <th>Age From</th>
-                                            <th>Age To</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="maleTableBody">
-                                        <tr>
-                                            <td><input type="number" class="form-control" name="maleNormalValueFrom[]"
-                                                    placeholder="Value From">
-                                            </td>
-                                            <td><input type="number" class="form-control" name="maleNormalValueTo[]"
-                                                    placeholder="Value To">
-                                            </td>
-                                            <td><input type="number" class="form-control" name="maleAgeFrom[]"
-                                                    placeholder="Age From"></td>
-                                            <td><input type="number" class="form-control" name="maleAgeTo[]"
-                                                    placeholder="Age To"></td>
-                                            <td><button type="button"
-                                                    class="btn btn-danger btn-remove-row">Remove</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div class="text-end">
-                                    <button type="button" class="btn btn-primary" id="addMaleRowBtn">Add Row</button>
-                                </div>
-                            </div>
-                            <!-- Female Section -->
-                            <div class="col-md-6">
-                                <h2 align="center">Female</h2>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Normal Value From</th>
-                                            <th>Normal Value To</th>
-                                            <th>Age From</th>
-                                            <th>Age To</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="femaleTableBody">
-                                        <tr>
-                                            <td><input type="text" class="form-control" name="female_normal_from[]"
-                                                    placeholder="Value From" />
-                                            </td>
-                                            <td><input type="text" class="form-control" name="female_normal_to[]"
-                                                    placeholder="Value To" />
-                                            </td>
-                                            <td><input type="text" class="form-control" name="female_age_from[]"
-                                                    placeholder="Age From" /></td>
-                                            <td><input type="text" class="form-control" name="female_age_to[]"
-                                                    placeholder="Age To" /></td>
-                                            <td><button type="button"
-                                                    class="btn btn-danger btn-remove-row">Remove</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div class="text-end">
-                                    <button id="addFemaleRowBtn" class="btn btn-primary">Add Row</button>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <!-- Child section -->
-                        <div class="col-md-12">
-                            <h2 align="center">Child</h2>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Normal Value From</th>
-                                        <th>Normal Value To</th>
-                                        <th>Age From</th>
-                                        <th>Age To</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="childTableBody">
-                                    <tr>
-                                        <td><input type="number" class="form-control" name="childNormalValueFrom[]"
-                                                placeholder="Value From">
-                                        </td>
-                                        <td><input type="number" class="form-control" name="childNormalValueTo[]"
-                                                placeholder="Value To"></td>
-                                        <td><input type="number" class="form-control" name="childAgeFrom[]"
-                                                placeholder="Age From"></td>
-                                        <td><input type="number" class="form-control" name="childAgeTo[]"
-                                                placeholder="Age To"></td>
-                                        <td><button type="button"
-                                                class="btn btn-danger btn-remove-row  max-width">Remove</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="text-end">
-                                <button type="button" class="btn btn-primary" id="addChildRowBtn">Add
-                                    Row</button>
-                            </div>
-                        </div>
-
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="hospital">Hospital</label>
+                      <input
+                        type="text"
+                        id="hospital"
+                        name="hospital"
+                        class="form-control"
+                      />
                     </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="specialRefer">Special Refer</label>
+                      <input
+                        type="text"
+                        id="specialRefer"
+                        name="specialRefer"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="phlebotomist">Phlebotomist</label>
+                      <input
+                        type="text"
+                        id="phlebotomist"
+                        name="phlebotomist"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="testCode">Test Code</label>
+                      <select id="testCode" name="testCode" class="form-select">
+                        <option value="">-- Select Test Code --</option>
+                        <option value="TC001">Test Code 1</option>
+                        <option value="TC002">Test Code 2</option>
+                        <option value="TC003">Test Code 3</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
+              </div>
 
-                <!-- All Test Parameters -->
-                <div class="wind" id="test-wind-2">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Parameter Name</th>
-                                <th>Parameter Unit</th>
-                                <th>Parameter Result Type</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="parameterTableBody"></tbody>
+              <div class="sub-wind">
+                <div class="row">
+                  <div class="col-md-9">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>TEST NAME</th>
+                          <th>CATEGORY</th>
+                          <th>REPORT DAY</th>
+                          <th>ETA</th>
+                          <th>RATE</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
                     </table>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="totalAmount">Total Amount</label>
+                      <input
+                        type="number"
+                        id="totalAmount"
+                        name="totalAmount"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="concession">Concession</label>
+                      <input
+                        type="number"
+                        id="concession"
+                        name="concession"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="amountPaid">Amount Paid</label>
+                      <input
+                        type="number"
+                        id="amountPaid"
+                        name="amountPaid"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="amountDue">Amount Due</label>
+                      <input
+                        type="number"
+                        id="amountDue"
+                        name="amountDue"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="pannelAmount">Pannel Amount</label>
+                      <input
+                        type="number"
+                        id="pannelAmount"
+                        name="pannelAmount"
+                        class="form-control"
+                      />
+                    </div>
+
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">
+                        Save
+                      </button>
+                    </div>
+                  </div>
                 </div>
+              </div>
+            </form>
+          </div>
 
-                <!-- create staff -->
-                <div class="wind" id="staff-wind-1">
-                    <div class="sub-wind">
-                        <form id="staffProfileForm">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="staffFullName" class="form-label">Full Name:</label>
-                                    <input type="text" class="form-control" id="staffFullName" name="staffFullName"
-                                        required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="staffFatherName" class="form-label">Father's Name:</label>
-                                    <input type="text" class="form-control" id="staffFatherName" name="staffFatherName"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="staffCast" class="form-label">Cast:</label>
-                                    <input type="text" class="form-control" id="staffCast" name="staffCast" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="staffCNIC" class="form-label">CNIC:</label>
-                                    <input type="text" class="form-control" id="staffCNIC" name="staffCNIC" required>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="staffMobileNumber" class="form-label">Mobile Number:</label>
-                                    <input type="text" class="form-control" id="staffMobileNumber"
-                                        name="staffMobileNumber" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="staffAddress" class="form-label">Address:</label>
-                                    <input type="text" class="form-control" id="staffAddress" name="staffAddress"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="staffUsername" class="form-label">Username:</label>
-                                    <input type="text" class="form-control" id="staffUsername" name="staffUsername"
-                                        required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="staffPassword" class="form-label">Password:</label>
-                                    <input type="password" class="form-control" id="staffPassword" name="staffPassword"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="staffDesignation" class="form-label">Designation:</label>
-                                    <select class="form-select" id="staffDesignation" name="staffDesignation" required>
-                                        <option value="">Select Designation</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="pathologist">Pathologist</option>
-                                        <option value="receptionist">Receptionist</option>
-                                        <option value="clerk">Clerk</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row md-3">
-                                <div id="staffProfileAlert" class="mt-3"></div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <button type="submit" class="btn btn-primary">Create Staff Profile</button>
-                                </div>
-                            </div>
-                        </form>
-
-                    </div>
+          <!-- create TEST -->
+          <div class="wind" id="test-wind-1">
+            <div class="sub-wind">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="selectParameter">Parameter</label>
+                    <select
+                      id="selectParameter"
+                      name="selectParameter"
+                      class="form-select"
+                    >
+                      <!-- Add dynamic options using JavaScript or server-side code -->
+                      <option value="">-- Select Parameter --</option>
+                      <option value="__add_new__">Add New</option>
+                    </select>
+                    <span id="parameter_span" style="color: red"></span>
+                  </div>
                 </div>
-
-                <!-- staff list -->
-                <div class="wind" id="staff-wind-2">
-                    <div class="sub-wind">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Full Name</th>
-                                    <th>Father Name</th>
-                                    <th>Cast</th>
-                                    <th>CNIC</th>
-                                    <th>Mobile Number</th>
-                                    <th>Address</th>
-                                    <th>Username</th>
-                                    <th>Designation</th>
-                                </tr>
-                            </thead>
-                            <tbody id="staffTableBody">
-                                <!-- Staff profile data will be dynamically added here -->
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label for="selectUnit">Unit</label>
+                    <select
+                      id="selectUnit"
+                      name="selectUnit"
+                      class="form-select"
+                    >
+                      <!-- Add dynamic options using JavaScript or server-side code -->
+                      <option value="">-- Select Unit --</option>
+                      <option value="__add_new__">Add New</option>
+                    </select>
+                    <span id="unit_span" style="color: red"></span>
+                  </div>
                 </div>
-
-                <!-- accounts -->
-                <div class="wind" id="finance-wind-1">
-                    <div class="sub-wind">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h2>Income Entry</h2>
-                                <form id="incomeForm">
-                                    <div class="mb-3">
-                                        <label for="incomeAmount" class="form-label">Amount</label>
-                                        <input type="number" class="form-control" id="incomeAmount" name="incomeAmount"
-                                            placeholder="Amount">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="incomeDate" class="form-label">Date</label>
-                                        <input type="date" class="form-control" id="incomeDate" name="incomeDate">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="incomeCategory" class="form-label">Category</label>
-                                        <select class="form-select" id="incomeCategory" name="incomeCategory">
-                                            <option selected disabled>Select Category</option>
-                                            <option value="Bank">Bank</option>
-                                            <option value="Sales">Sales</option>
-                                            <option value="Stationary">Stationary</option>
-                                            <!-- Add more categories as needed -->
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="incomeDescription" class="form-label">Description</label>
-                                        <input type="text" class="form-control" id="incomeDescription"
-                                            name="incomeDescription" placeholder="Description">
-                                    </div>
-
-                                    <div id="addIncomeAlert" class="mt-3"></div>
-
-                                    <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">Add Income</button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h2>Expense Entry</h2>
-                                <form id="expenseForm">
-                                    <div class="mb-3">
-                                        <label for="expenseAmount" class="form-label">Amount</label>
-                                        <input type="number" class="form-control" id="expenseAmount"
-                                            name="expenseAmount" placeholder="Amount">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="expenseDate" class="form-label">Date</label>
-                                        <input type="date" class="form-control" id="expenseDate" name="expenseDate">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="expenseCategory" class="form-label">Category</label>
-                                        <select class="form-select" id="expenseCategory" name="expenseCategory">
-                                            <option selected disabled>Select Category</option>
-                                            <option value="Supplies">Supplies</option>
-                                            <option value="Utilities">Utilities</option>
-                                            <option value="Maintenance">Maintenance</option>
-                                            <option value="Salary">Salary</option>
-                                            <option value="Sales">Sales</option>
-                                            <option value="Rent">Rent</option>
-                                            <option value="Stationary">Stationary</option>
-                                            <!-- Add more categories as needed -->
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="expenseDescription" class="form-label">Description</label>
-                                        <input type="text" class="form-control" id="expenseDescription"
-                                            name="expenseDescription" placeholder="Description">
-                                    </div>
-
-                                    <div id="addExpenseAlert" class="mt-3"></div>
-
-                                    <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">Add Expense</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
+                <div class="col-md-2">
+                  <button id="addParameterUnit" class="btn btn-primary">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-plus"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M8 1.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V2a.5.5 0 0 1 .5-.5zM2.5 8a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm5 5a.5.5 0 0 1-.5.5H3a.5.5 0 0 1 0-1h4a.5.5 0 0 1 .5.5zm8-5a.5.5 0 0 1-.5.5H9a.5.5 0 0 1 0-1h6a.5.5 0 0 1 .5.5z"
+                      />
+                    </svg>
+                    Add Parameter/Unit
+                  </button>
                 </div>
-
-                <!-- account entries -->
-                <div class="wind" id="finance-wind-2">
-                    <div class="sub-wind">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h2 id="entriesHeading">Today's Account Entries</h2>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-group mb-3">
-                                    <select id="filter-option" name="filter-option" class="form-select">
-                                        <option value="today">Today</option>
-                                        <option value="all">All</option>
-                                        <option value="custom">Custom</option>
-                                    </select>
-                                    <input type="date" id="from-date" name="from-date" style="display: none;"
-                                        class="form-control">
-                                    <input type="date" id="to-date" name="to-date" style="display: none;"
-                                        class="form-control">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-secondary custom-radius" type="button"
-                                            id="filterButton">Filter</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <table class="table table-striped" id="accountEntriesTable">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Category</th>
-                                    <th>Description</th>
-                                    <th>DR (+ve)</th>
-                                    <th>CR (-ve)</th>
-                                    <th>BALANCE</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-
+              </div>
+              <br />
+              <hr />
+              <br />
+              <h2 class="h2 bold" id="parameter_heading" align="center">
+                Parameter Not Selected....!!
+              </h2>
+              <br />
+              <div class="form-group" id="parameter-type-section">
+                <div class="row">
+                  <div class="col-md-2">
+                    <label for="parameterType">Select Parameter Type: </label>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="parameterType"
+                        id="range"
+                        value="range"
+                      />
+                      <label class="form-check-label" for="range">Range</label>
                     </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="parameterType"
+                        id="positiveNegative"
+                        value="positiveNegative"
+                      />
+                      <label class="form-check-label" for="positiveNegative"
+                        >Positive/Negative</label
+                      >
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="parameterType"
+                        id="detectedNotDetected"
+                        value="detectedNotDetected"
+                      />
+                      <label class="form-check-label" for="detectedNotDetected"
+                        >Detected/Not Detected</label
+                      >
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="parameterType"
+                        id="text"
+                        value="text"
+                      />
+                      <label class="form-check-label" for="text">Text</label>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <button class="btn btn-success" id="makeParameterBtn">
+                      Make Parameter
+                    </button>
+                  </div>
+
+                  <div id="addParameterAlert" class="mt-3"></div>
                 </div>
-
-            </section>
-        </div>
-        <!-- END || main window -->
-
-        <!-- Modal dialog -->
-        <div class="modal fade" id="addDoctorModal" tabindex="-1" aria-labelledby="addDoctorModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addDoctorModalLabel">Add New Doctor</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="text" id="newDoctorName" class="form-control" placeholder="Enter Doctor Name">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="addDoctorBtn">Add</button>
-                    </div>
-                </div>
+              </div>
             </div>
-        </div>
 
-        <!-- pation not availabe kindly register modal -->
-        <div id="patientNotFoundModal" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Patient ID Not Found</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+            <div class="sub-wind" id="parameterNormalValues">
+              <div class="row">
+                <!-- Male section -->
+                <div class="col-md-6">
+                  <h2 align="center">Male</h2>
+                  <table class="table" id="maleTable">
+                    <thead>
+                      <tr>
+                        <th>Normal Value From</th>
+                        <th>Normal Value To</th>
+                        <th>Age From</th>
+                        <th>Age To</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="maleTableBody">
+                      <tr>
+                        <td>
+                          <input
+                            type="number"
+                            class="form-control"
+                            name="maleNormalValueFrom[]"
+                            placeholder="Value From"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            class="form-control"
+                            name="maleNormalValueTo[]"
+                            placeholder="Value To"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            class="form-control"
+                            name="maleAgeFrom[]"
+                            placeholder="Age From"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            class="form-control"
+                            name="maleAgeTo[]"
+                            placeholder="Age To"
+                          />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn btn-danger btn-remove-row"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="text-end">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      id="addMaleRowBtn"
+                    >
+                      Add Row
+                    </button>
+                  </div>
+                </div>
+                <!-- Female Section -->
+                <div class="col-md-6">
+                  <h2 align="center">Female</h2>
+                  <table class="table" id="femaleTable">
+                    <thead>
+                      <tr>
+                        <th>Normal Value From</th>
+                        <th>Normal Value To</th>
+                        <th>Age From</th>
+                        <th>Age To</th>
+                      </tr>
+                    </thead>
+                    <tbody id="femaleTableBody">
+                      <tr>
+                        <td>
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="female_normal_from[]"
+                            placeholder="Value From"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="female_normal_to[]"
+                            placeholder="Value To"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="female_age_from[]"
+                            placeholder="Age From"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="female_age_to[]"
+                            placeholder="Age To"
+                          />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn btn-danger btn-remove-row"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="text-end">
+                    <button id="addFemaleRowBtn" class="btn btn-primary">
+                      Add Row
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <!-- Child section -->
+              <div class="col-md-12">
+                <h2 align="center">Child</h2>
+                <table class="table" id="childTable">
+                  <thead>
+                    <tr>
+                      <th>Normal Value From</th>
+                      <th>Normal Value To</th>
+                      <th>Age From</th>
+                      <th>Age To</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="childTableBody">
+                    <tr>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control"
+                          name="childNormalValueFrom[]"
+                          placeholder="Value From"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control"
+                          name="childNormalValueTo[]"
+                          placeholder="Value To"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control"
+                          name="childAgeFrom[]"
+                          placeholder="Age From"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control"
+                          name="childAgeTo[]"
+                          placeholder="Age To"
+                        />
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn btn-danger btn-remove-row max-width"
+                        >
+                          Remove
                         </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="registerPatientForm">
-                            <div class="form-group">
-                                <label for="modalPatientName">Patient Name</label>
-                                <input type="text" id="modalPatientName" name="modalPatientName" class="form-control"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label for="modalGender">Gender</label>
-                                <select id="modalGender" name="modalGender" class="form-control" required>
-                                    <option value="">-- Select Gender --</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="modalAgeYears">Age (Years)</label>
-                                <input type="number" id="modalAgeYears" name="modalAgeYears" class="form-control"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label for="modalAgeMonths">Age (Months)</label>
-                                <input type="number" id="modalAgeMonths" name="modalAgeMonths" class="form-control"
-                                    value="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="modalAgeDays">Age (Days)</label>
-                                <input type="number" id="modalAgeDays" name="modalAgeDays" class="form-control"
-                                    value="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="modalContact">Contact</label>
-                                <input type="text" id="modalContact" name="modalContact" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="modalCnic">CNIC</label>
-                                <input type="text" id="modalCnic" name="modalCnic" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="modalEmail">Email</label>
-                                <input type="email" id="modalEmail" name="modalEmail" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="modalCity">City</label>
-                                <input type="text" id="modalCity" name="modalCity" class="form-control" required>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="registerPatientBtn">Register Patient</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-end">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="addChildRowBtn"
+                  >
+                    Add Row
+                  </button>
                 </div>
-            </div>
-        </div>
+              </div>
 
-        <!-- Add Parameter Modal -->
-        <div class="modal fade" id="addParameterModal" tabindex="-1" role="dialog"
-            aria-labelledby="addParameterModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addParameterModalLabel">Add New Parameter</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addParameterForm" role="form">
-                            <div class="form-group">
-                                <label for="newParameter">Parameter Name</label>
-                                <input type="text" class="form-control" id="newParameter" name="newParameter" required>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="saveParameterBtn">Save</button>
-                    </div>
+              <button id="makeRangeParameter" class="btn btn-primary">
+                Make Range Parameter
+              </button>
+              <div id="rangeParameterAlert" class="mt-3"></div>
+            </div>
+          </div>
+
+          <!-- All Test Parameters -->
+          <div class="wind" id="test-wind-2">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Parameter Name</th>
+                  <th>Parameter Unit</th>
+                  <th>Parameter Result Type</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="parameterTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- create staff -->
+          <div class="wind" id="staff-wind-1">
+            <div class="sub-wind">
+              <form id="staffProfileForm">
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="staffFullName" class="form-label"
+                      >Full Name:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="staffFullName"
+                      name="staffFullName"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="staffFatherName" class="form-label"
+                      >Father's Name:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="staffFatherName"
+                      name="staffFatherName"
+                      required
+                    />
+                  </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="modal fade" id="addUnitModal" tabindex="-1" role="dialog" aria-labelledby="addUnitModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addUnitModalLabel">Add New Unit</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addUnitForm">
-                            <div class="form-group">
-                                <label for="newUnit">Unit:</label>
-                                <input type="text" class="form-control" id="newUnit" name="newUnit" required>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="saveUnitBtn">Save Unit</button>
-                    </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="staffCast" class="form-label">Cast:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="staffCast"
+                      name="staffCast"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="staffCNIC" class="form-label">CNIC:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="staffCNIC"
+                      name="staffCNIC"
+                      required
+                    />
+                  </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- edit paramters -->
-        <div class="modal fade" id="editParameterModal" tabindex="-1" role="dialog"
-            aria-labelledby="editParameterModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editParameterModalLabel">Edit Parameter</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editParameterForm">
-                            <div class="form-group">
-                                <label for="editParameterId">ID:</label>
-                                <input type="text" class="form-control" id="editParameterId" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="editParameterName">Parameter Name:</label>
-                                <input type="text" class="form-control" id="editParameterName" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="editParameterUnit">Parameter Unit:</label>
-                                <input type="text" class="form-control" id="editParameterUnit" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="editParameterResultType">Parameter Result Type:</label>
-                                <select class="form-select" id="editParameterResultType">
-                                    <option value="range">Range</option>
-                                    <option value="positiveNegative">Positive/Negative</option>
-                                    <option value="detectedNotDetected">Detected/Not Detected</option>
-                                    <option value="text">Text</option>
-                                </select>
-                            </div>
-                        </form>
-
-                        <div id="parameterEditALert" class="mt-3"></div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="saveEditedParameter()">Save
-                            Changes</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="staffMobileNumber" class="form-label"
+                      >Mobile Number:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="staffMobileNumber"
+                      name="staffMobileNumber"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="staffAddress" class="form-label"
+                      >Address:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="staffAddress"
+                      name="staffAddress"
+                      required
+                    />
+                  </div>
                 </div>
-            </div>
-        </div>
 
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="staffUsername" class="form-label"
+                      >Username:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="staffUsername"
+                      name="staffUsername"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="staffPassword" class="form-label"
+                      >Password:</label
+                    >
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="staffPassword"
+                      name="staffPassword"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="staffDesignation" class="form-label"
+                      >Designation:</label
+                    >
+                    <select
+                      class="form-select"
+                      id="staffDesignation"
+                      name="staffDesignation"
+                      required
+                    >
+                      <option value="">Select Designation</option>
+                      <option value="admin">Admin</option>
+                      <option value="pathologist">Pathologist</option>
+                      <option value="receptionist">Receptionist</option>
+                      <option value="clerk">Clerk</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row md-3">
+                  <div id="staffProfileAlert" class="mt-3"></div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <button type="submit" class="btn btn-primary">
+                      Create Staff Profile
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- staff list -->
+          <div class="wind" id="staff-wind-2">
+            <div class="sub-wind">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Father Name</th>
+                    <th>Cast</th>
+                    <th>CNIC</th>
+                    <th>Mobile Number</th>
+                    <th>Address</th>
+                    <th>Username</th>
+                    <th>Designation</th>
+                  </tr>
+                </thead>
+                <tbody id="staffTableBody">
+                  <!-- Staff profile data will be dynamically added here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- accounts -->
+          <div class="wind" id="finance-wind-1">
+            <div class="sub-wind">
+              <div class="row">
+                <div class="col-md-6">
+                  <h2>Income Entry</h2>
+                  <form id="incomeForm">
+                    <div class="mb-3">
+                      <label for="incomeAmount" class="form-label"
+                        >Amount</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="incomeAmount"
+                        name="incomeAmount"
+                        placeholder="Amount"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="incomeDate" class="form-label">Date</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="incomeDate"
+                        name="incomeDate"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="incomeCategory" class="form-label"
+                        >Category</label
+                      >
+                      <select
+                        class="form-select"
+                        id="incomeCategory"
+                        name="incomeCategory"
+                      >
+                        <option selected disabled>Select Category</option>
+                        <option value="Bank">Bank</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Stationary">Stationary</option>
+                        <!-- Add more categories as needed -->
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="incomeDescription" class="form-label"
+                        >Description</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="incomeDescription"
+                        name="incomeDescription"
+                        placeholder="Description"
+                      />
+                    </div>
+
+                    <div id="addIncomeAlert" class="mt-3"></div>
+
+                    <div class="text-end">
+                      <button type="submit" class="btn btn-primary">
+                        Add Income
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="col-md-6">
+                  <h2>Expense Entry</h2>
+                  <form id="expenseForm">
+                    <div class="mb-3">
+                      <label for="expenseAmount" class="form-label"
+                        >Amount</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="expenseAmount"
+                        name="expenseAmount"
+                        placeholder="Amount"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="expenseDate" class="form-label">Date</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="expenseDate"
+                        name="expenseDate"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="expenseCategory" class="form-label"
+                        >Category</label
+                      >
+                      <select
+                        class="form-select"
+                        id="expenseCategory"
+                        name="expenseCategory"
+                      >
+                        <option selected disabled>Select Category</option>
+                        <option value="Supplies">Supplies</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Rent">Rent</option>
+                        <option value="Stationary">Stationary</option>
+                        <!-- Add more categories as needed -->
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="expenseDescription" class="form-label"
+                        >Description</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="expenseDescription"
+                        name="expenseDescription"
+                        placeholder="Description"
+                      />
+                    </div>
+
+                    <div id="addExpenseAlert" class="mt-3"></div>
+
+                    <div class="text-end">
+                      <button type="submit" class="btn btn-primary">
+                        Add Expense
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- account entries -->
+          <div class="wind" id="finance-wind-2">
+            <div class="sub-wind">
+              <div class="row">
+                <div class="col-md-6">
+                  <h2 id="entriesHeading">Today's Account Entries</h2>
+                </div>
+                <div class="col-md-6">
+                  <div class="input-group mb-3">
+                    <select
+                      id="filter-option"
+                      name="filter-option"
+                      class="form-select"
+                    >
+                      <option value="today">Today</option>
+                      <option value="all">All</option>
+                      <option value="custom">Custom</option>
+                    </select>
+                    <input
+                      type="date"
+                      id="from-date"
+                      name="from-date"
+                      style="display: none"
+                      class="form-control"
+                    />
+                    <input
+                      type="date"
+                      id="to-date"
+                      name="to-date"
+                      style="display: none"
+                      class="form-control"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        class="btn btn-secondary custom-radius"
+                        type="button"
+                        id="filterButton"
+                      >
+                        Filter
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <table class="table table-striped" id="accountEntriesTable">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>DR (+ve)</th>
+                    <th>CR (-ve)</th>
+                    <th>BALANCE</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+      <!-- END || main window -->
+
+      <!-- Modal dialog -->
+      <div
+        class="modal fade"
+        id="addDoctorModal"
+        tabindex="-1"
+        aria-labelledby="addDoctorModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addDoctorModalLabel">
+                Add New Doctor
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <input
+                type="text"
+                id="newDoctorName"
+                class="form-control"
+                placeholder="Enter Doctor Name"
+              />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="button" class="btn btn-primary" id="addDoctorBtn">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- pation not availabe kindly register modal -->
+      <div
+        id="patientNotFoundModal"
+        class="modal fade"
+        tabindex="-1"
+        role="dialog"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Patient ID Not Found</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="registerPatientForm">
+                <div class="form-group">
+                  <label for="modalPatientName">Patient Name</label>
+                  <input
+                    type="text"
+                    id="modalPatientName"
+                    name="modalPatientName"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="modalGender">Gender</label>
+                  <select
+                    id="modalGender"
+                    name="modalGender"
+                    class="form-control"
+                    required
+                  >
+                    <option value="">-- Select Gender --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="modalAgeYears">Age (Years)</label>
+                  <input
+                    type="number"
+                    id="modalAgeYears"
+                    name="modalAgeYears"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="modalAgeMonths">Age (Months)</label>
+                  <input
+                    type="number"
+                    id="modalAgeMonths"
+                    name="modalAgeMonths"
+                    class="form-control"
+                    value="0"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="modalAgeDays">Age (Days)</label>
+                  <input
+                    type="number"
+                    id="modalAgeDays"
+                    name="modalAgeDays"
+                    class="form-control"
+                    value="0"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="modalContact">Contact</label>
+                  <input
+                    type="text"
+                    id="modalContact"
+                    name="modalContact"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="modalCnic">CNIC</label>
+                  <input
+                    type="text"
+                    id="modalCnic"
+                    name="modalCnic"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="modalEmail">Email</label>
+                  <input
+                    type="email"
+                    id="modalEmail"
+                    name="modalEmail"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="modalCity">City</label>
+                  <input
+                    type="text"
+                    id="modalCity"
+                    name="modalCity"
+                    class="form-control"
+                    required
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="registerPatientBtn"
+              >
+                Register Patient
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Parameter Modal -->
+      <div
+        class="modal fade"
+        id="addParameterModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="addParameterModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addParameterModalLabel">
+                Add New Parameter
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="addParameterForm" role="form">
+                <div class="form-group">
+                  <label for="newParameter">Parameter Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="newParameter"
+                    name="newParameter"
+                    required
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="saveParameterBtn"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="addUnitModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="addUnitModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addUnitModalLabel">Add New Unit</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="addUnitForm">
+                <div class="form-group">
+                  <label for="newUnit">Unit:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="newUnit"
+                    name="newUnit"
+                    required
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="button" class="btn btn-primary" id="saveUnitBtn">
+                Save Unit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- edit paramters -->
+      <div
+        class="modal fade"
+        id="editParameterModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="editParameterModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editParameterModalLabel">
+                Edit Parameter
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="editParameterForm">
+                <div class="form-group">
+                  <label for="editParameterId">ID:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editParameterId"
+                    readonly
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="editParameterName">Parameter Name:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editParameterName"
+                    readonly
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="editParameterUnit">Parameter Unit:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editParameterUnit"
+                    readonly
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="editParameterResultType"
+                    >Parameter Result Type:</label
+                  >
+                  <select
+                    class="form-select"
+                    id="editParameterResultType"
+                  ></select>
+                </div>
+              </form>
+
+              <div id="parameterEditALert" class="mt-3"></div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="saveEditedParameter()"
+              >
+                Save Changes
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-        // Get all buttons with the class "button-group"
-        var buttons = document.querySelectorAll('.button-group');
+      // Get all buttons with the class "button-group"
+      var buttons = document.querySelectorAll(".button-group");
 
-        // Attach event listener to each button
-        for (var i = 0; i < buttons.length; i++) {
-            buttons[i].addEventListener('mouseleave', function () {
-                // hide extended button after mouse leave
-                $(".menu-btn-expended").hide();
-            });
-        }
+      // Attach event listener to each button
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("mouseleave", function () {
+          // hide extended button after mouse leave
+          $(".menu-btn-expended").hide();
+        });
+      }
 
-        // global variables 
-        var pannelCaseCheckBox = document.getElementById("pannelCaseCheckbox");
-        var referByChange = document.getElementById("referedBy");
+      // global variables
+      var pannelCaseCheckBox = document.getElementById("pannelCaseCheckbox");
+      var referByChange = document.getElementById("referedBy");
 
-        // url variables
-        var addPatientUrl = "{% url 'add_patient' %}";
-        var getPatients = "{% url 'get_patients_data' %}";
-        var getDoctorsName = "{% url 'get_doctors_names' %}"
-        var addDoctor = "{% url 'add_new_refered_by' %}";
-        var checkPatientId = "{% url 'check_patient_id' %}";
-        var getUnits = "{% url 'get_units' %}";
-        var getParameters = "{% url 'get_parameters' %}";
-        var addParameter = "{% url 'add_parameter' %}";
-        var addUnit = "{% url 'add_unit' %}";
-        var addAccountEntry = "{% url 'add_account_entry' %}";
-        var getAccountEntries = "{% url 'get_account_entries' %}";
-        var getFilterAccountEntries = "{% url 'get_filter_account_entries' %}";
-        var saveStaffProfile = "{% url 'save_staff_profile' %}";
-        var getStaffProfiles = "{% url 'get_staff_profiles' %}";
-        var make_parameter_vrbl = "{% url 'make_parameter' %}";
-        var get_all_parameters = "{% url 'get_all_parameters' %}";
-        var update_parameter = "{% url 'update_parameters' %}";
+      // url variables
+      var addPatientUrl = "{% url 'add_patient' %}";
+      var getPatients = "{% url 'get_patients_data' %}";
+      var getDoctorsName = "{% url 'get_doctors_names' %}";
+      var addDoctor = "{% url 'add_new_refered_by' %}";
+      var checkPatientId = "{% url 'check_patient_id' %}";
+      var getUnits = "{% url 'get_units' %}";
+      var getParameters = "{% url 'get_parameters' %}";
+      var addParameter = "{% url 'add_parameter' %}";
+      var addUnit = "{% url 'add_unit' %}";
+      var addAccountEntry = "{% url 'add_account_entry' %}";
+      var getAccountEntries = "{% url 'get_account_entries' %}";
+      var getFilterAccountEntries = "{% url 'get_filter_account_entries' %}";
+      var saveStaffProfile = "{% url 'save_staff_profile' %}";
+      var getStaffProfiles = "{% url 'get_staff_profiles' %}";
+      var make_parameter_vrbl = "{% url 'make_parameter' %}";
+      var get_all_parameters = "{% url 'get_all_parameters' %}";
+      var update_parameter = "{% url 'update_parameters' %}";
 
-        var b_patientId = 0;
-        var b_patientName = "";
-        var b_gender = "";
-        var b_ageYears = 0;
-        var b_ageMonths = 0;
-        var b_ageDays = 0;
-        var b_contact = 0;
-        var b_cnic = 0;
+      var save_range_parameters = "{% url 'save_range_parameters' %}";
 
+      var b_patientId = 0;
+      var b_patientName = "";
+      var b_gender = "";
+      var b_ageYears = 0;
+      var b_ageMonths = 0;
+      var b_ageDays = 0;
+      var b_contact = 0;
+      var b_cnic = 0;
     </script>
-
-</body>
-<script src="{% static 'script/script.js' %}"></script>
-
+  </body>
+  <script src="{% static 'script/script.js' %}"></script>
 </html>

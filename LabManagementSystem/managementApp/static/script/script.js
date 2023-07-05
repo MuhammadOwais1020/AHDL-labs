@@ -157,6 +157,7 @@ function hideAlert(time) {
     $("#staffProfileAlert").hide();
     $("#addParameterAlert").hide();
     $("#parameterEditALert").hide();
+    $("#rangeParameterAlert").hide();
   }, time); // Hide after time seconds
 }
 // Fetch doctor names using AJAX
@@ -1560,7 +1561,39 @@ function openEditModal(parameter) {
   $("#editParameterId").val(parameter.id);
   $("#editParameterName").val(parameter.parameter_name);
   $("#editParameterUnit").val(parameter.parameter_unit);
-  $("#editParameterResultType").val(parameter.parameter_result_type);
+  // Get the editParameterResultType select element
+  var editParameterResultType = document.getElementById(
+    "editParameterResultType"
+  );
+
+  // Get the parameter_result_type value from the server or any other source
+  var parameterResultType = parameter.parameter_result_type;
+
+  // Clear existing options
+  editParameterResultType.innerHTML = "";
+
+  // Add options based on parameter_result_type
+  if (parameterResultType === "range") {
+    var option = document.createElement("option");
+    option.value = "range";
+    option.text = "Range";
+    editParameterResultType.add(option);
+  } else {
+    var option1 = document.createElement("option");
+    option1.value = "positiveNegative";
+    option1.text = "Positive/Negative";
+    editParameterResultType.add(option1);
+
+    var option2 = document.createElement("option");
+    option2.value = "detectedNotDetected";
+    option2.text = "Detected/Not Detected";
+    editParameterResultType.add(option2);
+
+    var option3 = document.createElement("option");
+    option3.value = "text";
+    option3.text = "Text";
+    editParameterResultType.add(option3);
+  }
 
   // Show the modal
   $("#editParameterModal").modal("show");
@@ -1573,13 +1606,14 @@ function saveEditedParameter() {
   var parameterName = document.getElementById("editParameterName").value;
   var parameterUnit = document.getElementById("editParameterUnit").value;
   var parameterType = document.getElementById("editParameterResultType").value;
+  console.log(parameterType);
 
   // Create the data object
-
   var url = update_parameter;
+
   // Make the AJAX request
   $.ajax({
-    url: url, // Replace with the actual URL to update the parameter
+    url: url,
     type: "POST",
     data: {
       id: parameterId,
@@ -1588,6 +1622,7 @@ function saveEditedParameter() {
       type: parameterType,
     },
     success: function (response) {
+      loadAllParameters();
       $("#parameterEditALert").show();
       $("#parameterEditALert").html(
         showAlert(response.status, response.message)
@@ -1596,3 +1631,159 @@ function saveEditedParameter() {
     },
   });
 }
+
+function saveRangeParameters() {
+  console.log("inside save rnage paramater");
+  // Get the selected parameter and unit
+  var selectedParameter = document.getElementById("selectParameter").value;
+  var selectedUnit = document.getElementById("selectUnit").value;
+
+  // Get the values from the Child table
+  var childTable = document.getElementById("childTable");
+  var childRows = childTable.getElementsByTagName("tr");
+  var childParameters = [];
+
+  for (var i = 1; i < childRows.length; i++) {
+    var cells = childRows[i].getElementsByTagName("td");
+    var normalValueFrom = cells[0].getElementsByTagName("input")[0].value;
+    var normalValueTo = cells[1].getElementsByTagName("input")[0].value;
+    var ageFrom = cells[2].getElementsByTagName("input")[0].value;
+    var ageTo = cells[3].getElementsByTagName("input")[0].value;
+
+    var childParameter = {
+      gender: "Child",
+      normalValueFrom: normalValueFrom,
+      normalValueTo: normalValueTo,
+      ageFrom: ageFrom,
+      ageTo: ageTo,
+    };
+    console.log("child: " + childParameter);
+    childParameters.push(childParameter);
+  }
+
+  // Get the values from the Female table
+  var femaleTable = document.getElementById("femaleTable");
+  var femaleRows = femaleTable.getElementsByTagName("tr");
+  var femaleParameters = [];
+
+  for (var j = 1; j < femaleRows.length; j++) {
+    var cells = femaleRows[j].getElementsByTagName("td");
+    var normalValueFrom = cells[0].getElementsByTagName("input")[0].value;
+    var normalValueTo = cells[1].getElementsByTagName("input")[0].value;
+    var ageFrom = cells[2].getElementsByTagName("input")[0].value;
+    var ageTo = cells[3].getElementsByTagName("input")[0].value;
+
+    var femaleParameter = {
+      gender: "Female",
+      normalValueFrom: normalValueFrom,
+      normalValueTo: normalValueTo,
+      ageFrom: ageFrom,
+      ageTo: ageTo,
+    };
+    console.log("Female: " + femaleParameter);
+    femaleParameters.push(femaleParameter);
+  }
+
+  // Get the values from the Male table
+  var maleTable = document.getElementById("maleTable");
+  var maleRows = maleTable.getElementsByTagName("tr");
+  var maleParameters = [];
+
+  for (var k = 1; k < maleRows.length; k++) {
+    var cells = maleRows[k].getElementsByTagName("td");
+    var normalValueFrom = cells[0].getElementsByTagName("input")[0].value;
+    var normalValueTo = cells[1].getElementsByTagName("input")[0].value;
+    var ageFrom = cells[2].getElementsByTagName("input")[0].value;
+    var ageTo = cells[3].getElementsByTagName("input")[0].value;
+
+    var maleParameter = {
+      gender: "Male",
+      normalValueFrom: normalValueFrom,
+      normalValueTo: normalValueTo,
+      ageFrom: ageFrom,
+      ageTo: ageTo,
+    };
+    console.log("male: " + maleParameter);
+    maleParameters.push(maleParameter);
+  }
+
+  // Prepare the data to be sent via AJAX
+  var requestData = {
+    parameter: selectedParameter,
+    unit: selectedUnit,
+    childParameters: childParameters,
+    femaleParameters: femaleParameters,
+    maleParameters: maleParameters,
+  };
+
+  var url = save_range_parameters;
+
+  // Send the data to the Python file using AJAX
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: requestData,
+    success: function (response) {
+      console.log(response.status);
+      console.log(response.message);
+
+      $("#rangeParameterAlert").show();
+      $("#rangeParameterAlert").html(
+        showAlert(response.status, response.message)
+      );
+      hideAlert(3000);
+    },
+    error: function (xhr, status, error) {
+      $("#rangeParameterAlert").show();
+      $("#rangeParameterAlert").html(
+        showAlert(response.status, response.message)
+      );
+      hideAlert(3000);
+    },
+  });
+}
+
+$("#makeRangeParameter").click(function () {
+  var allTables = [$("#childTable"), $("#femaleTable"), $("#maleTable")];
+  var hasValues = false;
+
+  // Iterate over each table
+  for (var i = 0; i < allTables.length; i++) {
+    var table = allTables[i];
+    var tableRows = table.find("tbody tr");
+    var allRowsHaveValues = true;
+
+    // Check if each row has values in each column
+    for (var j = 0; j < tableRows.length; j++) {
+      var row = tableRows[j];
+      var inputs = $(row).find("input");
+
+      // Check if any input field is empty
+      for (var k = 0; k < inputs.length; k++) {
+        if ($(inputs[k]).val() === "") {
+          allRowsHaveValues = false;
+          break;
+        }
+      }
+
+      // Break the loop if any row doesn't have values
+      if (!allRowsHaveValues) {
+        break;
+      }
+    }
+
+    // If at least one row has values, set hasValues to true
+    if (tableRows.length > 0 && allRowsHaveValues) {
+      hasValues = true;
+      break;
+    }
+  }
+
+  // Call saveRangeParameters() if at least one table has values
+  if (hasValues) {
+    saveRangeParameters();
+  } else {
+    // Display a message or perform any other action if no table has values
+    alert("Please enter values in at least one row of any table.");
+  }
+});
