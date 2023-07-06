@@ -20,7 +20,6 @@ from .models import Parameter, RangeParameter
 
 # admin index page
 
-
 def index(request):
     return render(request, 'index.html')
 
@@ -460,13 +459,13 @@ def save_range_parameters(request):
         # Check if the parameter already exists
         parameter = Parameter.objects.filter(parameter_name=parameter_name).first()
 
-        if parameter:
-            # Return a JSON response with a warning message
-            response_data = {
-                'status': 'warning',
-                'message': 'Parameter already exists.'
-            }
-            return JsonResponse(response_data)
+        # if parameter:
+        #     # Return a JSON response with a warning message
+        #     response_data = {
+        #         'status': 'warning',
+        #         'message': 'Parameter already exists.'
+        #     }
+        #     return JsonResponse(response_data)
 
         # Save the parameter and unit in the Parameter model
         parameter = Parameter.objects.create(
@@ -478,68 +477,101 @@ def save_range_parameters(request):
         # Get the last inserted parameter ID
         parameter_id = parameter.id
 
-        # Get the child parameters from the AJAX request
-        child_parameters = request.POST.getlist('childParameters[]')
+        child_parameters = request.POST.get('childParameters')
 
-        # Save the child parameters in the RangeParameter model
-        for child_parameter in child_parameters:
-            print('child')
-            gender = child_parameter['gender']
-            normal_value_from = child_parameter['normalValueFrom']
-            normal_value_to = child_parameter['normalValueTo']
-            age_from = child_parameter['ageFrom']
-            age_to = child_parameter['ageTo']
+        # Convert the JSON string to a Python list
+        child_parameters = json.loads(child_parameters)
+        
+        print(child_parameters)
+        print(type(child_parameters))
+         # Check if the child_parameters list is not empty
+        if child_parameters:
+            # Save the child parameters in the RangeParameter model
+            for child_parameter in child_parameters:
+                print('child')
+                gender = child_parameter['gender']
+                normal_value_from = child_parameter['normalValueFrom']
+                normal_value_to = child_parameter['normalValueTo']
+                age_from = child_parameter['ageFrom']
+                age_to = child_parameter['ageTo']
+                
+            if normal_value_from and normal_value_to and age_from and age_to:
+                RangeParameter.objects.create(
+                    parameter_id=parameter_id,
+                    gender=gender,
+                    normal_value_from=normal_value_from,
+                    normal_value_to=normal_value_to,
+                    age_from=age_from,
+                    age_to=age_to
+                )
+            else:
+                print("Some values are missing. Child Record not saved.")
+        
 
-            RangeParameter.objects.create(
-                parameter_id=parameter_id,
-                gender=gender,
-                normal_value_from=normal_value_from,
-                normal_value_to=normal_value_to,
-                age_from=age_from,
-                age_to=age_to
-            )
+        print('1')
 
-        # Get the female parameters from the AJAX request
-        female_parameters = request.POST.getlist('femaleParameters[]')
 
-        # Save the female parameters in the RangeParameter model
-        for female_parameter in female_parameters:
-            print('female')
-            gender = female_parameter['gender']
-            normal_value_from = female_parameter['normalValueFrom']
-            normal_value_to = female_parameter['normalValueTo']
-            age_from = female_parameter['ageFrom']
-            age_to = female_parameter['ageTo']
+        female_parameters = request.POST.get('femaleParameters')
 
-            RangeParameter.objects.create(
-                parameter_id=parameter_id,
-                gender=gender,
-                normal_value_from=normal_value_from,
-                normal_value_to=normal_value_to,
-                age_from=age_from,
-                age_to=age_to
-            )
+        # Convert the JSON string to a Python list
+        female_parameters = json.loads(female_parameters)
+        print(female_parameters)
+        print(type(female_parameters))
+        print('2')
+        # Check if the female_parameters list is not empty
+        if female_parameters:
+            print('3')
+            # Save the female parameters in the RangeParameter model
+            for female_parameter in female_parameters:
+                print('female')
+                gender = female_parameter['gender']
+                normal_value_from = female_parameter['normalValueFrom']
+                normal_value_to = female_parameter['normalValueTo']
+                age_from = female_parameter['ageFrom']
+                age_to = female_parameter['ageTo']
 
-        # Get the male parameters from the AJAX request
-        male_parameters = request.POST.getlist('maleParameters[]')
+                if normal_value_from and normal_value_to and age_from and age_to:
+                    RangeParameter.objects.create(
+                        parameter_id=parameter_id,
+                        gender=gender,
+                        normal_value_from=normal_value_from,
+                        normal_value_to=normal_value_to,
+                        age_from=age_from,
+                        age_to=age_to
+                    )
+                else:
+                    print("Some values are missing. Female Record not saved.")
 
-        # Save the male parameters in the RangeParameter model
-        for male_parameter in male_parameters:
-            print('male')
-            gender = male_parameter['gender']
-            normal_value_from = male_parameter['normalValueFrom']
-            normal_value_to = male_parameter['normalValueTo']
-            age_from = male_parameter['ageFrom']
-            age_to = male_parameter['ageTo']
+        male_parameters = request.POST.get('maleParameters')
 
-            RangeParameter.objects.create(
-                parameter_id=parameter_id,
-                gender=gender,
-                normal_value_from=normal_value_from,
-                normal_value_to=normal_value_to,
-                age_from=age_from,
-                age_to=age_to
-            )
+        # Convert the JSON string to a Python list
+        male_parameters = json.loads(male_parameters)
+
+        print(male_parameters)
+        print(type(male_parameters))
+
+         # Check if the male_parameters list is not empty
+        if male_parameters:
+            # Save the male parameters in the RangeParameter model
+            for male_parameter in male_parameters:
+                print('male')
+                gender = male_parameter['gender']
+                normal_value_from = male_parameter['normalValueFrom']
+                normal_value_to = male_parameter['normalValueTo']
+                age_from = male_parameter['ageFrom']
+                age_to = male_parameter['ageTo']
+
+                if normal_value_from and normal_value_to and age_from and age_to:
+                    RangeParameter.objects.create(
+                        parameter_id=parameter_id,
+                        gender=gender,
+                        normal_value_from=normal_value_from,
+                        normal_value_to=normal_value_to,
+                        age_from=age_from,
+                        age_to=age_to
+                    )
+                else:
+                    print("Some values are missing. Male Record not saved.")
 
         # Return a JSON response with success message
         response_data = {
@@ -555,3 +587,30 @@ def save_range_parameters(request):
             'message': 'Failed to save range parameters.'
         }
         return JsonResponse(response_data, status=500)
+
+
+@csrf_exempt
+def get_range_parameters_by_parameter(request):
+    print('inside get range parameter fucntion')
+    # Get the parameter ID from the request
+    parameter_id = request.GET.get('parameterId')
+
+    # Retrieve the range parameters for the given parameter ID
+    parameters = RangeParameter.objects.filter(parameter=parameter_id)
+
+    # Serialize the parameter data
+    parameter_data = []
+    for parameter in parameters:
+        print('get results')
+        parameter_data.append({
+            'id': parameter.id,
+            'parameter_id': parameter.parameter_id,
+            'gender': parameter.gender,
+            'normal_value_from': parameter.normal_value_from,
+            'normal_value_to': parameter.normal_value_to,
+            'age_from': parameter.age_from,
+            'age_to': parameter.age_to
+        })
+
+    # Return the serialized parameter data as JSON response
+    return JsonResponse(parameter_data, safe=False)

@@ -40,5 +40,6 @@ urlpatterns = [
     path('make_parameter', ma.make_parameter, name="make_parameter"),
     path('get_all_parameters', ma.get_all_parameters, name="get_all_parameters"),
     path('update_parameters/', ma.update_parameters, name="update_parameters"),
-    path('save_range_parameters', ma.save_range_parameters, name="save_range_parameters")
+    path('save_range_parameters', ma.save_range_parameters, name="save_range_parameters"),
+    path('get_range_parameters_by_parameter', ma.get_range_parameters_by_parameter, name="get_range_parameters_by_parameter")
 ]

@@ -1578,7 +1578,10 @@ function openEditModal(parameter) {
     option.value = "range";
     option.text = "Range";
     editParameterResultType.add(option);
+    $("#rangeParameterDiv").show();
+    fetchRangeParameters(parameter.id);
   } else {
+    $("#rangeParameterDiv").hide();
     var option1 = document.createElement("option");
     option1.value = "positiveNegative";
     option1.text = "Positive/Negative";
@@ -1658,6 +1661,10 @@ function saveRangeParameters() {
       ageTo: ageTo,
     };
     console.log("child: " + childParameter);
+    console.log(normalValueFrom);
+    console.log(normalValueTo);
+    console.log(ageFrom);
+    console.log(ageTo);
     childParameters.push(childParameter);
   }
 
@@ -1681,6 +1688,10 @@ function saveRangeParameters() {
       ageTo: ageTo,
     };
     console.log("Female: " + femaleParameter);
+    console.log(normalValueFrom);
+    console.log(normalValueTo);
+    console.log(ageFrom);
+    console.log(ageTo);
     femaleParameters.push(femaleParameter);
   }
 
@@ -1704,16 +1715,21 @@ function saveRangeParameters() {
       ageTo: ageTo,
     };
     console.log("male: " + maleParameter);
+    console.log(normalValueFrom);
+    console.log(normalValueTo);
+    console.log(ageFrom);
+    console.log(ageTo);
     maleParameters.push(maleParameter);
   }
+  console.log("make parameter: " + maleParameters);
 
   // Prepare the data to be sent via AJAX
   var requestData = {
     parameter: selectedParameter,
     unit: selectedUnit,
-    childParameters: childParameters,
-    femaleParameters: femaleParameters,
-    maleParameters: maleParameters,
+    childParameters: JSON.stringify(childParameters),
+    femaleParameters: JSON.stringify(femaleParameters),
+    maleParameters: JSON.stringify(maleParameters),
   };
 
   var url = save_range_parameters;
@@ -1726,7 +1742,7 @@ function saveRangeParameters() {
     success: function (response) {
       console.log(response.status);
       console.log(response.message);
-
+      resetTableEntries();
       $("#rangeParameterAlert").show();
       $("#rangeParameterAlert").html(
         showAlert(response.status, response.message)
@@ -1736,7 +1752,10 @@ function saveRangeParameters() {
     error: function (xhr, status, error) {
       $("#rangeParameterAlert").show();
       $("#rangeParameterAlert").html(
-        showAlert(response.status, response.message)
+        showAlert(
+          "error",
+          "An error occurred while saving the range parameters."
+        )
       );
       hideAlert(3000);
     },
@@ -1787,3 +1806,66 @@ $("#makeRangeParameter").click(function () {
     alert("Please enter values in at least one row of any table.");
   }
 });
+
+function resetTableEntries() {
+  var tables = ["childTableBody", "femaleTableBody", "maleTableBody"];
+
+  for (var i = 0; i < tables.length; i++) {
+    var tableBody = document.getElementById(tables[i]);
+    var rows = tableBody.getElementsByTagName("tr");
+
+    for (var j = 0; j < rows.length; j++) {
+      var cells = rows[j].getElementsByTagName("td");
+
+      for (var k = 0; k < cells.length - 1; k++) {
+        // Exclude the last cell
+        var inputs = cells[k].getElementsByTagName("input");
+
+        for (var l = 0; l < inputs.length; l++) {
+          inputs[l].value = "";
+        }
+      }
+    }
+  }
+}
+
+function fetchRangeParameters(parameterId) {
+  console.log("fucntion runs");
+  var url = get_range_parameters_by_parameter;
+
+  $.ajax({
+    url: url,
+    type: "GET",
+    data: {
+      parameterId: parameterId,
+    },
+    success: function (response) {
+      console.log("inside success");
+      // Clear the existing table data
+      $("#rangeParameterResultTable tbody").empty();
+
+      // Populate the table with the received data
+      for (var i = 0; i < response.length; i++) {
+        var parameter = response[i];
+        console.log(parameter);
+        // Create a new row
+        var newRow = $("<tr>");
+
+        // Add the data to the row
+        newRow.append($("<td>").text(parameter.gender));
+        newRow.append($("<td>").text(parameter.normal_value_from));
+        newRow.append($("<td>").text(parameter.normal_value_to));
+        newRow.append($("<td>").text(parameter.age_from));
+        newRow.append($("<td>").text(parameter.age_to));
+        console.log(newRow);
+        // Add the row to the table
+        $("#rangeParameterResultTable tbody").append(newRow);
+      }
+    },
+    error: function (xhr, status, error) {
+      console.log("inside error");
+      // Handle the error
+      console.error(error);
+    },
+  });
+}
