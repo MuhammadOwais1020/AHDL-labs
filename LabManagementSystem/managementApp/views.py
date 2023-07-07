@@ -593,7 +593,7 @@ def save_range_parameters(request):
 def get_range_parameters_by_parameter(request):
     print('inside get range parameter fucntion')
     # Get the parameter ID from the request
-    parameter_id = request.GET.get('parameterId')
+    parameter_id = request.POST.get('parameterId')
 
     # Retrieve the range parameters for the given parameter ID
     parameters = RangeParameter.objects.filter(parameter=parameter_id)
@@ -612,5 +612,60 @@ def get_range_parameters_by_parameter(request):
             'age_to': parameter.age_to
         })
 
+    print(parameter_data)
     # Return the serialized parameter data as JSON response
     return JsonResponse(parameter_data, safe=False)
+
+
+
+@csrf_exempt
+def update_range_parameters(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        parameter_id = data['parameterId']
+        range_parameters = data['rangeParameters']
+        print(f"ramge parameter: {range_parameters}")
+        try:
+            existing_parameters = RangeParameter.objects.filter(parameter=parameter_id)
+            if existing_parameters:
+                existing_parameters.delete()
+
+            for range_parameter in range_parameters:
+                # print('inside for loop')
+                # print(range_parameter)
+                gender = range_parameter['gender']
+                normal_value_from = range_parameter['normalValueFrom']
+                normal_value_to = range_parameter['normalValueTo']
+                age_from = range_parameter['ageFrom']
+                age_to = range_parameter['ageTo']
+                print(f"gender :{gender}")
+                print(f"normal value :{normal_value_from}")
+
+                RangeParameter.objects.create(
+                    parameter_id=parameter_id,
+                    gender=gender,
+                    normal_value_from=normal_value_from,
+                    normal_value_to=normal_value_to,
+                    age_from=age_from,
+                    age_to=age_to
+                )
+
+            response_data = {
+                'status': 'success',
+                'message': 'Range parameters saved successfully!'
+            }
+            return JsonResponse(response_data)
+
+        except Exception as e:
+            response_data = {
+                'status': 'error',
+                'message': 'Error occurred while saving range parameters.'
+            }
+            return JsonResponse(response_data, status=500)
+
+    else:
+        response_data = {
+            'status': 'error',
+            'message': 'Invalid request method.'
+        }
+        return JsonResponse(response_data, status=400)

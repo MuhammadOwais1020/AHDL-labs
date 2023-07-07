@@ -237,12 +237,10 @@ function buttonGroup(n) {
     $("#menu-btn-expended-" + n).show();
     $("#menu-btn-expended-" + n + " .dropdown-svg").css("rotate", "90deg");
     buttonGroupExpended = true;
-    console.log("inside if");
   } else {
     $(".menu-btn-expended").hide();
     $("#menu-btn-expended-" + n + " .dropdown-svg").css("rotate", "-90deg");
     buttonGroupExpended = false;
-    console.log("inside else");
   }
 }
 
@@ -271,7 +269,6 @@ function labExpendedMenu(n) {
   if (n == 1) {
     $("#main-heading").html("New Lab");
     getDoctors();
-    console.log("expended function called");
   } else if (n == 2) {
     $("#main-heading").html("Lab History");
   }
@@ -912,11 +909,35 @@ $(document).on("click", ".btn-remove-row", function () {
   // Remove the parent row
   $(this).closest("tr").remove();
 
-  // If no rows left, add an empty row
-  if (tableBody.children().length === 0) {
-    addEmptyRow(tableBody);
-  }
+  // // If no rows left, add an empty row
+  // if (tableBody.children().length === 0) {
+  //   addEmptyRow(tableBody);
+  // }
 });
+
+// // Function to add an empty row to the table body
+// // Function to add an empty row to the table body
+// function addEmptyRow(tableBody) {
+//   var row = `
+//     <tr>
+//       <td>
+//         <select name="gender[]">
+//           <option value="Male">Male</option>
+//           <option value="Female">Female</option>
+//           <option value="Child">Child</option>
+//         </select>
+//       </td>
+//       <td><input type="text" name="normalValueFrom[]" value=""></td>
+//       <td><input type="text" name="normalValueTo[]" value=""></td>
+//       <td><input type="text" name="ageFrom[]" value=""></td>
+//       <td><input type="text" name="ageTo[]" value=""></td>
+//       <td>
+//         <button type="button" class="btn btn-danger btn-remove-row">Remove</button>
+//       </td>
+//     </tr>
+//   `;
+//   tableBody.append(row);
+// }
 
 // Function to validate the income entry form
 function validateIncomeForm() {
@@ -1611,28 +1632,99 @@ function saveEditedParameter() {
   var parameterType = document.getElementById("editParameterResultType").value;
   console.log(parameterType);
 
-  // Create the data object
-  var url = update_parameter;
+  if (parameterType === "range") {
+    console.log("range parameter selected");
 
-  // Make the AJAX request
-  $.ajax({
-    url: url,
-    type: "POST",
-    data: {
-      id: parameterId,
-      name: parameterName,
-      unit: parameterUnit,
-      type: parameterType,
-    },
-    success: function (response) {
-      loadAllParameters();
-      $("#parameterEditALert").show();
-      $("#parameterEditALert").html(
-        showAlert(response.status, response.message)
-      );
-      hideAlert(3000);
-    },
-  });
+    // Get the values from the table
+    var table = document.getElementById("rangeParameterResultTable");
+    var rows = table.getElementsByTagName("tr");
+    var rangeParameters = [];
+
+    // Iterate through the table rows (skip the header row)
+    for (var i = 1; i < rows.length; i++) {
+      var cells = rows[i].getElementsByTagName("td");
+
+      // Get the values from the cells
+      var genderSelect = cells[0].querySelector("select");
+      var gender = genderSelect.value;
+      var normalValueFrom = cells[1].querySelector("input").value;
+      var normalValueTo = cells[2].querySelector("input").value;
+      var ageFrom = cells[3].querySelector("input").value;
+      var ageTo = cells[4].querySelector("input").value;
+      console.log("gender: " + gender);
+      console.log("valuefrom: " + normalValueFrom);
+      console.log("value to: " + normalValueTo);
+      console.log("age from: " + ageFrom);
+      console.log("age to: " + ageTo);
+      // Check if all fields are filled
+      if (gender && normalValueFrom && normalValueTo && ageFrom && ageTo) {
+        // Create an object with the values
+        var rangeParameter = {
+          gender: gender,
+          normalValueFrom: normalValueFrom,
+          normalValueTo: normalValueTo,
+          ageFrom: ageFrom,
+          ageTo: ageTo,
+        };
+
+        // Add the range parameter to the array
+        rangeParameters.push(rangeParameter);
+      }
+    }
+
+    // Prepare the data to be sent via AJAX
+    var requestData = {
+      parameterId: parameterId,
+      rangeParameters: rangeParameters,
+    };
+
+    var url = update_range_parameters;
+
+    // Send the data to the Python file using AJAX
+    $.ajax({
+      url: url,
+      type: "POST",
+      data: JSON.stringify(requestData), // Convert the requestData to JSON string
+      contentType: "application/json", // Set the content type to JSON
+      success: function (response) {
+        loadAllParameters();
+        $("#parameterEditALert").show();
+        $("#parameterEditALert").html(
+          showAlert(response.status, response.message)
+        );
+        hideAlert(3000);
+      },
+      error: function (xhr, status, error) {
+        console.error("Error:", error);
+
+        // Show alert or perform any other action
+      },
+    });
+  } else {
+    console.log("else selected of parameter");
+    // Create the data object
+    var url = update_parameter;
+
+    // Make the AJAX request
+    $.ajax({
+      url: url,
+      type: "POST",
+      data: {
+        id: parameterId,
+        name: parameterName,
+        unit: parameterUnit,
+        type: parameterType,
+      },
+      success: function (response) {
+        loadAllParameters();
+        $("#parameterEditALert").show();
+        $("#parameterEditALert").html(
+          showAlert(response.status, response.message)
+        );
+        hideAlert(3000);
+      },
+    });
+  }
 }
 
 function saveRangeParameters() {
@@ -1830,42 +1922,211 @@ function resetTableEntries() {
 }
 
 function fetchRangeParameters(parameterId) {
-  console.log("fucntion runs");
+  console.log("fetchRangeParameters function runs");
   var url = get_range_parameters_by_parameter;
+  console.log("Parameter ID: " + parameterId);
+  var tableBody = document
+    .getElementById("rangeParameterResultTable")
+    .getElementsByTagName("tbody")[0];
 
+  // Clear existing table rows
+  tableBody.innerHTML = "";
+
+  // Send request to Python function to get range parameters
   $.ajax({
     url: url,
-    type: "GET",
-    data: {
-      parameterId: parameterId,
-    },
+    type: "POST",
+    data: { parameterId: parameterId },
     success: function (response) {
-      console.log("inside success");
-      // Clear the existing table data
-      $("#rangeParameterResultTable tbody").empty();
+      console.log(response);
+      // Loop through the range parameters and create table rows
+      response.forEach(function (parameter) {
+        var row = document.createElement("tr");
 
-      // Populate the table with the received data
-      for (var i = 0; i < response.length; i++) {
-        var parameter = response[i];
-        console.log(parameter);
-        // Create a new row
-        var newRow = $("<tr>");
+        // Gender dropdown
+        var genderCell = document.createElement("td");
+        var genderSelect = document.createElement("select");
+        genderSelect.name = "gender";
+        genderSelect.classList.add("form-select"); // Add the form-select class
+        var genderOptions = ["Male", "Female", "Child"];
+        genderOptions.forEach(function (option) {
+          var genderOption = document.createElement("option");
+          genderOption.value = option;
+          genderOption.text = option;
+          if (option === parameter.gender) {
+            genderOption.selected = true; // Select the option if it matches the parameter's gender value
+          }
+          genderSelect.appendChild(genderOption);
+        });
 
-        // Add the data to the row
-        newRow.append($("<td>").text(parameter.gender));
-        newRow.append($("<td>").text(parameter.normal_value_from));
-        newRow.append($("<td>").text(parameter.normal_value_to));
-        newRow.append($("<td>").text(parameter.age_from));
-        newRow.append($("<td>").text(parameter.age_to));
-        console.log(newRow);
-        // Add the row to the table
-        $("#rangeParameterResultTable tbody").append(newRow);
-      }
+        genderCell.appendChild(genderSelect);
+        row.appendChild(genderCell);
+
+        // Normal Value From input
+        var normalValueFromCell = document.createElement("td");
+        var normalValueFromInput = document.createElement("input");
+        normalValueFromInput.type = "text";
+        normalValueFromInput.name = "normalValueFrom[]";
+        normalValueFromInput.value = parameter.normal_value_from;
+        normalValueFromInput.classList.add("form-control"); // Add the form-control class
+        normalValueFromCell.appendChild(normalValueFromInput);
+        row.appendChild(normalValueFromCell);
+
+        // Normal Value To input
+        var normalValueToCell = document.createElement("td");
+        var normalValueToInput = document.createElement("input");
+        normalValueToInput.type = "text";
+        normalValueToInput.name = "normalValueTo[]";
+        normalValueToInput.value = parameter.normal_value_to;
+        normalValueToInput.classList.add("form-control"); // Add the form-control class
+        normalValueToCell.appendChild(normalValueToInput);
+        row.appendChild(normalValueToCell);
+
+        // Age From input
+        var ageFromCell = document.createElement("td");
+        var ageFromInput = document.createElement("input");
+        ageFromInput.type = "text";
+        ageFromInput.name = "ageFrom[]";
+        ageFromInput.value = parameter.age_from;
+        ageFromInput.classList.add("form-control"); // Add the form-control class
+        ageFromCell.appendChild(ageFromInput);
+        row.appendChild(ageFromCell);
+
+        // Age To input
+        var ageToCell = document.createElement("td");
+        var ageToInput = document.createElement("input");
+        ageToInput.type = "text";
+        ageToInput.name = "ageTo[]";
+        ageToInput.value = parameter.age_to;
+        ageToInput.classList.add("form-control"); // Add the form-control class
+        ageToCell.appendChild(ageToInput);
+        row.appendChild(ageToCell);
+
+        // Remove button
+        var removeCell = document.createElement("td");
+        var removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.className = "btn btn-danger btn-remove-row";
+        removeButton.innerText = "Remove";
+        removeButton.addEventListener("click", function () {
+          removeTableRow(row);
+        });
+        removeCell.appendChild(removeButton);
+        row.appendChild(removeCell);
+
+        tableBody.appendChild(row);
+      });
     },
     error: function (xhr, status, error) {
-      console.log("inside error");
-      // Handle the error
-      console.error(error);
+      // Handle error
+      console.error(
+        "An error occurred while fetching range parameters:",
+        error
+      );
     },
   });
 }
+
+function removeTableRow(row) {
+  row.remove();
+}
+
+$("#editaddRowButton").click(function () {
+  // Get the input field values
+  var gender = $("#editgenderSelect").val();
+  var normalValueFrom = $("#editnormalValueFromInput").val();
+  var normalValueTo = $("#editnormalValueToInput").val();
+  var ageFrom = $("#editageFromInput").val();
+  var ageTo = $("#editageToInput").val();
+
+  // Check if all input fields are filled
+  if (gender && normalValueFrom && normalValueTo && ageFrom && ageTo) {
+    var confirmAdd = confirm("Are you sure you want to add these values?");
+    if (confirmAdd) {
+      // Create a new row with the entered values
+      var newRow = $("<tr></tr>");
+
+      // Gender cell
+      var genderCell = $("<td></td>");
+      var genderSelect = $("<select></select>")
+        .addClass("form-select")
+        .attr("name", "gender");
+
+      var genderOptions = ["Male", "Female", "Child"];
+      genderOptions.forEach(function (option) {
+        var genderOption = $("<option></option>").val(option).text(option);
+        if (option === gender) {
+          genderOption.prop("selected", true); // Select the option with matching value
+        }
+        genderSelect.append(genderOption);
+      });
+
+      genderCell.append(genderSelect);
+      newRow.append(genderCell);
+
+      // Normal Value From cell
+      var normalValueFromCell = $("<td></td>");
+      var normalValueFromInput = $("<input>")
+        .attr("type", "text")
+        .addClass("form-control")
+        .attr("name", "normalValueFrom")
+        .attr("value", normalValueFrom);
+      normalValueFromCell.append(normalValueFromInput);
+      newRow.append(normalValueFromCell);
+
+      // Normal Value To cell
+      var normalValueToCell = $("<td></td>");
+      var normalValueToInput = $("<input>")
+        .attr("type", "text")
+        .addClass("form-control")
+        .attr("name", "normalValueTo")
+        .attr("value", normalValueTo);
+      normalValueToCell.append(normalValueToInput);
+      newRow.append(normalValueToCell);
+
+      // Age From cell
+      var ageFromCell = $("<td></td>");
+      var ageFromInput = $("<input>")
+        .attr("type", "text")
+        .addClass("form-control")
+        .attr("name", "ageFrom")
+        .attr("value", ageFrom);
+      ageFromCell.append(ageFromInput);
+      newRow.append(ageFromCell);
+
+      // Age To cell
+      var ageToCell = $("<td></td>");
+      var ageToInput = $("<input>")
+        .attr("type", "text")
+        .addClass("form-control")
+        .attr("name", "ageTo")
+        .attr("value", ageTo);
+      ageToCell.append(ageToInput);
+      newRow.append(ageToCell);
+
+      // Remove button
+      var removeCell = $("<td></td>");
+      var removeButton = $("<button></button>")
+        .attr("type", "button")
+        .addClass("btn btn-danger btn-remove-row")
+        .text("Remove");
+      removeButton.on("click", function () {
+        $(this).closest("tr").remove();
+      });
+      removeCell.append(removeButton);
+      newRow.append(removeCell);
+
+      // Append the new row to the table
+      $("#rangeParameterResultTable tbody").append(newRow);
+
+      // Reset the input fields
+      $("#editgenderSelect").val("");
+      $("#editnormalValueFromInput").val("");
+      $("#editnormalValueToInput").val("");
+      $("#editageFromInput").val("");
+      $("#editageToInput").val("");
+    }
+  } else {
+    alert("Please fill in all input fields.");
+  }
+});
