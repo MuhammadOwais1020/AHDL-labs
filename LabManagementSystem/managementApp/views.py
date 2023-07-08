@@ -459,13 +459,13 @@ def save_range_parameters(request):
         # Check if the parameter already exists
         parameter = Parameter.objects.filter(parameter_name=parameter_name).first()
 
-        # if parameter:
-        #     # Return a JSON response with a warning message
-        #     response_data = {
-        #         'status': 'warning',
-        #         'message': 'Parameter already exists.'
-        #     }
-        #     return JsonResponse(response_data)
+        if parameter:
+            # Return a JSON response with a warning message
+            response_data = {
+                'status': 'warning',
+                'message': 'Parameter already exists.'
+            }
+            return JsonResponse(response_data)
 
         # Save the parameter and unit in the Parameter model
         parameter = Parameter.objects.create(
@@ -669,3 +669,15 @@ def update_range_parameters(request):
             'message': 'Invalid request method.'
         }
         return JsonResponse(response_data, status=400)
+
+
+@csrf_exempt
+def load_parameters_for_test(request):
+    # Retrieve parameter data from the Parameter model
+    parameters = Parameter.objects.all().values("id", "parameter_name", "parameter_unit", "parameter_result_type")
+
+    # Convert QuerySet to list of dictionaries
+    parameter_data = list(parameters)
+
+    # Return the parameter data as JSON response
+    return JsonResponse(parameter_data, safe=False)

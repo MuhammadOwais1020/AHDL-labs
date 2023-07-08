@@ -277,15 +277,19 @@ function labExpendedMenu(n) {
 // Test Menu
 function testExpendedMenu(n) {
   $(".wind").hide();
-
+  console.log("testExpendedMenu Called");
   $("#test-wind-" + n).show();
-
+  console.log("N: " + n);
   if (n == 1) {
     $("#main-heading").html("Create New Test Parameter");
     loadParameterUnits();
   } else if (n == 2) {
     loadAllParameters();
     $("#main-heading").html("All Test Parameters");
+  } else if (n == 3) {
+    console.log(n);
+    loadParametersForTest();
+    $("#main-heading").html("Creat New Test");
   }
 }
 
@@ -313,6 +317,7 @@ function financeExpendedMenu(n) {
     loadAccountEntries();
   }
 }
+
 // get all patients data
 function fetchPatientsData() {
   var url = getPatients;
@@ -940,6 +945,7 @@ $(document).on("click", ".btn-remove-row", function () {
 // }
 
 // Function to validate the income entry form
+
 function validateIncomeForm() {
   var incomeDescription = document.getElementById("incomeDescription").value;
   var incomeAmount = document.getElementById("incomeAmount").value;
@@ -2129,4 +2135,76 @@ $("#editaddRowButton").click(function () {
   } else {
     alert("Please fill in all input fields.");
   }
+});
+
+function loadParametersForTest() {
+  console.log("function logged in");
+  var url = load_parameters_for_test; // Replace with the actual URL to fetch parameter data
+
+  // Send request to Python function to get parameters
+  $.ajax({
+    url: url,
+    type: "GET",
+    success: function (response) {
+      var parameterSelect = document.getElementById("testParameterSelect");
+
+      // Clear existing options
+      parameterSelect.innerHTML =
+        "<option value=''>-- Select Parameter Name --</option>";
+
+      // Add options for each parameter
+      response.forEach(function (parameter) {
+        var optionText =
+          parameter.parameter_name + ", " + parameter.parameter_unit;
+
+        var option = document.createElement("option");
+        option.value = parameter.id;
+        option.text = optionText;
+
+        parameterSelect.appendChild(option);
+      });
+    },
+    error: function (xhr, status, error) {
+      // Handle error
+      console.error("An error occurred while fetching parameters:", error);
+    },
+  });
+}
+
+// Add Parameter button click event
+$("#addParameterButton").click(function () {
+  var parameterSelect = document.getElementById("testParameterSelect");
+  var selectedOption = parameterSelect.options[parameterSelect.selectedIndex];
+
+  // Check if a parameter is selected
+  if (!selectedOption || !selectedOption.value) {
+    alert("Please select a parameter name first.");
+    return;
+  }
+
+  var parameterId = selectedOption.value;
+  var parameterText = selectedOption.text;
+  var parameterName = parameterText.split(",")[0].trim();
+  var parameterUnit = parameterText.split(",")[1].trim();
+
+  // Create a new row with the entered values
+  var newRow = $("<tr></tr>");
+  newRow.append("<td>" + parameterName + "</td>");
+  newRow.append("<td>" + parameterUnit + "</td>");
+  newRow.append("<td>" + parameterId + "</td>");
+  newRow.append(
+    "<td><button type='button' class='btn btn-danger btn-remove-row'>Remove</button></td>"
+  );
+
+  // Append the new row to the table body
+  $("#parameterTestTable tbody").append(newRow);
+
+  // Clear the parameter selection
+  parameterSelect.selectedIndex = 0;
+});
+
+// Remove row button click event
+$(document).on("click", ".btn-remove-row", function () {
+  console.log("ssss");
+  $(this).closest("tr").remove();
 });
