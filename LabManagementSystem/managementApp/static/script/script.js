@@ -158,6 +158,7 @@ function hideAlert(time) {
     $("#addParameterAlert").hide();
     $("#parameterEditALert").hide();
     $("#rangeParameterAlert").hide();
+    $("#addTestAlert").hide();
   }, time); // Hide after time seconds
 }
 // Fetch doctor names using AJAX
@@ -2189,9 +2190,9 @@ $("#addParameterButton").click(function () {
 
   // Create a new row with the entered values
   var newRow = $("<tr></tr>");
+  newRow.append("<td>" + parameterId + "</td>");
   newRow.append("<td>" + parameterName + "</td>");
   newRow.append("<td>" + parameterUnit + "</td>");
-  newRow.append("<td>" + parameterId + "</td>");
   newRow.append(
     "<td><button type='button' class='btn btn-danger btn-remove-row'>Remove</button></td>"
   );
@@ -2205,6 +2206,62 @@ $("#addParameterButton").click(function () {
 
 // Remove row button click event
 $(document).on("click", ".btn-remove-row", function () {
-  console.log("ssss");
   $(this).closest("tr").remove();
+});
+
+$(document).on("click", "#createTestButton", function () {
+  // Get the field values
+  var testName = $("#testName").val();
+  var testDuration = $("#testDuration").val();
+  var testDepartment = $("#testDepartment").val();
+  var testPrice = $("#testPrice").val();
+
+  // Validate the fields
+  if (!testName || !testDuration || !testDepartment || !testPrice) {
+    alert("Please fill in all the fields.");
+    return;
+  }
+
+  // Check if the table has at least one row
+  var rowCount = $("#parameterTestTable tbody tr").length;
+  if (rowCount === 0) {
+    alert("Please add at least one parameter row.");
+    return;
+  }
+
+  // Prepare the data to be sent via AJAX
+  var requestData = {
+    testName: testName,
+    testDuration: testDuration,
+    testDepartment: testDepartment,
+    testPrice: testPrice,
+    parameterIDs: [],
+  };
+
+  // Iterate through the table rows
+  $("#parameterTestTable tbody tr").each(function () {
+    var parameterID = $(this).find("td:first").text();
+    console.log(parameterID);
+    requestData.parameterIDs.push(parameterID);
+  });
+
+  var url = save_test_data; // Replace with your server endpoint
+
+  // Send the data to the server using AJAX
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: JSON.stringify(requestData),
+    contentType: "application/json",
+    success: function (response) {
+      $("#addTestAlert").show();
+      $("#addTestAlert").html(showAlert(response.status, response.message));
+      hideAlert(3000);
+    },
+    error: function (xhr, status, error) {
+      // Handle the error response from the server
+      console.error(error);
+      // Add your own code here
+    },
+  });
 });

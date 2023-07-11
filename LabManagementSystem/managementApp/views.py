@@ -15,7 +15,8 @@ from django.db.models import Q
 import os
 from .models import Parameter
 from .models import Parameter, RangeParameter
-
+from .models import Test, TestItem
+    
 # Create your views here.
 
 # admin index page
@@ -482,8 +483,7 @@ def save_range_parameters(request):
         # Convert the JSON string to a Python list
         child_parameters = json.loads(child_parameters)
         
-        print(child_parameters)
-        print(type(child_parameters))
+
          # Check if the child_parameters list is not empty
         if child_parameters:
             # Save the child parameters in the RangeParameter model
@@ -515,8 +515,7 @@ def save_range_parameters(request):
 
         # Convert the JSON string to a Python list
         female_parameters = json.loads(female_parameters)
-        print(female_parameters)
-        print(type(female_parameters))
+
         print('2')
         # Check if the female_parameters list is not empty
         if female_parameters:
@@ -546,9 +545,6 @@ def save_range_parameters(request):
 
         # Convert the JSON string to a Python list
         male_parameters = json.loads(male_parameters)
-
-        print(male_parameters)
-        print(type(male_parameters))
 
          # Check if the male_parameters list is not empty
         if male_parameters:
@@ -681,3 +677,67 @@ def load_parameters_for_test(request):
 
     # Return the parameter data as JSON response
     return JsonResponse(parameter_data, safe=False)
+
+
+@csrf_exempt
+def save_test_data(request):
+    if request.method == "POST":
+        try:
+            # Get the field values from the request
+            data = json.loads(request.body)
+            test_name = data['testName']
+            test_duration = data['testDuration']
+            test_department = data['testDepartment']
+            test_price = data['testPrice']
+            parameter_ids = data['parameterIDs']
+            print(f"Data: {data}")
+            print(f"parameter IDs: {parameter_ids}")
+            print('1')
+            
+            # Check if the test name already exists
+            if Test.objects.filter(test_name=test_name).exists():
+                print('2')
+                response_data = {
+                    "status": "warning",
+                    "message": "Test name already exists. Please choose a different name.",
+                }
+                return JsonResponse(response_data, safe=False)
+
+            # Create a new Test object and save it
+            en = Test(test_name = test_name, test_duration = test_duration, test_department = test_department, test_price = test_price)
+            en.save()
+            print('3')
+
+            # Retrieve the ID of the last inserted record
+            test_id = en.id
+            print('4')
+            # Save the parameter IDs in the TestItem model
+            for parameter_id in parameter_ids:
+                print(f"Test ID: {test_id}")
+                print(f"Parameter ID: {parameter_id}")
+                test_item = TestItem(parameter_id = parameter_id, test_id = test_id)
+                test_item.save()
+            print('5')
+            # Return a success response
+            response_data = {
+                "status": "success",
+                "message": "Test data saved successfully!",
+            }
+            return JsonResponse(response_data, safe=False)
+
+        except Exception as e:
+            print("yuy:", e)
+            # Return an error response if any exception occurs
+            response_data = {
+                "status": "danger",
+                "message": "An error occurred while saving the test data.",
+            }
+            return JsonResponse(response_data, safe=False)
+
+    else:
+        # Return an error response for invalid request method
+        response_data = {
+            "status": "danger",
+            "message": "Invalid request method.",
+        }
+        return JsonResponse(response_data, safe=False)
