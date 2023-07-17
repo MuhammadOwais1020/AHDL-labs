@@ -159,6 +159,7 @@ function hideAlert(time) {
     $("#parameterEditALert").hide();
     $("#rangeParameterAlert").hide();
     $("#addTestAlert").hide();
+    $("#updateTestAlert").hide();
   }, time); // Hide after time seconds
 }
 // Fetch doctor names using AJAX
@@ -270,6 +271,7 @@ function labExpendedMenu(n) {
   if (n == 1) {
     $("#main-heading").html("New Lab");
     getDoctors();
+    loadTestData();
   } else if (n == 2) {
     $("#main-heading").html("Lab History");
   }
@@ -281,16 +283,28 @@ function testExpendedMenu(n) {
   console.log("testExpendedMenu Called");
   $("#test-wind-" + n).show();
   console.log("N: " + n);
-  if (n == 1) {
-    $("#main-heading").html("Create New Test Parameter");
-    loadParameterUnits();
-  } else if (n == 2) {
-    loadAllParameters();
-    $("#main-heading").html("All Test Parameters");
-  } else if (n == 3) {
-    console.log(n);
-    loadParametersForTest();
-    $("#main-heading").html("Creat New Test");
+  switch (n) {
+    case 1:
+      $("#main-heading").html("Create New Test Parameter");
+      loadParameterUnits();
+      break;
+    case 2:
+      loadAllParameters();
+      $("#main-heading").html("All Test Parameters");
+      break;
+    case 3:
+      console.log(n);
+      loadParametersForTest();
+      $("#main-heading").html("Create New Test");
+      break;
+    case 4:
+      fetchTestData();
+      $("#main-heading").html("View All Tests");
+      break;
+    default:
+      console.log("default case called");
+      // Default case if none of the specified cases match
+      break;
   }
 }
 
@@ -2148,9 +2162,14 @@ function loadParametersForTest() {
     type: "GET",
     success: function (response) {
       var parameterSelect = document.getElementById("testParameterSelect");
-
+      var parameterSelectEdit = document.getElementById(
+        "testParameterSelectEdit"
+      );
       // Clear existing options
       parameterSelect.innerHTML =
+        "<option value=''>-- Select Parameter Name --</option>";
+
+      parameterSelectEdit.innerHTML =
         "<option value=''>-- Select Parameter Name --</option>";
 
       // Add options for each parameter
@@ -2163,6 +2182,7 @@ function loadParametersForTest() {
         option.text = optionText;
 
         parameterSelect.appendChild(option);
+        parameterSelectEdit.appendChild(option);
       });
     },
     error: function (xhr, status, error) {
@@ -2265,3 +2285,335 @@ $(document).on("click", "#createTestButton", function () {
     },
   });
 });
+
+function fetchTestData() {
+  console.log("inside fetch test data");
+  var url = get_test_data; // Replace with the actual URL endpoint
+
+  // Send request to Python function to get test data
+  $.ajax({
+    url: url,
+    type: "GET",
+    success: function (response) {
+      // Get the table body element
+      var tableBody = document.getElementById("testTableBody");
+
+      // Clear existing table rows
+      tableBody.innerHTML = "";
+
+      // Loop through the test data and create table rows
+      response.forEach(function (test) {
+        var testId = test.test_id;
+        var testName = test.test_name;
+        var testDuration = test.test_duration;
+        var testDepartment = test.test_department;
+        var testPrice = test.test_price;
+
+        // Create a new table row
+        var row = document.createElement("tr");
+
+        // Add data cells to the row
+        var idCell = document.createElement("td");
+        idCell.textContent = testId;
+        row.appendChild(idCell);
+
+        var nameCell = document.createElement("td");
+        nameCell.textContent = testName;
+        row.appendChild(nameCell);
+
+        var durationCell = document.createElement("td");
+        durationCell.textContent = testDuration;
+        row.appendChild(durationCell);
+
+        var departmentCell = document.createElement("td");
+        departmentCell.textContent = testDepartment;
+        row.appendChild(departmentCell);
+
+        var priceCell = document.createElement("td");
+        priceCell.textContent = testPrice;
+        row.appendChild(priceCell);
+
+        // Add the details button to the last column
+        var detailsCell = document.createElement("td");
+        var detailsButton = document.createElement("button");
+        detailsButton.textContent = "View Details";
+        detailsButton.classList.add("btn", "btn-primary"); // Add the "btn" and "btn-primary" classes
+        detailsButton.addEventListener("click", function () {
+          // Call a function to handle the details button click
+          viewDetails(test);
+        });
+        detailsCell.appendChild(detailsButton);
+        row.appendChild(detailsCell);
+
+        // Add the row to the table body
+        tableBody.appendChild(row);
+      });
+    },
+    error: function (xhr, status, error) {
+      // Handle error
+      console.error("An error occurred while fetching test data:", error);
+    },
+  });
+}
+var modal = new bootstrap.Modal(document.getElementById("testDetailsModal"));
+// Function to handle the details button click
+function viewDetails(test) {
+  // Set the test details in the modal
+  var modalContent = document.querySelector("#testDetailsModal .modal-body");
+  // Set the initial test details in the modal content
+  modalContent.innerHTML = `
+  <h3 id="testNameInput">${test.test_name}</h3>
+  <input type="hidden" id="testIdInput" value="${test.test_id}">
+          <div class="form-group">
+            <label for="testDurationInput">Test Duration:</label>
+            <input type="text" class="form-control" id="testDurationInput" value="${test.test_duration}">
+          </div>
+          <div class="form-group">
+            <label for="testDepartmentSelect">Department:</label>
+            <select class="form-control" id="testDepartmentSelect">
+              <option value="Department 1">Department 1</option>
+              <option value="Department 2">Department 2</option>
+              <option value="Department 3">Department 3</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="testPriceInput">Test Price:</label>
+            <input type="text" class="form-control" id="testPriceInput" value="${test.test_price}">
+          </div>
+          <hr>
+           <div class="row">
+              <div class="col-sm-10">
+                <select id="testParameterSelectEdit" class="form-select">
+                  <option value="">Select Parameter Name</option>
+                </select>
+              </div>
+              <div class="col-sm-2">
+                <button onclick="addParameterTestButtonFunction()" id="addParameterTestButton" type="button" class="btn btn-primary max-width">Add Parameter</button>
+              </div>
+            </div>
+            <hr>
+          <table id="testItemsTable" class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Parameter Name</th>
+                <th>Parameter Unit</th>
+                <th>Action<th>
+              </tr>
+            </thead>
+            <tbody id="testItemsTableBody">
+            </tbody>
+          </table>
+        `;
+
+  loadParametersForTest();
+
+  // Get the table body element
+  var tableBody = modalContent.querySelector("#testItemsTableBody");
+  // Send an AJAX request to fetch the test items
+  var url = get_test_items; // Replace with your server endpoint
+  var requestData = {
+    testId: test.test_id,
+  };
+
+  $.ajax({
+    url: url,
+    type: "GET",
+    data: requestData,
+    success: function (response) {
+      // Handle the success response from the server
+      if (response.status === "success") {
+        var testItems = response.testItems;
+
+        // Populate the test items in the table
+        testItems.forEach(function (testItem) {
+          var row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${testItem.parameter_id}</td>
+            <td>${testItem.parameter_name}</td>
+            <td>${testItem.parameter_unit}</td>
+            <td>
+              <button type="button" class="btn btn-danger btn-remove">Remove</button>
+            </td>
+          `;
+
+          // Add event listener to remove button
+          row
+            .querySelector(".btn-remove")
+            .addEventListener("click", function () {
+              // Get the parent row and remove it from the table
+              var parentRow = this.closest("tr");
+              parentRow.remove();
+            });
+
+          tableBody.appendChild(row);
+        });
+      } else {
+        console.error("Error:", response.message);
+      }
+    },
+    error: function (xhr, status, error) {
+      // Handle the error response from the server
+      console.error("Error:", error);
+    },
+  });
+
+  // Open the modal
+  var modal = new bootstrap.Modal(document.getElementById("testDetailsModal"));
+  console.log("Department: " + test.test_department);
+  // Get the testDepartmentSelect element
+  var departmentSelect = document.getElementById("testDepartmentSelect");
+
+  // Iterate through the options and select the matching value
+  for (var i = 0; i < departmentSelect.options.length; i++) {
+    if (departmentSelect.options[i].value === test.test_department) {
+      departmentSelect.options[i].selected = true;
+      break;
+    }
+  }
+  modal.show();
+}
+
+function addParameterTestButtonFunction() {
+  console.log("add parameter test button fucntion called");
+
+  var parameterSelect = document.getElementById("testParameterSelectEdit");
+  var selectedOption = parameterSelect.options[parameterSelect.selectedIndex];
+
+  // Check if a parameter is selected
+  if (!selectedOption || !selectedOption.value) {
+    alert("Please select a parameter name first.");
+    return;
+  }
+  console.log("inside if value is selected");
+  // Get the selected option from the testParameterSelectEdit
+  var selectedOption = $("#testParameterSelectEdit option:selected");
+  var optionText = selectedOption.text();
+  console.log("value: " + selectedOption);
+  console.log("text: " + optionText);
+
+  // Split the option text by comma
+  var splitText = optionText.split(",");
+
+  // Get the values
+  var parameterID = selectedOption.val();
+  var parameterName = splitText[0].trim();
+  var parameterUnit = splitText[1].trim();
+
+  // Create a new row with the entered values
+  var newRow = $("<tr></tr>");
+  newRow.append("<td>" + parameterID + "</td>");
+  newRow.append("<td>" + parameterName + "</td>");
+  newRow.append("<td>" + parameterUnit + "</td>");
+
+  // Add the remove button
+  var removeButton = $("<button></button>")
+    .addClass("btn btn-danger btn-remove")
+    .text("Remove");
+  var removeCell = $("<td></td>").append(removeButton);
+  newRow.append(removeCell);
+
+  console.log("Row: " + newRow);
+
+  // Append the new row to the table
+  $("#testItemsTableBody").append(newRow);
+
+  // Clear the selected option
+  selectedOption.prop("selected", false);
+}
+
+$(document).on("click", "#updateTestRecord", function () {
+  // Get the field values
+  var testId = $("#testIdInput").val();
+  var testDuration = $("#testDurationInput").val();
+  var testDepartment = $("#testDepartmentSelect").val();
+  var testPrice = $("#testPriceInput").val();
+
+  // Get the parameter IDs from the table
+  var parameterIDs = [];
+  $("#testItemsTable tbody tr").each(function () {
+    var parameterID = $(this).find("td:first").text();
+    parameterIDs.push(parameterID);
+  });
+
+  // Prepare the data to be sent via AJAX
+  var requestData = {
+    testId: testId,
+    testDuration: testDuration,
+    testDepartment: testDepartment,
+    testPrice: testPrice,
+    parameterIDs: parameterIDs,
+  };
+
+  var url = update_test_record; // Replace with your server endpoint
+
+  // Send the data to the server using AJAX
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: JSON.stringify(requestData),
+    contentType: "application/json",
+    success: function (response) {
+      fetchTestData();
+      $("#updateTestAlert").show();
+      $("#updateTestAlert").html(showAlert(response.status, response.message));
+      hideAlert(3000);
+    },
+    error: function (xhr, status, error) {
+      // Handle the error response from the server
+      console.error(error);
+      // Add your own code here
+      $("#updateTestAlert").show();
+      $("#updateTestAlert").html(showAlert(response.status, response.message));
+      hideAlert(3000);
+    },
+  });
+});
+
+function loadTestData() {
+  console.log("inside loadTestData function");
+  var url = load_test_data;
+  // Send an AJAX request to the server to load test data
+  $.ajax({
+    url: url, // Replace with your server endpoint
+    type: "GET",
+    success: function (response) {
+      // Handle the success response from the server
+      console.log(response);
+
+      // Access the select element
+      var testCodeSelect = document.getElementById("testCode");
+
+      // Clear existing options
+      testCodeSelect.innerHTML = "";
+
+      // Create a default option with a default message
+      var defaultOption = document.createElement("option");
+      defaultOption.text = "-- Select Test Code --";
+      defaultOption.value = "";
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+
+      // Append the default option to the select element
+      testCodeSelect.appendChild(defaultOption);
+
+      // Loop through the test data and create options for each record
+      response.forEach(function (test) {
+        // Create an option element
+        var option = document.createElement("option");
+
+        // Set the text and value of the option
+        option.text = test.test_name;
+        option.value = `${test.id},${test.test_name},${test.test_duration},${test.test_department},${test.test_price}`;
+
+        // Append the option to the select element
+        testCodeSelect.appendChild(option);
+      });
+    },
+    error: function (xhr, status, error) {
+      // Handle the error response from the server
+      console.error(error);
+      // Add your own code here
+    },
+  });
+}

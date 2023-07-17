@@ -16,10 +16,11 @@ import os
 from .models import Parameter
 from .models import Parameter, RangeParameter
 from .models import Test, TestItem
-    
+
 # Create your views here.
 
 # admin index page
+
 
 def index(request):
     return render(request, 'index.html')
@@ -423,8 +424,9 @@ def update_parameters(request):
         parameter_type = request.POST.get('type')
         print(parameter_type)
         try:
-             # Update the parameter values using the update() method
-            Parameter.objects.filter(id=parameter_id).update(parameter_name=parameter_name, parameter_unit=parameter_unit, parameter_result_type=parameter_type)
+            # Update the parameter values using the update() method
+            Parameter.objects.filter(id=parameter_id).update(
+                parameter_name=parameter_name, parameter_unit=parameter_unit, parameter_result_type=parameter_type)
 
             # Return a JSON response with success message
             response_data = {
@@ -458,7 +460,8 @@ def save_range_parameters(request):
 
     try:
         # Check if the parameter already exists
-        parameter = Parameter.objects.filter(parameter_name=parameter_name).first()
+        parameter = Parameter.objects.filter(
+            parameter_name=parameter_name).first()
 
         if parameter:
             # Return a JSON response with a warning message
@@ -482,9 +485,8 @@ def save_range_parameters(request):
 
         # Convert the JSON string to a Python list
         child_parameters = json.loads(child_parameters)
-        
 
-         # Check if the child_parameters list is not empty
+        # Check if the child_parameters list is not empty
         if child_parameters:
             # Save the child parameters in the RangeParameter model
             for child_parameter in child_parameters:
@@ -494,7 +496,7 @@ def save_range_parameters(request):
                 normal_value_to = child_parameter['normalValueTo']
                 age_from = child_parameter['ageFrom']
                 age_to = child_parameter['ageTo']
-                
+
             if normal_value_from and normal_value_to and age_from and age_to:
                 RangeParameter.objects.create(
                     parameter_id=parameter_id,
@@ -506,10 +508,8 @@ def save_range_parameters(request):
                 )
             else:
                 print("Some values are missing. Child Record not saved.")
-        
 
         print('1')
-
 
         female_parameters = request.POST.get('femaleParameters')
 
@@ -546,7 +546,7 @@ def save_range_parameters(request):
         # Convert the JSON string to a Python list
         male_parameters = json.loads(male_parameters)
 
-         # Check if the male_parameters list is not empty
+        # Check if the male_parameters list is not empty
         if male_parameters:
             # Save the male parameters in the RangeParameter model
             for male_parameter in male_parameters:
@@ -613,7 +613,6 @@ def get_range_parameters_by_parameter(request):
     return JsonResponse(parameter_data, safe=False)
 
 
-
 @csrf_exempt
 def update_range_parameters(request):
     if request.method == 'POST':
@@ -622,7 +621,8 @@ def update_range_parameters(request):
         range_parameters = data['rangeParameters']
         print(f"ramge parameter: {range_parameters}")
         try:
-            existing_parameters = RangeParameter.objects.filter(parameter=parameter_id)
+            existing_parameters = RangeParameter.objects.filter(
+                parameter=parameter_id)
             if existing_parameters:
                 existing_parameters.delete()
 
@@ -670,7 +670,8 @@ def update_range_parameters(request):
 @csrf_exempt
 def load_parameters_for_test(request):
     # Retrieve parameter data from the Parameter model
-    parameters = Parameter.objects.all().values("id", "parameter_name", "parameter_unit", "parameter_result_type")
+    parameters = Parameter.objects.all().values(
+        "id", "parameter_name", "parameter_unit", "parameter_result_type")
 
     # Convert QuerySet to list of dictionaries
     parameter_data = list(parameters)
@@ -693,7 +694,7 @@ def save_test_data(request):
             print(f"Data: {data}")
             print(f"parameter IDs: {parameter_ids}")
             print('1')
-            
+
             # Check if the test name already exists
             if Test.objects.filter(test_name=test_name).exists():
                 print('2')
@@ -704,7 +705,8 @@ def save_test_data(request):
                 return JsonResponse(response_data, safe=False)
 
             # Create a new Test object and save it
-            en = Test(test_name = test_name, test_duration = test_duration, test_department = test_department, test_price = test_price)
+            en = Test(test_name=test_name, test_duration=test_duration,
+                      test_department=test_department, test_price=test_price)
             en.save()
             print('3')
 
@@ -715,7 +717,8 @@ def save_test_data(request):
             for parameter_id in parameter_ids:
                 print(f"Test ID: {test_id}")
                 print(f"Parameter ID: {parameter_id}")
-                test_item = TestItem(parameter_id = parameter_id, test_id = test_id)
+                test_item = TestItem(
+                    parameter_id=parameter_id, test_id=test_id)
                 test_item.save()
             print('5')
             # Return a success response
@@ -741,3 +744,144 @@ def save_test_data(request):
             "message": "Invalid request method.",
         }
         return JsonResponse(response_data, safe=False)
+
+
+@csrf_exempt
+def get_test_data(request):
+    print('inside get test data method')
+    # Retrieve data from the Test model
+    tests = Test.objects.all()
+
+    # Serialize the data
+    test_data = []
+    for test in tests:
+        test_data.append({
+            'test_id': test.id,
+            'test_name': test.test_name,
+            'test_duration': test.test_duration,
+            'test_department': test.test_department,
+            'test_price': test.test_price
+        })
+
+    # Return the serialized data as a JSON response
+    return JsonResponse(test_data, safe=False)
+
+
+@csrf_exempt
+def get_test_items(request):
+    if request.method == "GET":
+        test_id = request.GET.get("testId")
+
+        try:
+            test_items = TestItem.objects.filter(
+                test_id=test_id).select_related("parameter")
+            test_items_data = []
+            for test_item in test_items:
+                test_items_data.append(
+                    {
+                        "parameter_id": test_item.parameter_id,
+                        "parameter_name": test_item.parameter.parameter_name,
+                        "parameter_unit": test_item.parameter.parameter_unit,
+                        "parameter_result_type": test_item.parameter.parameter_result_type,
+                    }
+                )
+
+            response_data = {
+                "status": "success",
+                "testItems": test_items_data,
+            }
+            return JsonResponse(response_data)
+        except Exception as e:
+            response_data = {
+                "status": "error",
+                "message": "Error occurred while fetching test items.",
+            }
+            return JsonResponse(response_data, status=500)
+
+    response_data = {
+        "status": "error",
+        "message": "Invalid request method.",
+    }
+    return JsonResponse(response_data, status=400)
+
+
+@csrf_exempt
+def update_test_record(request):
+    if request.method == "POST":
+        try:
+            # Get the data from the request
+            requestData = json.loads(request.body)
+            testId = requestData.get("testId")
+            testDuration = requestData.get("testDuration")
+            testDepartment = requestData.get("testDepartment")
+            testPrice = requestData.get("testPrice")
+            parameterIDs = requestData.get("parameterIDs")
+
+            # Update the Test model
+            test = Test.objects.get(id=testId)
+            test.test_duration = testDuration
+            test.test_department = testDepartment
+            test.test_price = testPrice
+            test.save()
+
+            # Delete existing TestItem records for the given test
+            TestItem.objects.filter(test=test).delete()
+
+            # Create new TestItem records with the parameter IDs
+            for parameterID in parameterIDs:
+                parameter = Parameter.objects.get(id=parameterID)
+                TestItem.objects.create(test=test, parameter=parameter)
+
+            # Return a success response
+            response_data = {
+                "status": "success",
+                "message": "Test record updated successfully!",
+            }
+            return JsonResponse(response_data)
+
+        except Exception as e:
+            # Return an error response if any exception occurs
+            response_data = {
+                "status": "error",
+                "message": "Error occurred while updating the test record.",
+            }
+            return JsonResponse(response_data, status=500)
+
+    else:
+        # Return an error response for invalid request method
+        response_data = {
+            "status": "error",
+            "message": "Invalid request method.",
+        }
+        return JsonResponse(response_data, status=400)
+
+
+@csrf_exempt
+def load_test_data(request):
+    if request.method == "GET":
+        try:
+            # Retrieve the test data from the Test model
+            test_data = Test.objects.values(
+                "id", "test_name", "test_duration", "test_department", "test_price")
+
+            # Convert the queryset to a list of dictionaries
+            test_data_list = list(test_data)
+
+            # Return the test data as a JSON response
+            return JsonResponse(test_data_list, safe=False)
+
+        except Exception as e:
+            # Return an error response if any exception occurs
+            response_data = {
+                "status": "error",
+                "message": "Error occurred while loading test data.",
+            }
+            return JsonResponse(response_data, status=500)
+
+    else:
+        # Return an error response for invalid request method
+        response_data = {
+            "status": "error",
+            "message": "Invalid request method.",
+        }
+        return JsonResponse(response_data, status=400)

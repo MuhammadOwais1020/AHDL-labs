@@ -40,10 +40,17 @@ urlpatterns = [
     path('make_parameter', ma.make_parameter, name="make_parameter"),
     path('get_all_parameters', ma.get_all_parameters, name="get_all_parameters"),
     path('update_parameters/', ma.update_parameters, name="update_parameters"),
-    path('save_range_parameters', ma.save_range_parameters, name="save_range_parameters"),
-    path('get_range_parameters_by_parameter', ma.get_range_parameters_by_parameter, name="get_range_parameters_by_parameter"),
-    path('update_range_parameters', ma.update_range_parameters, name="update_range_parameters"),
-    path('load_parameters_for_test', ma.load_parameters_for_test, name="load_parameters_for_test"),
-    path('save_test_data', ma.save_test_data, name="save_test_data")
-
+    path('save_range_parameters', ma.save_range_parameters,
+         name="save_range_parameters"),
+    path('get_range_parameters_by_parameter', ma.get_range_parameters_by_parameter,
+         name="get_range_parameters_by_parameter"),
+    path('update_range_parameters', ma.update_range_parameters,
+         name="update_range_parameters"),
+    path('load_parameters_for_test', ma.load_parameters_for_test,
+         name="load_parameters_for_test"),
+    path('save_test_data', ma.save_test_data, name="save_test_data"),
+    path('get_test_data', ma.get_test_data, name="get_test_data"),
+    path('get_test_items', ma.get_test_items, name="get_test_items"),
+    path('update_test_record', ma.update_test_record, name="update_test_record"),
+    path('load_test_data', ma.load_test_data, name="load_test_data")
 ]
