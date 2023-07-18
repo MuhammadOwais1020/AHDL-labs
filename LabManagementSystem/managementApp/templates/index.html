@@ -435,40 +435,40 @@
 
         <!-- new LAB -->
         <div class="wind" id="lab-wind-1">
-          <form>
+          <form id="labRegistrationFrom">
             <div class="sub-wind">
               <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label for="patientId">Patient ID</label>
+                    <label for="patientId">Patient ID *</label>
                     <input type="text" id="patientId" name="patientId" class="form-control" />
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="relation" id="selfRadio" value="self" />
-                    <label class="form-check-label" for="selfRadio">Self</label>
+                    <label class="form-check-label" for="selfRadio">Self *</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="relation" id="relativeRadio" value="relative" />
-                    <label class="form-check-label" for="relativeRadio">Relative</label>
+                    <label class="form-check-label" for="relativeRadio">Relative *</label>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label for="dateTime">Date Time</label>
+                    <label for="dateTime">Date Time *</label>
                     <input type="datetime-local" id="dateTime" name="dateTime" class="form-control" />
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label for="patientName">Patient Name</label>
+                    <label for="patientName">Patient Name *</label>
                     <input type="text" id="patientName" name="patientName" class="form-control" />
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label for="gender">Gender</label>
+                    <label for="gender">Gender *</label>
                     <select id="gender" name="gender" class="form-select">
                       <option value="">-- Select Gender --</option>
                       <option value="Male">Male</option>
@@ -481,7 +481,7 @@
                   <div class="row">
                     <div class="col-md-4">
                       <div class="form-group">
-                        <label for="ageYears">Age (Years)</label>
+                        <label for="ageYears">Age (Years) *</label>
                         <input type="number" id="ageYears" name="ageYears" class="form-control" />
                       </div>
                     </div>
@@ -501,13 +501,13 @@
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label for="contact">Contact</label>
+                    <label for="contact">Contact *</label>
                     <input type="text" id="contact" name="contact" class="form-control" />
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label for="cnic">CNIC</label>
+                    <label for="cnic">CNIC *</label>
                     <input type="text" id="cnic" name="cnic" class="form-control" />
                   </div>
                 </div>
@@ -535,7 +535,7 @@
               <div class="row">
                 <div class="col-sm-4">
                   <div class="form-group">
-                    <label for="referedBy">Refered By</label>
+                    <label for="referedBy">Refered By *</label>
                     <select id="referedBy" name="referedBy" class="form-select"></select>
                   </div>
                 </div>
@@ -547,7 +547,7 @@
                                 </div> -->
                 <div class="col-sm-4">
                   <div class="form-group">
-                    <label for="collectionBy">Collection By</label>
+                    <label for="collectionBy">Collection By *</label>
                     <select id="collectionBy" name="collectionBy" class="form-select">
                       <option value="">-- Select Collection By --</option>
                       <option value="qazi ahmed more branch">
@@ -576,7 +576,7 @@
                 </div>
                 <div class="col-sm-4">
                   <div class="form-group">
-                    <label for="testCode">Test Code</label>
+                    <label for="testCode">Test Code *</label>
                     <select id="testCode" name="testCode" class="form-select">
                       <option value="">-- Select Test Code --</option>
                       <option value="TC001">Test Code 1</option>
@@ -591,9 +591,10 @@
             <div class="sub-wind">
               <div class="row">
                 <div class="col-md-9">
-                  <table class="table table-hover">
+                  <table id="labTableForTests" class="table table-hover">
                     <thead>
                       <tr>
+                        <th>ID</th>
                         <th>TEST NAME</th>
                         <th>DEPARTMENT</th>
                         <th>DURATION</th>
@@ -601,18 +602,22 @@
                         <th>ACTION</th>
                       </tr>
                     </thead>
-                    <tbody id="labTableForTests"></tbody>
+                    <tbody id="labTableForTestsBody"></tbody>
                   </table>
                 </div>
 
                 <div class="col-md-3">
                   <div class="form-group">
-                    <label for="totalAmount">Total Amount</label>
-                    <input type="number" id="totalAmount" name="totalAmount" class="form-control" />
+                    <label for="totalAmount">Total Amount *</label>
+                    <input type="number" id="totalAmount" name="totalAmount" class="form-control" readonly />
                   </div>
                   <div class="form-group">
-                    <label for="concession">Concession</label>
+                    <label for="concession">Concession %</label>
                     <input type="number" id="concession" name="concession" class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label for="finalAmount">Final Amount</label>
+                    <input type="number" id="finalAmount" name="finalAmount" class="form-control" readonly />
                   </div>
                   <div class="form-group">
                     <label for="amountPaid">Amount Paid</label>

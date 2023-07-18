@@ -2578,9 +2578,6 @@ function loadTestData() {
     url: url, // Replace with your server endpoint
     type: "GET",
     success: function (response) {
-      // Handle the success response from the server
-      console.log(response);
-
       // Access the select element
       var testCodeSelect = document.getElementById("testCode");
 
@@ -2591,7 +2588,7 @@ function loadTestData() {
       var defaultOption = document.createElement("option");
       defaultOption.text = "-- Select Test Code --";
       defaultOption.value = "";
-      defaultOption.disabled = true;
+      // defaultOption.disabled = true;
       defaultOption.selected = true;
 
       // Append the default option to the select element
@@ -2617,3 +2614,148 @@ function loadTestData() {
     },
   });
 }
+
+// Add an event listener to the testCode select element
+var testCodeSelect = document.getElementById("testCode");
+testCodeSelect.addEventListener("change", function () {
+  // Get the selected value
+  var selectedValue = testCodeSelect.value;
+
+  // Check if a test code is selected
+  if (selectedValue) {
+    // Split the selected value by comma
+    var [id, test_name, test_duration, test_department, test_price] =
+      selectedValue.split(",");
+
+    // Access the labTableForTestsBody table body
+    var tableBody = document.getElementById("labTableForTestsBody");
+
+    // Create a new row
+    var newRow = tableBody.insertRow();
+
+    // Add cells to the new row
+    var idCell = newRow.insertCell();
+    idCell.textContent = id;
+
+    var testNameCell = newRow.insertCell();
+    testNameCell.textContent = test_name;
+
+    var testDepartmentCell = newRow.insertCell();
+    testDepartmentCell.textContent = test_department;
+
+    var testDurationCell = newRow.insertCell();
+    testDurationCell.textContent = test_duration;
+
+    var testPriceCell = newRow.insertCell();
+    testPriceCell.textContent = test_price;
+
+    // Remove button
+    var removeCell = document.createElement("td");
+    var removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "btn btn-danger btn-remove-row";
+    removeButton.innerText = "Remove";
+    removeButton.addEventListener("click", function () {
+      removeTableRow(newRow);
+      calculateAmount();
+    });
+    removeCell.appendChild(removeButton);
+    newRow.appendChild(removeCell);
+  }
+});
+
+function calculateAmount() {
+  var totalAmount = 0;
+  var discount = 0;
+  var finalAmount = 0;
+  var amountPaid = 0;
+
+  // Calculate total amount
+  var labTable = document.getElementById("labTableForTests");
+  var rows = labTable.querySelectorAll("tbody tr");
+  rows.forEach(function (row) {
+    var rateCell = row.cells[4];
+    var rate = parseFloat(rateCell.textContent) || 0;
+    totalAmount += rate;
+  });
+
+  // Get concession value
+  var concessionInput = document.getElementById("concession");
+  var concession = parseFloat(concessionInput.value) || 0;
+
+  // Calculate discount
+  discount = (totalAmount * concession) / 100;
+
+  // Calculate final amount
+  finalAmount = totalAmount - discount;
+
+  // Get amount paid
+  var amountPaidInput = document.getElementById("amountPaid");
+  amountPaid = parseFloat(amountPaidInput.value) || 0;
+
+  // Calculate amount due
+  var amountDue = finalAmount - amountPaid;
+
+  // Update the totalAmount, finalAmount, and amountDue fields
+  document.getElementById("totalAmount").value = totalAmount;
+  document.getElementById("finalAmount").value = finalAmount;
+  document.getElementById("amountDue").value = amountDue;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Add event listeners to trigger the calculateAmount function
+  document
+    .getElementById("testCode")
+    .addEventListener("change", calculateAmount);
+  document
+    .getElementById("concession")
+    .addEventListener("input", calculateAmount);
+  document
+    .getElementById("amountPaid")
+    .addEventListener("input", calculateAmount);
+});
+
+function labRegistrationFromValidation() {
+  var patientId = document.getElementById("patientId").value;
+  var dateTime = document.getElementById("dateTime").value;
+  var patientName = document.getElementById("patientName").value;
+  var gender = document.getElementById("gender").value;
+  var ageYears = document.getElementById("ageYears").value;
+  var contact = document.getElementById("contact").value;
+  var cnic = document.getElementById("cnic").value;
+  var testCode = document.getElementById("testCode").value;
+  var totalAmount = document.getElementById("totalAmount").value;
+  var referedBy = document.getElementById("referedBy").value;
+  var collectionBy = document.getElementById("collectionBy").value;
+
+  if (
+    !patientId ||
+    !dateTime ||
+    !patientName ||
+    !gender ||
+    !ageYears ||
+    !contact ||
+    !cnic ||
+    !testCode ||
+    !totalAmount ||
+    !referedBy ||
+    !collectionBy
+  ) {
+    alert("Please fill in all the required fields.");
+    return false;
+  }
+
+  // Additional validation logic for other fields if needed
+
+  return true;
+}
+
+var form = document.getElementById("labRegistrationFrom");
+form.addEventListener("submit", function (event) {
+  event.preventDefault(); // Prevent form submission
+
+  if (labRegistrationFromValidation()) {
+    // Form is valid, perform further actions (e.g., AJAX request, form submission)
+    // ...
+  }
+});
