@@ -52,5 +52,6 @@ urlpatterns = [
     path('get_test_data', ma.get_test_data, name="get_test_data"),
     path('get_test_items', ma.get_test_items, name="get_test_items"),
     path('update_test_record', ma.update_test_record, name="update_test_record"),
-    path('load_test_data', ma.load_test_data, name="load_test_data")
+    path('load_test_data', ma.load_test_data, name="load_test_data"),
+    path('handle_lab_registration/', ma.handle_lab_registration, name="handle_lab_registration")
 ]

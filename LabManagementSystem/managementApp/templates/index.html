@@ -435,7 +435,8 @@
 
         <!-- new LAB -->
         <div class="wind" id="lab-wind-1">
-          <form id="labRegistrationFrom">
+          <form id="labRegistrationFrom" action="{% url 'handle_lab_registration' %}" method="post" role="form">
+            {% csrf_token %} {{form}}
             <div class="sub-wind">
               <div class="row">
                 <div class="col-md-4">
@@ -1554,6 +1555,7 @@
     var get_test_items = "{% url 'get_test_items' %}";
     var update_test_record = "{% url 'update_test_record' %}";
     var load_test_data = "{% url 'load_test_data' %}";
+    var handle_lab_registration = "{% url 'handle_lab_registration' %}";
 
     var b_patientId = 0;
     var b_patientName = "";

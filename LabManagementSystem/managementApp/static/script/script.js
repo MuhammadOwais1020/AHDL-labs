@@ -2755,7 +2755,45 @@ form.addEventListener("submit", function (event) {
   event.preventDefault(); // Prevent form submission
 
   if (labRegistrationFromValidation()) {
-    // Form is valid, perform further actions (e.g., AJAX request, form submission)
-    // ...
+    form.submit();
+
+    // // Get form data
+    // var formData = $(this).serializeArray();
+
+    // // Get table rows data
+    // var tableData = [];
+    // $("#labTableForTestsBody tr").each(function () {
+    //   var rowData = {
+    //     id: $(this).find("td:eq(0)").text(),
+    //     testName: $(this).find("td:eq(1)").text(),
+    //     department: $(this).find("td:eq(2)").text(),
+    //     duration: $(this).find("td:eq(3)").text(),
+    //     rate: $(this).find("td:eq(4)").text(),
+    //   };
+    //   tableData.push(rowData);
+    // });
+
+    // // Combine form data and table data
+    // var requestData = {
+    //   formData: formData,
+    //   tableData: tableData,
+    // };
+    // var url = handle_lab_registration;
+    // // Make an AJAX request
+    // $.ajax({
+    //   url: url, // Replace with your Django view URL
+    //   method: "POST", // Adjust the HTTP method if needed
+    //   data: JSON.stringify(requestData), // Convert to JSON string
+    //   contentType: "application/json", // Set content type as JSON
+    //   success: function (response) {
+    //     // Handle the success response from the server
+    //     console.log(response); // Log the response for testing or further processing
+    //     window.location.href = "/invoice.html";
+    //   },
+    //   error: function (xhr, status, error) {
+    //     // Handle the error response from the server
+    //     console.error(error); // Log the error for debugging
+    //   },
+    // });
   }
 });

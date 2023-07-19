@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .models import Patient, Doctor, Parameters, Units, StaffProfile
 from .models import AccountEntry
 from django.views.decorators.http import require_POST
@@ -16,7 +16,9 @@ import os
 from .models import Parameter
 from .models import Parameter, RangeParameter
 from .models import Test, TestItem
-
+from io import BytesIO
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 # Create your views here.
 
 # admin index page
@@ -885,3 +887,47 @@ def load_test_data(request):
             "message": "Invalid request method.",
         }
         return JsonResponse(response_data, status=400)
+
+
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+
+    # Add CSS style to set the width
+    pdf_css = """
+        <style>
+            @page {
+                size: 220px;
+                margin: 0;
+            }
+            @media print {
+                body {
+                    width: 220px;
+                }
+            }
+        </style>
+    """
+    html_with_css = pdf_css + html
+
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html_with_css.encode("UTF-8")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+
+@csrf_exempt
+def handle_lab_registration(request):
+    if request.method == 'POST':
+        data = {
+            'hello': 'Muhammad Owais Rehmani'
+        }
+
+        # return render(request, "invoice.html", data)
+        pdf = render_to_pdf('invoice.html', data)
+        return HttpResponse(pdf, content_type='application/pdf')
+
+        return JsonResponse({'message': 'Registration successful'})
+
+    # Handle other request methods if needed
+    return JsonResponse({'error': 'Invalid request method'})
