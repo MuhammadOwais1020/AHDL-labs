@@ -126,3 +126,38 @@ class TestItem(models.Model):
 
     def __str__(self):
         return f"TestItem - Test: {self.test}, Parameter: {self.parameter}"
+    
+
+class LabRegistration(models.Model):
+    patient_id = models.CharField(max_length=100)
+    self = models.IntegerField()
+    datetime = models.DateTimeField()
+    patient_name = models.CharField(max_length=100)
+    gender = models.CharField(max_length=10)
+    age_years = models.IntegerField()
+    age_months = models.IntegerField()
+    age_days = models.IntegerField()
+    contact_no = models.CharField(max_length=100)
+    cnic = models.CharField(max_length=100)
+    pannel_case = models.IntegerField()
+    pannel_emp = models.IntegerField()
+    refered_by = models.CharField(max_length=100)
+    collection_by = models.CharField(max_length=100)
+    hospital = models.CharField(max_length=100)
+    special_refer = models.CharField(max_length=100)
+    phlebotomist = models.CharField(max_length=100)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    concession = models.DecimalField(max_digits=10, decimal_places=2)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
+    pannel_amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.patient_name
+    
+
+class LabItems(models.Model):
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    lab = models.ForeignKey(LabRegistration, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"LabItem {self.pk}"

@@ -19,6 +19,7 @@ from .models import Test, TestItem
 from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from .models import LabRegistration, LabItems
 # Create your views here.
 
 # admin index page
@@ -919,6 +920,82 @@ def render_to_pdf(template_src, context_dict={}):
 @csrf_exempt
 def handle_lab_registration(request):
     if request.method == 'POST':
+        # Retrieve form data
+        patient_id = request.POST.get('patientId')
+        relation = request.POST.get('relation')
+        if relation == 'self':
+            relation = 1
+        else:
+            relation = 0
+
+        print(f'Relation: {relation}')
+
+        datetime = request.POST.get('dateTime')
+        patient_name = request.POST.get('patientName')
+        gender = request.POST.get('gender')
+        age_years = int(request.POST.get('ageYears'))
+        age_months = int(request.POST.get('ageMonths'))
+        age_days = int(request.POST.get('ageDays'))
+        contact_no = request.POST.get('contact')
+        cnic = request.POST.get('cnic')
+        pannel_case = 'pannelCase' in request.POST
+        if pannel_case == True:
+            pannel_case = 1
+        else:
+            pannel_case = 0
+            
+        print(f'Pannel Case: {pannel_case}')
+        pannel_emp = (request.POST.get('pannelEmp'))
+        refered_by = request.POST.get('referedBy')
+        collection_by = request.POST.get('collectionBy')
+        hospital = request.POST.get('hospital')
+        special_refer = request.POST.get('specialRefer')
+        phlebotomist = request.POST.get('phlebotomist')
+        total_amount = (request.POST.get('totalAmount'))
+        concession = (request.POST.get('concession'))
+        amount_paid = (request.POST.get('amountPaid'))
+        pannel_amount = (request.POST.get('pannelAmount'))
+
+        # Retrieve LabTableForTests rows values
+        test_ids = []
+        rows = request.POST.getlist('labTableForTestsBody[]')  # Assuming the name attribute of the rows is 'labTableForTestsBody[]'
+        for row in rows:
+            columns = row.split(',')  # Split the row values by comma
+            if columns:
+                test_id = columns[0]  # Assuming the first column holds the test ID
+                test_ids.append(test_id)
+
+        
+        # Save LabRegistration
+        lab_registration = LabRegistration.objects.create(
+            patient_id=patient_id,
+            self=relation,
+            datetime=datetime,
+            patient_name=patient_name,
+            gender=gender,
+            age_years=age_years,
+            age_months=age_months,
+            age_days=age_days,
+            contact_no=contact_no,
+            cnic=cnic,
+            pannel_case=pannel_case,
+            pannel_emp=pannel_emp,
+            refered_by=refered_by,
+            collection_by=collection_by,
+            hospital=hospital,
+            special_refer=special_refer,
+            phlebotomist=phlebotomist,
+            total_amount=total_amount,
+            concession=concession,
+            amount_paid=amount_paid,
+            pannel_amount=pannel_amount
+        )
+
+
+        # Save LabItems
+        for test_id in test_ids:
+            LabItems.objects.create(test_id=test_id, lab_id=lab_registration.id)
+
         data = {
             'hello': 'Muhammad Owais Rehmani'
         }
@@ -927,7 +1004,5 @@ def handle_lab_registration(request):
         pdf = render_to_pdf('invoice.html', data)
         return HttpResponse(pdf, content_type='application/pdf')
 
-        return JsonResponse({'message': 'Registration successful'})
-
     # Handle other request methods if needed
-    return JsonResponse({'error': 'Invalid request method'})
+    return redirect('error')
