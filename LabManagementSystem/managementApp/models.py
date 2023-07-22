@@ -128,9 +128,10 @@ class TestItem(models.Model):
         return f"TestItem - Test: {self.test}, Parameter: {self.parameter}"
     
 
+
 class LabRegistration(models.Model):
     patient_id = models.CharField(max_length=100)
-    self = models.IntegerField()
+    relation = models.CharField(max_length=100)
     datetime = models.DateTimeField()
     patient_name = models.CharField(max_length=100)
     gender = models.CharField(max_length=10)
@@ -139,7 +140,7 @@ class LabRegistration(models.Model):
     age_days = models.IntegerField()
     contact_no = models.CharField(max_length=100)
     cnic = models.CharField(max_length=100)
-    pannel_case = models.IntegerField()
+    pannel_case = models.CharField(max_length=100)
     pannel_emp = models.IntegerField()
     refered_by = models.CharField(max_length=100)
     collection_by = models.CharField(max_length=100)

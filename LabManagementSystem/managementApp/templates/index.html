@@ -589,10 +589,13 @@
               </div>
             </div>
 
+            <!-- Hidden input field to store the test IDs -->
+            <input type="text" id="labTableForTestsData" name="labTableForTestsData" value="" class="form-control">
+
             <div class="sub-wind">
               <div class="row">
                 <div class="col-md-9">
-                  <table id="labTableForTests" class="table table-hover">
+                  <table id="labTableForTests" class="table table-hover" name="labTableForTests">
                     <thead>
                       <tr>
                         <th>ID</th>
@@ -1555,7 +1558,6 @@
     var get_test_items = "{% url 'get_test_items' %}";
     var update_test_record = "{% url 'update_test_record' %}";
     var load_test_data = "{% url 'load_test_data' %}";
-    var handle_lab_registration = "{% url 'handle_lab_registration' %}";
 
     var b_patientId = 0;
     var b_patientName = "";

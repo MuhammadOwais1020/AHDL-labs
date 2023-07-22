@@ -923,12 +923,14 @@ def handle_lab_registration(request):
         # Retrieve form data
         patient_id = request.POST.get('patientId')
         relation = request.POST.get('relation')
+        
         if relation == 'self':
             relation = 1
         else:
             relation = 0
 
         print(f'Relation: {relation}')
+        print(type(relation))
 
         datetime = request.POST.get('dateTime')
         patient_name = request.POST.get('patientName')
@@ -939,62 +941,113 @@ def handle_lab_registration(request):
         contact_no = request.POST.get('contact')
         cnic = request.POST.get('cnic')
         pannel_case = 'pannelCase' in request.POST
+        
         if pannel_case == True:
             pannel_case = 1
         else:
             pannel_case = 0
             
         print(f'Pannel Case: {pannel_case}')
-        pannel_emp = (request.POST.get('pannelEmp'))
+        print(type(pannel_case))
+
+        # Retrieve pannel_emp from POST data and set a default value of 0 if not found
+        pannel_emp = request.POST.get('pannelEmp', 0)
+
+        # Convert the value to an integer (if it's a valid integer), otherwise keep it as 0
+        try:
+            pannel_emp = int(pannel_emp)
+        except ValueError:
+            pannel_emp = 0
+
         refered_by = request.POST.get('referedBy')
         collection_by = request.POST.get('collectionBy')
         hospital = request.POST.get('hospital')
         special_refer = request.POST.get('specialRefer')
         phlebotomist = request.POST.get('phlebotomist')
-        total_amount = (request.POST.get('totalAmount'))
-        concession = (request.POST.get('concession'))
-        amount_paid = (request.POST.get('amountPaid'))
-        pannel_amount = (request.POST.get('pannelAmount'))
 
-        # Retrieve LabTableForTests rows values
-        test_ids = []
-        rows = request.POST.getlist('labTableForTestsBody[]')  # Assuming the name attribute of the rows is 'labTableForTestsBody[]'
-        for row in rows:
-            columns = row.split(',')  # Split the row values by comma
-            if columns:
-                test_id = columns[0]  # Assuming the first column holds the test ID
-                test_ids.append(test_id)
+       # Retrieve total_amount from POST data and set a default value of 0 if not found
+        total_amount = request.POST.get('totalAmount', 0)
 
+        # Convert the value to a float (if it's a valid float), otherwise keep it as 0
+        try:
+            total_amount = float(total_amount)
+        except ValueError:
+            total_amount = 0
+
+        # Retrieve concession from POST data and set a default value of 0 if not found
+        concession = request.POST.get('concession', 0)
+
+        # Convert the value to a float (if it's a valid float), otherwise keep it as 0
+        try:
+            concession = float(concession)
+        except ValueError:
+            concession = 0
+
+        # Retrieve amount_paid from POST data and set a default value of 0 if not found
+        amount_paid = request.POST.get('amountPaid', 0)
+
+        # Convert the value to a float (if it's a valid float), otherwise keep it as 0
+        try:
+            amount_paid = float(amount_paid)
+        except ValueError:
+            amount_paid = 0
+
+        # Retrieve pannel_amount from POST data and set a default value of 0 if not found
+        pannel_amount = request.POST.get('pannelAmount', 0)
+
+        # Convert the value to a float (if it's a valid float), otherwise keep it as 0
+        try:
+            pannel_amount = float(pannel_amount)
+        except ValueError:
+            pannel_amount = 0
+
+
+        # Get the test IDs from the hidden input field
+        test_ids_string = request.POST.get('labTableForTestsData')
+        test_ids = test_ids_string.split(',') if test_ids_string else []
         
-        # Save LabRegistration
-        lab_registration = LabRegistration.objects.create(
-            patient_id=patient_id,
-            self=relation,
-            datetime=datetime,
-            patient_name=patient_name,
-            gender=gender,
-            age_years=age_years,
-            age_months=age_months,
-            age_days=age_days,
-            contact_no=contact_no,
-            cnic=cnic,
-            pannel_case=pannel_case,
-            pannel_emp=pannel_emp,
-            refered_by=refered_by,
-            collection_by=collection_by,
-            hospital=hospital,
-            special_refer=special_refer,
-            phlebotomist=phlebotomist,
-            total_amount=total_amount,
-            concession=concession,
-            amount_paid=amount_paid,
-            pannel_amount=pannel_amount
-        )
 
+        print(f'Test IDs: {test_ids}')
 
-        # Save LabItems
-        for test_id in test_ids:
-            LabItems.objects.create(test_id=test_id, lab_id=lab_registration.id)
+        print(f"RELATEION: {relation}")
+
+        try:
+            # Save LabRegistration
+            lab_registration = LabRegistration.objects.create(
+                patient_id=patient_id,
+                relation=relation,
+                datetime=datetime,
+                patient_name=patient_name,
+                gender=gender,
+                age_years=age_years,
+                age_months=age_months,
+                age_days=age_days,
+                contact_no=contact_no,
+                cnic=cnic,
+                pannel_case=pannel_case,
+                pannel_emp=pannel_emp,
+                refered_by=refered_by,
+                collection_by=collection_by,
+                hospital=hospital,
+                special_refer=special_refer,
+                phlebotomist=phlebotomist,
+                total_amount=total_amount,
+                concession=concession,
+                amount_paid=amount_paid,
+                pannel_amount=pannel_amount
+            )
+        except:
+            print('Error: got error when saving LabRegistration data in database')
+
+        try:
+            print(f'Going to start LabItems')
+            # Save LabItems
+            for test_id in test_ids:
+                print(f'Test ID: {test_id}')
+                print(f'Lab Registration ID: {lab_registration.id}')
+                LabItems.objects.create(test=test_id, lab=lab_registration.id)
+        except:
+            print('Error: got error when saving LabItems data in database')
 
         data = {
             'hello': 'Muhammad Owais Rehmani'

@@ -2627,31 +2627,34 @@ testCodeSelect.addEventListener("change", function () {
     var [id, test_name, test_duration, test_department, test_price] =
       selectedValue.split(",");
 
-    // Access the labTableForTestsBody table body
-    var tableBody = document.getElementById("labTableForTestsBody");
+    const tableBody = document.getElementById("labTableForTestsBody");
 
     // Create a new row
-    var newRow = tableBody.insertRow();
+    const newRow = tableBody.insertRow();
+
+    // Set data attributes for each cell (test ID and test price)
+    newRow.setAttribute("data-test-id", id);
+    newRow.setAttribute("data-test-price", test_price);
 
     // Add cells to the new row
-    var idCell = newRow.insertCell();
+    const idCell = newRow.insertCell();
     idCell.textContent = id;
 
-    var testNameCell = newRow.insertCell();
+    const testNameCell = newRow.insertCell();
     testNameCell.textContent = test_name;
 
-    var testDepartmentCell = newRow.insertCell();
+    const testDepartmentCell = newRow.insertCell();
     testDepartmentCell.textContent = test_department;
 
-    var testDurationCell = newRow.insertCell();
+    const testDurationCell = newRow.insertCell();
     testDurationCell.textContent = test_duration;
 
-    var testPriceCell = newRow.insertCell();
+    const testPriceCell = newRow.insertCell();
     testPriceCell.textContent = test_price;
 
     // Remove button
-    var removeCell = document.createElement("td");
-    var removeButton = document.createElement("button");
+    const removeCell = document.createElement("td");
+    const removeButton = document.createElement("button");
     removeButton.type = "button";
     removeButton.className = "btn btn-danger btn-remove-row";
     removeButton.innerText = "Remove";
@@ -2755,45 +2758,22 @@ form.addEventListener("submit", function (event) {
   event.preventDefault(); // Prevent form submission
 
   if (labRegistrationFromValidation()) {
+    // Retrieve the rows from the table
+    const tableBody = document.getElementById("labTableForTestsBody");
+    const rows = tableBody.getElementsByTagName("tr");
+
+    // Collect the test IDs
+    const testIds = [];
+    for (const row of rows) {
+      const testId = row.getAttribute("data-test-id");
+      testIds.push(testId);
+    }
+
+    // Set the test IDs as a comma-separated string in the hidden input field
+    const hiddenInput = document.getElementById("labTableForTestsData");
+    hiddenInput.value = testIds.join(",");
+
+    // Submit the form
     form.submit();
-
-    // // Get form data
-    // var formData = $(this).serializeArray();
-
-    // // Get table rows data
-    // var tableData = [];
-    // $("#labTableForTestsBody tr").each(function () {
-    //   var rowData = {
-    //     id: $(this).find("td:eq(0)").text(),
-    //     testName: $(this).find("td:eq(1)").text(),
-    //     department: $(this).find("td:eq(2)").text(),
-    //     duration: $(this).find("td:eq(3)").text(),
-    //     rate: $(this).find("td:eq(4)").text(),
-    //   };
-    //   tableData.push(rowData);
-    // });
-
-    // // Combine form data and table data
-    // var requestData = {
-    //   formData: formData,
-    //   tableData: tableData,
-    // };
-    // var url = handle_lab_registration;
-    // // Make an AJAX request
-    // $.ajax({
-    //   url: url, // Replace with your Django view URL
-    //   method: "POST", // Adjust the HTTP method if needed
-    //   data: JSON.stringify(requestData), // Convert to JSON string
-    //   contentType: "application/json", // Set content type as JSON
-    //   success: function (response) {
-    //     // Handle the success response from the server
-    //     console.log(response); // Log the response for testing or further processing
-    //     window.location.href = "/invoice.html";
-    //   },
-    //   error: function (xhr, status, error) {
-    //     // Handle the error response from the server
-    //     console.error(error); // Log the error for debugging
-    //   },
-    // });
   }
 });
