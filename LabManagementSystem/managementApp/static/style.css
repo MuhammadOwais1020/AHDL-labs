@@ -366,7 +366,63 @@ body {
 }
 
 /* INVOICE */
-.main-section {
-    color: red;
-    background-color: #00CDAC;
+#invoice {
+    display: none;
+}
+
+.main-section-inv {
+    text-align: center;
+}
+
+.main-heading-inv h1,
+.main-heading-inv p {
+    margin-bottom: 0px;
+}
+
+.main-heading-inv h1,
+#lab-registration-id-invoice,
+#lab-items-inv table thead tr th {
+    font-size: 16px !important;
+}
+
+.main-heading-inv p,
+#pannel-case-invoice,
+.personal-information-inv,
+#lab-items-inv table tbody tr td {
+    font-size: 14px !important;
+}
+
+.personal-information-inv {
+    width: 100%;
+    display: flex;
+
+}
+
+.personal-information-inv .left,
+.personal-information-inv .right {
+    width: 50%;
+}
+
+#barcode {
+    background-color: antiquewhite;
+    width: 300px;
+    height: 100px;
+}
+
+.close-svg {
+    cursor: pointer;
+    /* display: none; */
+}
+
+.close-svg svg {
+    fill: red;
+    width: 50px;
+    height: 50px;
+    position: relative;
+    top: 0;
+    right: 0;
+}
+
+.close-svg svg:hover {
+    fill: rgba(255, 26, 26, 0.726);
 }

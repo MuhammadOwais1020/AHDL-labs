@@ -27,6 +27,19 @@
             margin-bottom: 0px;
         }
 
+        .main-heading-inv h1,
+        #lab-registration-id-invoice,
+        #lab-items-inv table thead tr th {
+            font-size: 16px !important;
+        }
+
+        .main-heading-inv p,
+        #pannel-case-invoice,
+        .personal-information-inv,
+        #lab-items-inv table tbody tr td {
+            font-size: 14px !important;
+        }
+
         .personal-information-inv {
             width: 100%;
             display: flex;
@@ -38,17 +51,41 @@
             width: 50%;
         }
 
-        #barcodeContainer {
-            width: 200px;
-            height: 200px;
-            background-color: beige;
-            float: right;
+        #barcode {
+            background-color: antiquewhite;
+            width: 300px;
+            height: 100px;
+        }
+
+        .close-svg {
+            cursor: pointer;
+            /* display: none; */
+        }
+
+        .close-svg svg {
+            fill: red;
+            width: 50px;
+            height: 50px;
+            position: relative;
+            top: 0;
+            right: 0;
+        }
+
+        .close-svg svg:hover {
+            fill: rgba(255, 26, 26, 0.726);
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <div class="container custom-width">
+        <div class="close-svg">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+            </svg>
+        </div>
         <div class="main-section-inv my-3">
             <!-- main heading -->
             <div class="main-heading-inv">
@@ -57,10 +94,10 @@
             </div>
             <!-- lab id section -->
             <div class="lab-id-section-inv my-3">
+                <h2 id="lab-registration-id-invoice" class="bold">LAB ID</h2>
                 <svg id="barcode"></svg>
-                <h2 id="lab-registration-id-invoice" class="bold">LAB ID: # lab_registration_id</h2>
                 <!-- if pannel case -->
-                <h3 id="pannel-case-invoice">Pannel Case, Pannel ID: pannel_amp_id</h3>
+                <h3 id="pannel-case-invoice" class="mt-2">Pannel Case, Pannel ID: pannel_amp_id</h3>
             </div>
 
         </div>
@@ -117,17 +154,13 @@
                 </tbody>
             </table>
         </div>
+        <div>
+        </div>
     </div>
-
-    <label>Enter Text: </label>
-    <input type="text" class="form-control" id="barcodetext" placeholder="Type Here..."><br>
-
-    <button class="btn btn-info" type="button" onclick="generateNow();" id="generate-now">Generate</button>
-
 
     <script type="text/javascript">
         function generateNow() {
-            var text = document.getElementById("barcodetext").value;
+            var text = '3424324';
             if (!text) {
                 alert('Please Enter Text');
             } else {
@@ -136,6 +169,14 @@
                 });
             }
         }
+
+
+        function myFunction() {
+            console.log("Page loaded! Your function is called.");
+            window.print();
+        }
+
+        window.onload = myFunction;
     </script>
 </body>
 

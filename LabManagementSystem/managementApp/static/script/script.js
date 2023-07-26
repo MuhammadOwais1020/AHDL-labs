@@ -2788,6 +2788,7 @@ form.addEventListener("submit", function (event) {
 
     // Retrieve the rows from the table
     const tableBody = document.getElementById("labTableForTestsBody");
+    let tableContent = $("#labTableForTestsBody")[0].innerHTML;
     const rows = tableBody.getElementsByTagName("tr");
     const testIds = [];
     for (const row of rows) {
@@ -2807,10 +2808,46 @@ form.addEventListener("submit", function (event) {
       data: formData,
       dataType: "json",
       success: function (response) {
-        // Handle the server response if needed
-        $("#addLabAlert").show();
-        $("#addLabAlert").html(showAlert(response.status, response.message));
-        hideAlert(5000);
+        if (response.status == "success") {
+          if (formData.pannelCase == true) {
+            $("#pannel-case-invoice").show();
+            $("#pannel-case-invoice").text(
+              "Pannel Case, Pannel ID: " + formData.pannelEmp
+            );
+          } else {
+            $("#pannel-case-invoice").hide();
+          }
+          $("#patient-id-invoice").text("Patient ID: " + formData.patientId);
+          $("#patient-name-invoice").text(
+            "Patient Name: " + formData.patientName
+          );
+          $("#gender-invoice").text("Gender: " + formData.gender);
+          $("#refered-by-invoice").text("Refered By: " + formData.referedBy);
+          $("#datetime-invoice").text("Datetime: " + formData.dateTime);
+          $("#age-invoice").text(
+            "Age: " +
+              formData.ageYears +
+              " years " +
+              formData.ageMonths +
+              " months " +
+              formData.ageDays +
+              " days"
+          );
+          $("#contact-no-invoice").text("Contact No: " + formData.contact);
+          $("#hospital-invoice").text("Hospital: " + formData.hospital);
+          $("#lab-items-invoice-body")[0].innerHTML = tableContent;
+          addValuesToRows();
+
+          $("#complete-body").hide();
+          $("#invoice").show();
+          generateNow("#barcode", response.lab_id);
+        } else {
+          $("#invoice").hide();
+          $("#complete-body").show();
+          $("#addLabAlert").show();
+          $("#addLabAlert").html(showAlert(response.status, response.message));
+          hideAlert(5000);
+        }
       },
       error: function (error) {
         // Handle errors if any
@@ -2819,3 +2856,82 @@ form.addEventListener("submit", function (event) {
     });
   }
 });
+
+// bar code generating
+function generateNow(barcode, id) {
+  JsBarcode(barcode, id, {
+    width: 3,
+  });
+}
+
+$(".close-svg").on("click", function () {
+  $("#invoice").hide();
+  $("#complete-body").show();
+  // Get the form element
+  const form = document.getElementById("labRegistrationFrom");
+
+  // Reset the form to its initial state
+  form.reset();
+  $("#labTableForTestsBody")[0].innerHTML = "";
+});
+
+// Function to add values to individual rows in the table
+function addValuesToRows() {
+  // Load selected rows
+
+  // Get the table body of lab-items-invoice-body
+  const tableBody = document.getElementById("lab-items-invoice-body");
+
+  // Create a new row
+  const newRow = tableBody.insertRow();
+
+  // Add the first column with the text "Total Amount"
+  const firstCell = newRow.insertCell();
+  firstCell.textContent = "Total Amount";
+  firstCell.setAttribute("colspan", "2"); // Collapse first two columns
+
+  // Add the second column with the actual Total Amount value
+  const secondCell = newRow.insertCell();
+  secondCell.textContent = $("#totalAmount").val();
+
+  // Repeat the above steps for each value
+  // Concession
+  const concessionRow = tableBody.insertRow();
+  const concessionFirstCell = concessionRow.insertCell();
+  concessionFirstCell.textContent = "Concession";
+  concessionFirstCell.setAttribute("colspan", "2");
+  const concessionSecondCell = concessionRow.insertCell();
+  concessionSecondCell.textContent = $("#concession").val();
+
+  // Final Amount
+  const finalAmountRow = tableBody.insertRow();
+  const finalAmountFirstCell = finalAmountRow.insertCell();
+  finalAmountFirstCell.textContent = "Final Amount";
+  finalAmountFirstCell.setAttribute("colspan", "2");
+  const finalAmountSecondCell = finalAmountRow.insertCell();
+  finalAmountSecondCell.textContent = $("#finalAmount").val();
+
+  // Amount Paid
+  const amountPaidRow = tableBody.insertRow();
+  const amountPaidFirstCell = amountPaidRow.insertCell();
+  amountPaidFirstCell.textContent = "Amount Paid";
+  amountPaidFirstCell.setAttribute("colspan", "2");
+  const amountPaidSecondCell = amountPaidRow.insertCell();
+  amountPaidSecondCell.textContent = $("#amountPaid").val();
+
+  // Amount Due
+  const amountDueRow = tableBody.insertRow();
+  const amountDueFirstCell = amountDueRow.insertCell();
+  amountDueFirstCell.textContent = "Amount Due";
+  amountDueFirstCell.setAttribute("colspan", "2");
+  const amountDueSecondCell = amountDueRow.insertCell();
+  amountDueSecondCell.textContent = $("#amountDue").val();
+
+  // Pannel Amount
+  const pannelAmountRow = tableBody.insertRow();
+  const pannelAmountFirstCell = pannelAmountRow.insertCell();
+  pannelAmountFirstCell.textContent = "Pannel Amount";
+  pannelAmountFirstCell.setAttribute("colspan", "2");
+  const pannelAmountSecondCell = pannelAmountRow.insertCell();
+  pannelAmountSecondCell.textContent = $("#pannelAmount").val();
+}

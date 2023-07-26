@@ -1022,6 +1022,7 @@ def handle_lab_registration(request):
             response_data = {
                 "status": "success",
                 "message": "Lab registration saved successfully.",
+                "lab_id": lab_registration.id
             }
             return JsonResponse(response_data)
         

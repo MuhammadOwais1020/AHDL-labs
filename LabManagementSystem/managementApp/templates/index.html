@@ -22,7 +22,7 @@
 
 <body>
   <!-- complete page container -->
-  <div class="container-fluid">
+  <div class="container-fluid" id="complete-body">
     <!-- START || side panel -->
     <div class="side-panel-div">
       <!-- logo -->
@@ -1515,6 +1515,86 @@
 
   </div>
 
+  <!-- invoice -->
+  <div class="container custom-width">
+    <div class="close-svg">
+      <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+        viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+        <path
+          d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+      </svg>
+    </div>
+    <div class="main-section-inv my-3">
+      <!-- main heading -->
+      <div class="main-heading-inv">
+        <h1 class="bold">AHDL Laboratory</h1>
+        <p>Nawabshah</p>
+      </div>
+      <!-- lab id section -->
+      <div class="lab-id-section-inv my-3">
+        <h2 id="lab-registration-id-invoice" class="bold">LAB ID</h2>
+        <svg id="barcode"></svg>
+        <!-- if pannel case -->
+        <h3 id="pannel-case-invoice" class="mt-2">Pannel Case, Pannel ID: pannel_amp_id</h3>
+      </div>
+
+    </div>
+
+    <div class="personal-information-inv my-5">
+
+      <div class="left">
+
+        <p id="patient-id-invoice">
+          Patient ID: patient_id
+        </p>
+        <p id="patient-name-invoice">
+          Patient Name: patient_name
+        </p>
+        <p id="gender-invoice">
+          Gender: gender
+        </p>
+        <p id="refered-by-invoice">
+          Refered By: refered_by
+        </p>
+
+      </div>
+
+      <div class="right">
+
+        <p id="datetime-invoice">
+          Date Time: datetime
+        </p>
+        <p id="age-invoice">
+          Age: age_years age_months age_days
+        </p>
+        <p id="contact-no-invoice">
+          Contact No: contact_no
+        </p>
+        <p id="hospital-invoice">
+          Hospital: hospital
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="lab-items-inv">
+      <table class="table table-striped" id="lab-items-invoice">
+        <thead>
+          <tr>
+            <th>TEST NAME</th>
+            <th>DURATION</th>
+            <th>RATE</th>
+          </tr>
+        </thead>
+        <tbody id="lab-items-invoice-body">
+
+        </tbody>
+      </table>
+    </div>
+    <div>
+    </div>
+  </div>
   <script>
     // Get all buttons with the class "button-group"
     var buttons = document.querySelectorAll(".button-group");
