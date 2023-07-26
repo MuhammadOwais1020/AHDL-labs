@@ -20,6 +20,7 @@ from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from .models import LabRegistration, LabItems
+from django.db import transaction
 # Create your views here.
 
 # admin index page
@@ -917,8 +918,129 @@ def render_to_pdf(template_src, context_dict={}):
     return None
 
 
+def handle_lab_registration_testing(request):
+    if request.method == 'POST':
+        # Get the test IDs from the hidden input field
+        test_ids_string = request.POST.get('labTableForTestsData')
+        test_ids = test_ids_string.split(',') if test_ids_string else []
+        
+        print(f'Test IDs: {test_ids}')
+
+        data = {
+            'hello': test_ids
+        }
+
+        return render(request, 'invoice.html', data)
+    else:
+        data = {
+            'hello':'error'
+        }
+        # Render the initial form page here
+        return render(request, 'invoice.html', data)
+    
 @csrf_exempt
 def handle_lab_registration(request):
+    if request.method == "POST":
+        try:
+            with transaction.atomic():
+                # Retrieve the form data
+                patient_id = request.POST.get('patientId')
+                relation = request.POST.get('relation')
+                date_time = request.POST.get('dateTime')
+                patient_name = request.POST.get('patientName')
+                gender = request.POST.get('gender')
+                age_years = request.POST.get('ageYears')
+                age_months = request.POST.get('ageMonths')
+                age_days = request.POST.get('ageDays')
+                contact = request.POST.get('contact')
+                cnic = request.POST.get('cnic')
+                pannel_case = request.POST.get('pannelCase')
+                refered_by = request.POST.get('referedBy')
+                collection_by = request.POST.get('collectionBy')
+                hospital = request.POST.get('hospital')
+                special_refer = request.POST.get('specialRefer')
+                phlebotomist = request.POST.get('phlebotomist')
+                
+                # Retrieve the 'pannelEmp' and other fields with default value of 0
+                try:
+                    pannel_emp = int(request.POST.get('pannelEmp'))
+                except (TypeError, ValueError):
+                    pannel_emp = 0
+
+                try:
+                    total_amount = int(request.POST.get('totalAmount'))
+                except (TypeError, ValueError):
+                    total_amount = 0
+
+                try:
+                    concession = int(request.POST.get('concession'))
+                except (TypeError, ValueError):
+                    concession = 0
+
+                try:
+                    amount_paid = int(request.POST.get('amountPaid'))
+                except (TypeError, ValueError):
+                    amount_paid = 0
+
+                try:
+                    pannel_amount = int(request.POST.get('pannelAmount'))
+                except (TypeError, ValueError):
+                    pannel_amount = 0
+
+                # Save the LabRegistration data
+                lab_registration = LabRegistration.objects.create(
+                    patient_id=patient_id,
+                    relation=relation,
+                    datetime=date_time,
+                    patient_name=patient_name,
+                    gender=gender,
+                    age_years=age_years,
+                    age_months=age_months,
+                    age_days=age_days,
+                    contact_no=contact,
+                    cnic=cnic,
+                    pannel_case=pannel_case,
+                    pannel_emp=pannel_emp,
+                    refered_by=refered_by,
+                    collection_by=collection_by,
+                    hospital=hospital,
+                    special_refer=special_refer,
+                    phlebotomist=phlebotomist,
+                    total_amount=total_amount,
+                    concession=concession,
+                    amount_paid=amount_paid,
+                    pannel_amount=pannel_amount,
+                )
+
+                # Retrieve test_ids and save LabItems
+                test_ids = request.POST.get('labTableForTestsData').split(',')
+
+                for test_id in test_ids:
+                    LabItems.objects.create(test_id=test_id, lab_id=lab_registration.id)
+                    
+            # Return a success response
+            response_data = {
+                "status": "success",
+                "message": "Lab registration saved successfully.",
+            }
+            return JsonResponse(response_data)
+        
+        except Exception as e:
+            response_data = {
+                "status": "danger",
+                "message": "error: "+ str(e),
+            }
+            return JsonResponse(response_data)
+    else:
+        response_data = {
+            "status": "danger",
+            "message": "Invalid request method",
+        }
+        return JsonResponse(response_data)
+
+
+@csrf_exempt
+def handle_lab_registrationS(request):
     if request.method == 'POST':
         # Retrieve form data
         patient_id = request.POST.get('patientId')
@@ -1001,12 +1123,10 @@ def handle_lab_registration(request):
         except ValueError:
             pannel_amount = 0
 
-
         # Get the test IDs from the hidden input field
         test_ids_string = request.POST.get('labTableForTestsData')
         test_ids = test_ids_string.split(',') if test_ids_string else []
         
-
         print(f'Test IDs: {test_ids}')
 
         print(f"RELATEION: {relation}")
@@ -1045,12 +1165,21 @@ def handle_lab_registration(request):
             for test_id in test_ids:
                 print(f'Test ID: {test_id}')
                 print(f'Lab Registration ID: {lab_registration.id}')
-                LabItems.objects.create(test=test_id, lab=lab_registration.id)
+                LabItems.objects.create(test_id=test_id, lab_id=lab_registration.id)
         except:
             print('Error: got error when saving LabItems data in database')
 
+        
+         # Fetch records from Test model using test_ids list
+        test_records = Test.objects.filter(id__in=test_ids)
+
+        final_amount = total_amount - concession
+        
+        # Prepare the data dictionary to be sent to the template
         data = {
-            'hello': 'Muhammad Owais Rehmani'
+            'lab_registration': lab_registration,
+            'test_records': test_records,
+            'final_amount': final_amount
         }
 
         # return render(request, "invoice.html", data)

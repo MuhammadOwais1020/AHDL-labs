@@ -160,6 +160,7 @@ function hideAlert(time) {
     $("#rangeParameterAlert").hide();
     $("#addTestAlert").hide();
     $("#updateTestAlert").hide();
+    $("#addLabAlert").hide();
   }, time); // Hide after time seconds
 }
 // Fetch doctor names using AJAX
@@ -2758,22 +2759,63 @@ form.addEventListener("submit", function (event) {
   event.preventDefault(); // Prevent form submission
 
   if (labRegistrationFromValidation()) {
+    // Retrieve the form data
+    const formData = {
+      patientId: $("#patientId").val(),
+      relation: $('input[name="relation"]:checked').val(),
+      dateTime: $("#dateTime").val(),
+      patientName: $("#patientName").val(),
+      gender: $("#gender").val(),
+      ageYears: $("#ageYears").val(),
+      ageMonths: $("#ageMonths").val(),
+      ageDays: $("#ageDays").val(),
+      contact: $("#contact").val(),
+      cnic: $("#cnic").val(),
+      pannelCase: $("#pannelCase").is(":checked"),
+      pannelEmp: $("#pannelEmp").val(),
+      referedBy: $("#referedBy").val(),
+      collectionBy: $("#collectionBy").val(),
+      hospital: $("#hospital").val(),
+      specialRefer: $("#specialRefer").val(),
+      phlebotomist: $("#phlebotomist").val(),
+      totalAmount: $("#totalAmount").val(),
+      concession: $("#concession").val(),
+      finalAmount: $("#finalAmount").val(),
+      amountPaid: $("#amountPaid").val(),
+      amountDue: $("#amountDue").val(),
+      pannelAmount: $("#pannelAmount").val(),
+    };
+
     // Retrieve the rows from the table
     const tableBody = document.getElementById("labTableForTestsBody");
     const rows = tableBody.getElementsByTagName("tr");
-
-    // Collect the test IDs
     const testIds = [];
     for (const row of rows) {
-      const testId = row.getAttribute("data-test-id");
+      const testIdCell = row.getElementsByTagName("td")[0];
+      const testId = testIdCell.textContent.trim();
       testIds.push(testId);
     }
 
-    // Set the test IDs as a comma-separated string in the hidden input field
-    const hiddenInput = document.getElementById("labTableForTestsData");
-    hiddenInput.value = testIds.join(",");
+    // Add the test IDs to the form data
+    formData.labTableForTestsData = testIds.join(",");
+    var url = handle_lab_registration;
 
-    // Submit the form
-    form.submit();
+    // Send the form data to the server using AJAX
+    $.ajax({
+      url: url,
+      type: "POST",
+      data: formData,
+      dataType: "json",
+      success: function (response) {
+        // Handle the server response if needed
+        $("#addLabAlert").show();
+        $("#addLabAlert").html(showAlert(response.status, response.message));
+        hideAlert(5000);
+      },
+      error: function (error) {
+        // Handle errors if any
+        alert("Error occurred while saving data.");
+      },
+    });
   }
 });

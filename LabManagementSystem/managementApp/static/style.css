@@ -364,3 +364,9 @@ body {
     display: none;
 
 }
+
+/* INVOICE */
+.main-section {
+    color: red;
+    background-color: #00CDAC;
+}
