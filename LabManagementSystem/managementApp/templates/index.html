@@ -8,15 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- font icons -->
   <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'style.css' %}" />
   <!-- bootstrap -->
   <link rel="stylesheet" href="{% static 'bootstrap.css' %}" />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- custom CSS -->
-  <link rel="stylesheet" href="{% static 'style.css' %}" />
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
   <title>AHDL Labs</title>
 </head>
 
@@ -589,9 +589,6 @@
               </div>
             </div>
 
-            <!-- Hidden input field to store the test IDs -->
-            <input type="text" id="labTableForTestsData" name="labTableForTestsData" value="" class="form-control">
-
             <div class="sub-wind">
               <div class="row">
                 <div class="col-md-9">
@@ -607,6 +604,17 @@
                       </tr>
                     </thead>
                     <tbody id="labTableForTestsBody"></tbody>
+                  </table>
+                  <!-- hidden table  -->
+                  <table id="labTableForTests-hidden" style="display: none;">
+                    <thead>
+                      <tr>
+                        <th>TEST NAME</th>
+                        <th>DURATION</th>
+                        <th>RATE</th>
+                      </tr>
+                    </thead>
+                    <tbody id="labTableForTestsBody-invoice"></tbody>
                   </table>
                 </div>
 
@@ -647,6 +655,29 @@
           </form>
         </div>
 
+        <!-- lab history -->
+        <div class="wind" id="lab-wind-2">
+          <div class="sub-wind">
+
+            <table id="lab-registration-table">
+              <thead>
+                <tr>
+                  <th>Lab ID</th>
+                  <th>Date Time</th>
+                  <th>Gender</th>
+                  <th>Pannel Case</th>
+                  <th>Test Name</th>
+                  <th>LabItem Status</th>
+                </tr>
+              </thead>
+              <tbody id="lab-registration-table-body">
+                <!-- Data will be added here -->
+              </tbody>
+          </div>
+        </div>
+        <!-- SELECT lr.id, lr.datetime, lr.gender, lr.pannel_case, t.test_name, li.labitem_status FROM managementApp_labregistration
+lr JOIN managementApp_labitems li ON lr.id = li.id JOIN managementApp_testitem ti ON li.id = ti.id JOIN
+managementApp_test t ON ti.id = t.id; -->
         <!-- create TEST -->
         <div class="wind" id="test-wind-1">
           <div class="sub-wind">
@@ -1517,30 +1548,31 @@
 
   <!-- invoice -->
   <div class="container custom-width">
-    <div class="close-svg">
+    <div class="close-svg no-print">
       <svg xmlns="http://www.w3.org/2000/svg" height="1em"
         viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
         <path
           d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
       </svg>
     </div>
-    <div class="main-section-inv my-3">
+    <div class="main-section-inv">
       <!-- main heading -->
       <div class="main-heading-inv">
         <h1 class="bold">AHDL Laboratory</h1>
         <p>Nawabshah</p>
       </div>
       <!-- lab id section -->
-      <div class="lab-id-section-inv my-3">
+      <div class="lab-id-section-inv my-2">
         <h2 id="lab-registration-id-invoice" class="bold">LAB ID</h2>
         <svg id="barcode"></svg>
         <!-- if pannel case -->
-        <h3 id="pannel-case-invoice" class="mt-2">Pannel Case, Pannel ID: pannel_amp_id</h3>
+        <br><br>
+        <h3 id="pannel-case-invoice" class="mt-4">Pannel Case, Pannel ID: pannel_amp_id</h3>
       </div>
 
     </div>
 
-    <div class="personal-information-inv my-5">
+    <div class="personal-information-inv my-3">
 
       <div class="left">
 
@@ -1552,9 +1584,6 @@
         </p>
         <p id="gender-invoice">
           Gender: gender
-        </p>
-        <p id="refered-by-invoice">
-          Refered By: refered_by
         </p>
 
       </div>
@@ -1570,18 +1599,15 @@
         <p id="contact-no-invoice">
           Contact No: contact_no
         </p>
-        <p id="hospital-invoice">
-          Hospital: hospital
-        </p>
 
       </div>
 
     </div>
 
     <div class="lab-items-inv">
-      <table class="table table-striped" id="lab-items-invoice">
+      <table class="table table-hover" id="lab-items-invoice">
         <thead>
-          <tr>
+          <tr class="table-header">
             <th>TEST NAME</th>
             <th>DURATION</th>
             <th>RATE</th>
@@ -1592,8 +1618,11 @@
         </tbody>
       </table>
     </div>
-    <div>
-    </div>
+
+    <br><br>
+    <span class="software-developed">Software Developed By: Qonkar Technologies</span>
+    <span class="software-developed">(+92) 305 8214945 | wwww.qonkar.com</span>
+  </div>
   </div>
   <script>
     // Get all buttons with the class "button-group"
@@ -1639,6 +1668,7 @@
     var update_test_record = "{% url 'update_test_record' %}";
     var load_test_data = "{% url 'load_test_data' %}";
     var handle_lab_registration = "{% url 'handle_lab_registration' %}";
+    var get_lab_registration_data = "{% url 'get_lab_registration_data' %}";
 
     var b_patientId = 0;
     var b_patientName = "";

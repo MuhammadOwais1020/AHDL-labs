@@ -274,6 +274,7 @@ function labExpendedMenu(n) {
     getDoctors();
     loadTestData();
   } else if (n == 2) {
+    fetchLabRegistrationData();
     $("#main-heading").html("Lab History");
   }
 }
@@ -2629,9 +2630,13 @@ testCodeSelect.addEventListener("change", function () {
       selectedValue.split(",");
 
     const tableBody = document.getElementById("labTableForTestsBody");
+    const tableBodyHidden = document.getElementById(
+      "labTableForTestsBody-invoice"
+    );
 
     // Create a new row
     const newRow = tableBody.insertRow();
+    const newRowHidden = tableBodyHidden.insertRow();
 
     // Set data attributes for each cell (test ID and test price)
     newRow.setAttribute("data-test-id", id);
@@ -2644,14 +2649,26 @@ testCodeSelect.addEventListener("change", function () {
     const testNameCell = newRow.insertCell();
     testNameCell.textContent = test_name;
 
+    // hidden
+    const testNameCellHidden = newRowHidden.insertCell();
+    testNameCellHidden.textContent = test_name;
+
     const testDepartmentCell = newRow.insertCell();
     testDepartmentCell.textContent = test_department;
 
     const testDurationCell = newRow.insertCell();
     testDurationCell.textContent = test_duration;
 
+    // hidden
+    const testDurationCellHidden = newRowHidden.insertCell();
+    testDurationCellHidden.textContent = test_duration;
+
     const testPriceCell = newRow.insertCell();
     testPriceCell.textContent = test_price;
+
+    // hidden
+    const testPriceCellHidden = newRowHidden.insertCell();
+    testPriceCellHidden.textContent = test_price;
 
     // Remove button
     const removeCell = document.createElement("td");
@@ -2663,6 +2680,7 @@ testCodeSelect.addEventListener("change", function () {
       removeTableRow(newRow);
       calculateAmount();
     });
+
     removeCell.appendChild(removeButton);
     newRow.appendChild(removeCell);
   }
@@ -2754,6 +2772,8 @@ function labRegistrationFromValidation() {
   return true;
 }
 
+var pannel_case = false;
+
 var form = document.getElementById("labRegistrationFrom");
 form.addEventListener("submit", function (event) {
   event.preventDefault(); // Prevent form submission
@@ -2788,7 +2808,7 @@ form.addEventListener("submit", function (event) {
 
     // Retrieve the rows from the table
     const tableBody = document.getElementById("labTableForTestsBody");
-    let tableContent = $("#labTableForTestsBody")[0].innerHTML;
+    let tableContent = $("#labTableForTestsBody-invoice")[0].innerHTML;
     const rows = tableBody.getElementsByTagName("tr");
     const testIds = [];
     for (const row of rows) {
@@ -2800,7 +2820,7 @@ form.addEventListener("submit", function (event) {
     // Add the test IDs to the form data
     formData.labTableForTestsData = testIds.join(",");
     var url = handle_lab_registration;
-
+    pannel_case = formData.pannelCase;
     // Send the form data to the server using AJAX
     $.ajax({
       url: url,
@@ -2841,6 +2861,7 @@ form.addEventListener("submit", function (event) {
           $("#complete-body").hide();
           $("#invoice").show();
           generateNow("#barcode", response.lab_id);
+          window.print();
         } else {
           $("#invoice").hide();
           $("#complete-body").show();
@@ -2886,52 +2907,126 @@ function addValuesToRows() {
   const newRow = tableBody.insertRow();
 
   // Add the first column with the text "Total Amount"
+  const emptyCell = newRow.insertCell();
+  emptyCell.textContent = "";
+
   const firstCell = newRow.insertCell();
   firstCell.textContent = "Total Amount";
-  firstCell.setAttribute("colspan", "2"); // Collapse first two columns
+  firstCell.classList.add("bold");
 
   // Add the second column with the actual Total Amount value
   const secondCell = newRow.insertCell();
   secondCell.textContent = $("#totalAmount").val();
-
-  // Repeat the above steps for each value
-  // Concession
-  const concessionRow = tableBody.insertRow();
-  const concessionFirstCell = concessionRow.insertCell();
-  concessionFirstCell.textContent = "Concession";
-  concessionFirstCell.setAttribute("colspan", "2");
-  const concessionSecondCell = concessionRow.insertCell();
-  concessionSecondCell.textContent = $("#concession").val();
-
-  // Final Amount
-  const finalAmountRow = tableBody.insertRow();
-  const finalAmountFirstCell = finalAmountRow.insertCell();
-  finalAmountFirstCell.textContent = "Final Amount";
-  finalAmountFirstCell.setAttribute("colspan", "2");
-  const finalAmountSecondCell = finalAmountRow.insertCell();
-  finalAmountSecondCell.textContent = $("#finalAmount").val();
-
-  // Amount Paid
-  const amountPaidRow = tableBody.insertRow();
-  const amountPaidFirstCell = amountPaidRow.insertCell();
-  amountPaidFirstCell.textContent = "Amount Paid";
-  amountPaidFirstCell.setAttribute("colspan", "2");
-  const amountPaidSecondCell = amountPaidRow.insertCell();
-  amountPaidSecondCell.textContent = $("#amountPaid").val();
-
-  // Amount Due
-  const amountDueRow = tableBody.insertRow();
-  const amountDueFirstCell = amountDueRow.insertCell();
-  amountDueFirstCell.textContent = "Amount Due";
-  amountDueFirstCell.setAttribute("colspan", "2");
-  const amountDueSecondCell = amountDueRow.insertCell();
-  amountDueSecondCell.textContent = $("#amountDue").val();
+  secondCell.classList.add("bold");
 
   // Pannel Amount
-  const pannelAmountRow = tableBody.insertRow();
-  const pannelAmountFirstCell = pannelAmountRow.insertCell();
-  pannelAmountFirstCell.textContent = "Pannel Amount";
-  pannelAmountFirstCell.setAttribute("colspan", "2");
-  const pannelAmountSecondCell = pannelAmountRow.insertCell();
-  pannelAmountSecondCell.textContent = $("#pannelAmount").val();
+  if (pannel_case == true) {
+    const pannelAmountRow = tableBody.insertRow();
+
+    const emptyCell5 = pannelAmountRow.insertCell();
+    emptyCell5.textContent = "";
+
+    const pannelAmountFirstCell = pannelAmountRow.insertCell();
+    pannelAmountFirstCell.textContent = "Pannel Amount";
+    pannelAmountFirstCell.classList.add("bold");
+
+    const pannelAmountSecondCell = pannelAmountRow.insertCell();
+    pannelAmountSecondCell.textContent = $("#pannelAmount").val();
+    pannelAmountSecondCell.classList.add("bold");
+  } else {
+    // Concession
+    if (!($("#concession").val() == "" || $("#concession").val() == 0)) {
+      const concessionRow = tableBody.insertRow();
+
+      const emptyCell1 = concessionRow.insertCell();
+      emptyCell1.textContent = "";
+
+      const concessionFirstCell = concessionRow.insertCell();
+      concessionFirstCell.textContent = "Concession";
+      concessionFirstCell.classList.add("bold");
+
+      const concessionSecondCell = concessionRow.insertCell();
+      concessionSecondCell.textContent = $("#concession").val();
+      concessionSecondCell.classList.add("bold");
+
+      // Final Amount
+      const finalAmountRow = tableBody.insertRow();
+
+      const emptyCel2 = finalAmountRow.insertCell();
+      emptyCel2.textContent = "";
+
+      const finalAmountFirstCell = finalAmountRow.insertCell();
+      finalAmountFirstCell.textContent = "Final Amount";
+      finalAmountFirstCell.classList.add("bold");
+
+      const finalAmountSecondCell = finalAmountRow.insertCell();
+      finalAmountSecondCell.textContent = $("#finalAmount").val();
+      finalAmountSecondCell.classList.add("bold");
+    }
+
+    // Amount Paid
+    const amountPaidRow = tableBody.insertRow();
+
+    const emptyCell3 = amountPaidRow.insertCell();
+    emptyCell3.textContent = "";
+
+    const amountPaidFirstCell = amountPaidRow.insertCell();
+    amountPaidFirstCell.textContent = "Amount Paid";
+    amountPaidFirstCell.classList.add("bold");
+
+    const amountPaidSecondCell = amountPaidRow.insertCell();
+    amountPaidSecondCell.textContent = $("#amountPaid").val();
+    amountPaidSecondCell.classList.add("bold");
+
+    // Amount Due
+    const amountDueRow = tableBody.insertRow();
+
+    const emptyCell4 = amountDueRow.insertCell();
+    emptyCell4.textContent = "";
+
+    const amountDueFirstCell = amountDueRow.insertCell();
+    amountDueFirstCell.textContent = "Amount Due";
+    amountDueFirstCell.classList.add("bold");
+
+    const amountDueSecondCell = amountDueRow.insertCell();
+    amountDueSecondCell.textContent = $("#amountDue").val();
+    amountDueSecondCell.classList.add("bold");
+  }
+}
+
+// load lab registration data
+function fetchLabRegistrationData() {
+  var url = get_lab_registration_data;
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      // Call a function to display the data in the table
+      displayDataInTable(data);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+}
+
+// Function to display the data in the table
+function displayDataInTable(data) {
+  const tableBody = document.getElementById("lab-registration-table-body");
+
+  // Clear the existing table content
+  tableBody.innerHTML = "";
+
+  // Loop through the data and create table rows for each record
+  data.forEach((record) => {
+    const row = document.createElement("tr");
+
+    // Create table cells for each field and add them to the row
+    Object.values(record).forEach((value) => {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      row.appendChild(cell);
+    });
+
+    // Add the row to the table body
+    tableBody.appendChild(row);
+  });
 }

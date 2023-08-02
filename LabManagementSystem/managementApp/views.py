@@ -21,6 +21,8 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from .models import LabRegistration, LabItems
 from django.db import transaction
+import sqlite3
+from django.db import connection
 # Create your views here.
 
 # admin index page
@@ -1132,6 +1134,9 @@ def handle_lab_registrationS(request):
 
         print(f"RELATEION: {relation}")
 
+        lab_status = 'pending'
+        labitem_status = 'pending'
+
         try:
             # Save LabRegistration
             lab_registration = LabRegistration.objects.create(
@@ -1155,7 +1160,8 @@ def handle_lab_registrationS(request):
                 total_amount=total_amount,
                 concession=concession,
                 amount_paid=amount_paid,
-                pannel_amount=pannel_amount
+                pannel_amount=pannel_amount,
+                lab_status=lab_status
             )
         except:
             print('Error: got error when saving LabRegistration data in database')
@@ -1166,7 +1172,7 @@ def handle_lab_registrationS(request):
             for test_id in test_ids:
                 print(f'Test ID: {test_id}')
                 print(f'Lab Registration ID: {lab_registration.id}')
-                LabItems.objects.create(test_id=test_id, lab_id=lab_registration.id)
+                LabItems.objects.create(test_id=test_id, lab_id=lab_registration.id, labitem_status=labitem_status)
         except:
             print('Error: got error when saving LabItems data in database')
 
@@ -1189,3 +1195,37 @@ def handle_lab_registrationS(request):
 
     # Handle other request methods if needed
     return redirect('error')
+
+
+
+
+@csrf_exempt
+def get_lab_registration_data(request):
+    print('inside function')
+    try:
+        print('inside try')
+        with connection.cursor() as cursor:
+            sql_query = '''
+                SELECT lr.id, li.test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
+            '''
+
+            cursor.execute(sql_query)
+            records = cursor.fetchall()
+
+            # Convert the records to a list of dictionaries
+            data = []
+            for record in records:
+                lab_id, datetime, gender, pannel_case, test_name, labitem_status = record
+                print(record)
+                data.append({
+                    'lab_id': lab_id,
+                    'datetime': datetime.strftime('%Y-%m-%d %H:%M'),  # Convert to string
+                    'gender': gender,
+                    'pannel_case': pannel_case,
+                    'test_name': test_name,
+                    'labitem_status': labitem_status,
+                })
+
+            return JsonResponse(data, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)})

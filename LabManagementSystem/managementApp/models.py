@@ -151,6 +151,7 @@ class LabRegistration(models.Model):
     concession = models.DecimalField(max_digits=10, decimal_places=2)
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
     pannel_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    lab_status = models.CharField(max_length=100, default='Pending')
 
     def __str__(self):
         return self.patient_name
@@ -159,6 +160,7 @@ class LabRegistration(models.Model):
 class LabItems(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     lab = models.ForeignKey(LabRegistration, on_delete=models.CASCADE)
+    labitem_status = models.CharField(max_length=100, default='Pending')
 
     def __str__(self):
         return f"LabItem {self.pk}"

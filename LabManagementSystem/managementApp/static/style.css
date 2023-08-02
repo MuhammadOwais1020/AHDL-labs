@@ -392,6 +392,12 @@ body {
     font-size: 14px !important;
 }
 
+.lab-id-section-inv #pannel-case-invoice {
+    border: solid 1px black !important;
+    padding: 5px 10px !important;
+    display: inline !important;
+}
+
 .personal-information-inv {
     width: 100%;
     display: flex;
@@ -405,11 +411,18 @@ body {
 
 #barcode {
     background-color: antiquewhite;
-    width: 300px;
+    width: 400px;
     height: 100px;
 }
 
+.custom-width {
+    display: none;
+}
+
 .close-svg {
+    position: relative;
+    top: 0;
+    right: 0;
     cursor: pointer;
     /* display: none; */
 }
@@ -425,4 +438,16 @@ body {
 
 .close-svg svg:hover {
     fill: rgba(255, 26, 26, 0.726);
+}
+
+.software-developed {
+    text-align: center;
+    margin: 0;
+    display: block;
+}
+
+@media print {
+    .no-print {
+        display: none;
+    }
 }
