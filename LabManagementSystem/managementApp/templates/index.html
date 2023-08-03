@@ -663,6 +663,7 @@
               <thead>
                 <tr>
                   <th>LAB ID</th>
+                  <th>TEST ID</th>
                   <th>TEST NAME</th>
                   <th>DATE</th>
                   <th>GENDER</th>
@@ -1633,8 +1634,21 @@
           d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
       </svg>
     </div>
-    <h2 align="center">Make Lab Result</h2>
-    <h3 id="registered-lab-id"></h3>
+
+    <!-- lab_records.html -->
+    <div id="lab-data-container">
+      <h1 id="registered-lab-id" align="center">Lab Registration ID #</h1>
+      <hr class="my-4">
+      <p>Patient ID: <span id="lab-edit-result-patient-id"></span></p>
+      <p>Relation: <span id="lab-edit-result-relation"></span></p>
+      <p>Datetime: <span id="lab-edit-result-datetime"></span></p>
+      <p>Patient Name: <span id="lab-edit-result-patient-name"></span></p>
+      <!-- Add other fields from LabRegistration model as needed -->
+
+      <div id="lab-edit-result-tests-with-parameters">
+        <!-- Test and parameter data will be dynamically populated here -->
+      </div>
+    </div>
   </div>
 
   <script>

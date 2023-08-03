@@ -3025,6 +3025,12 @@ function displayDataInTable(data) {
     labIdCell.textContent = record.lab_id;
     row.appendChild(labIdCell);
 
+    const testIdCell = document.createElement("td");
+    testIdCell.textContent = record.test_id;
+    row.appendChild(testIdCell);
+
+    console.log("Test ID: " + record.test_id);
+
     const testNameCell = document.createElement("td");
     testNameCell.textContent = record.test_name;
     row.appendChild(testNameCell);
@@ -3081,6 +3087,8 @@ function editLabRecord(record) {
   $(".supper-container").hide();
   $("#edit-lab-results").show();
 
+  var test_id = record.test_id;
+
   const requestData = {
     lab_id: record.lab_id,
   };
@@ -3093,6 +3101,36 @@ function editLabRecord(record) {
     dataType: "json",
     success: function (response) {
       console.log(response);
+      $("#registered-lab-id").text("Lab Registration ID #" + record.lab_id);
+      // Populate the lab registration details
+      $("#lab-edit-result-patient-id").text(
+        response.lab_registration.patient_id
+      );
+      $("#lab-edit-result-relation").text(response.lab_registration.relation);
+      $("#lab-edit-result-datetime").text(response.lab_registration.datetime);
+      $("#lab-edit-result-patient-name").text(
+        response.lab_registration.patient_name
+      );
+      // Add other fields from LabRegistration model as needed
+
+      // Clear the previous test data and populate the new test data
+      $("#lab-edit-result-tests-with-parameters").empty();
+
+      // Loop through the test data and populate the HTML
+      for (const test_data of response.tests_with_parameters) {
+        // if (test_data.test_id == test_id) {
+        var testHtml = `<hr class="my-4"><h2>${test_data.test_name} (ID: ${test_data.test_id})</h2><hr class="my-4"><ul>`;
+        for (const parameter of test_data.parameters) {
+          testHtml += `<li>
+                        <strong>Parameter Name:</strong> ${parameter.parameter_name}<br>
+                        <strong>Parameter Unit:</strong> ${parameter.parameter_unit}<br>
+                        <strong>Parameter Result Type:</strong> ${parameter.parameter_result_type}
+                       </li><hr class="my-2">`;
+        }
+        testHtml += "</ul>";
+        $("#lab-edit-result-tests-with-parameters").append(testHtml);
+      }
+      // }
     },
     error: function (xhr, status, error) {
       // Handle any errors that occur during the request

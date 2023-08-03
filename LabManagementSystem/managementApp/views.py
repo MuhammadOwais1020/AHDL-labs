@@ -1235,7 +1235,7 @@ def get_lab_registration_data(request):
 def get_lab_registration_data(request):
     print('inside lab registration get data')
     sql_query = '''
-        SELECT lr.id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
+        SELECT lr.id, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
     '''
 
     # Execute the raw query using the manager for the model
@@ -1245,16 +1245,19 @@ def get_lab_registration_data(request):
     data = []
     for lab_registration in lab_registrations:
         lab_id = lab_registration.id
+        test_id = lab_registration.test_id
         test_name = lab_registration.test_name
         datetime = lab_registration.datetime.strftime("%Y-%m-%d %H:%M")  # Format datetime as string
         gender = lab_registration.gender
         pannel_case = lab_registration.pannel_case
         labitem_status = lab_registration.labitem_status
-        print(lab_registration)
+
+        print(f"Test ID: {test_id}")
 
         # Add the data for the current LabRegistration object to the list
         data.append({
             'lab_id': lab_id,
+            'test_id': test_id,
             'test_name': test_name,
             'datetime': datetime,
             'gender': gender,
@@ -1266,4 +1269,45 @@ def get_lab_registration_data(request):
     return JsonResponse(data, safe=False)
 
 
+@csrf_exempt
+def get_complete_lab_data(request):
+    lab_id = request.POST.get('lab_id')
+    print(f"Lab ID: {lab_id}")
+    try:
+        lab_registration = LabRegistration.objects.get(id=lab_id)
+        lab_items = LabItems.objects.filter(lab=lab_registration)
+        tests = Test.objects.filter(labitems__in=lab_items)
+        parameters = Parameter.objects.filter(testitem__test__in=tests)
 
+        print(f"Lab Registration: {lab_registration}")
+        print(f"Tests: {tests}")
+        print(f"Parameters: {parameters}")
+
+        # Create a list to store test data along with test_id and parameters
+        tests_with_parameters = []
+
+        for test in tests:
+            test_parameters = parameters.filter(testitem__test=test)
+            parameters_list = list(test_parameters.values())
+            test_data = {
+                'test_id': test.id,
+                'test_name': test.test_name,
+                'parameters': parameters_list,
+            }
+            tests_with_parameters.append(test_data)
+
+        # Serialize the data and convert it to a JSON response
+        data = {
+            'lab_registration': {
+                'patient_id': lab_registration.patient_id,
+                'datetime': lab_registration.datetime.strftime('%Y-%m-%d %H:%M:%S'),
+                'patient_name': lab_registration.patient_name,
+                'gender': lab_registration.gender
+            },
+            'tests_with_parameters': tests_with_parameters,
+        }
+
+        return JsonResponse(data, safe=False)
+
+    except LabRegistration.DoesNotExist:
+        return JsonResponse({'error': 'Lab Registration not found'}, status=404)
