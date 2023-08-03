@@ -2858,12 +2858,12 @@ form.addEventListener("submit", function (event) {
           $("#lab-items-invoice-body")[0].innerHTML = tableContent;
           addValuesToRows();
 
-          $("#complete-body").hide();
+          $(".supper-container").hide();
           $("#invoice").show();
           generateNow("#barcode", response.lab_id);
           window.print();
         } else {
-          $("#invoice").hide();
+          $(".supper-container").hide();
           $("#complete-body").show();
           $("#addLabAlert").show();
           $("#addLabAlert").html(showAlert(response.status, response.message));
@@ -2887,6 +2887,7 @@ function generateNow(barcode, id) {
 
 $(".close-svg").on("click", function () {
   $("#invoice").hide();
+  $("#edit-lab-results").hide();
   $("#complete-body").show();
   // Get the form element
   const form = document.getElementById("labRegistrationFrom");
@@ -3020,13 +3021,82 @@ function displayDataInTable(data) {
     const row = document.createElement("tr");
 
     // Create table cells for each field and add them to the row
-    Object.values(record).forEach((value) => {
-      const cell = document.createElement("td");
-      cell.textContent = value;
-      row.appendChild(cell);
+    const labIdCell = document.createElement("td");
+    labIdCell.textContent = record.lab_id;
+    row.appendChild(labIdCell);
+
+    const testNameCell = document.createElement("td");
+    testNameCell.textContent = record.test_name;
+    row.appendChild(testNameCell);
+
+    const datetimeCell = document.createElement("td");
+    datetimeCell.textContent = record.datetime;
+    row.appendChild(datetimeCell);
+
+    const genderCell = document.createElement("td");
+    genderCell.textContent = record.gender;
+    row.appendChild(genderCell);
+
+    const pannelCaseCell = document.createElement("td");
+    pannelCaseCell.textContent = record.pannel_case;
+    row.appendChild(pannelCaseCell);
+
+    // Add a button in the 7th column for edit
+    const editCell = document.createElement("td");
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.className = "btn btn-primary max-width";
+    editButton.addEventListener("click", () => {
+      // Call the editRecord function and pass the lab_id for editing
+      editLabRecord(record);
     });
+    editCell.appendChild(editButton);
+    row.appendChild(editCell);
+
+    const labitemStatusCell = document.createElement("td");
+
+    // Set text content and background color based on labitem_status value
+    if (record.labitem_status === "Pending") {
+      labitemStatusCell.textContent = record.labitem_status;
+      labitemStatusCell.style.color = "red";
+    } else if (record.labitem_status === "Processing") {
+      labitemStatusCell.textContent = record.labitem_status;
+      labitemStatusCell.style.color = "yellow";
+    } else if (record.labitem_status === "Ready") {
+      const printButton = document.createElement("button");
+      printButton.textContent = "Print";
+      printButton.className = "btn btn-success";
+      labitemStatusCell.appendChild(printButton);
+    }
+
+    row.appendChild(labitemStatusCell);
 
     // Add the row to the table body
     tableBody.appendChild(row);
+  });
+}
+
+function editLabRecord(record) {
+  console.log("inside editLab record");
+  $(".supper-container").hide();
+  $("#edit-lab-results").show();
+
+  const requestData = {
+    lab_id: record.lab_id,
+  };
+  var url = get_complete_lab_data;
+  // Send an AJAX POST request to the server
+  $.ajax({
+    type: "POST",
+    url: url, // Replace this with the actual URL to your Django view
+    data: requestData,
+    dataType: "json",
+    success: function (response) {
+      console.log(response);
+    },
+    error: function (xhr, status, error) {
+      // Handle any errors that occur during the request
+      console.error("Error:", error);
+    },
   });
 }

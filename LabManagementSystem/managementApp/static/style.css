@@ -415,7 +415,8 @@ body {
     height: 100px;
 }
 
-.custom-width {
+.custom-width,
+#edit-lab-results {
     display: none;
 }
 
@@ -450,4 +451,8 @@ body {
     .no-print {
         display: none;
     }
+}
+
+#lab-registration-table {
+    text-align: center !important;
 }

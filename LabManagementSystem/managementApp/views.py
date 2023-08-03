@@ -1229,3 +1229,41 @@ def get_lab_registration_data(request):
             return JsonResponse(data, safe=False)
     except Exception as e:
         return JsonResponse({'error': str(e)})
+    
+
+@csrf_exempt
+def get_lab_registration_data(request):
+    print('inside lab registration get data')
+    sql_query = '''
+        SELECT lr.id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
+    '''
+
+    # Execute the raw query using the manager for the model
+    lab_registrations = LabRegistration.objects.raw(sql_query)
+
+    # Create a list to store the data for each LabRegistration object
+    data = []
+    for lab_registration in lab_registrations:
+        lab_id = lab_registration.id
+        test_name = lab_registration.test_name
+        datetime = lab_registration.datetime.strftime("%Y-%m-%d %H:%M")  # Format datetime as string
+        gender = lab_registration.gender
+        pannel_case = lab_registration.pannel_case
+        labitem_status = lab_registration.labitem_status
+        print(lab_registration)
+
+        # Add the data for the current LabRegistration object to the list
+        data.append({
+            'lab_id': lab_id,
+            'test_name': test_name,
+            'datetime': datetime,
+            'gender': gender,
+            'pannel_case': pannel_case,
+            'labitem_status': labitem_status
+        })
+
+    # Return the data as a JSON response
+    return JsonResponse(data, safe=False)
+
+
+
