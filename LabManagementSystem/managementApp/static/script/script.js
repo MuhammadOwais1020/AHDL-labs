@@ -2164,15 +2164,16 @@ function loadParametersForTest() {
     type: "GET",
     success: function (response) {
       var parameterSelect = document.getElementById("testParameterSelect");
-      var parameterSelectEdit = document.getElementById(
-        "testParameterSelectEdit"
-      );
+      // var parameterSelectEdit = document.getElementById(
+      //   "testParameterSelectEdit"
+      // );
+
       // Clear existing options
       parameterSelect.innerHTML =
         "<option value=''>-- Select Parameter Name --</option>";
 
-      parameterSelectEdit.innerHTML =
-        "<option value=''>-- Select Parameter Name --</option>";
+      // parameterSelectEdit.innerHTML =
+      // "<option value=''>-- Select Parameter Name --</option>";
 
       // Add options for each parameter
       response.forEach(function (parameter) {
@@ -2184,7 +2185,7 @@ function loadParametersForTest() {
         option.text = optionText;
 
         parameterSelect.appendChild(option);
-        parameterSelectEdit.appendChild(option);
+        // parameterSelectEdit.appendChild(option);
       });
     },
     error: function (xhr, status, error) {
@@ -3118,19 +3119,19 @@ function editLabRecord(record) {
 
       // Loop through the test data and populate the HTML
       for (const test_data of response.tests_with_parameters) {
-        // if (test_data.test_id == test_id) {
-        var testHtml = `<hr class="my-4"><h2>${test_data.test_name} (ID: ${test_data.test_id})</h2><hr class="my-4"><ul>`;
-        for (const parameter of test_data.parameters) {
-          testHtml += `<li>
+        if (test_data.test_id == test_id) {
+          var testHtml = `<hr class="my-4"><h2>${test_data.test_name} (ID: ${test_data.test_id})</h2><hr class="my-4"><ul>`;
+          for (const parameter of test_data.parameters) {
+            testHtml += `<li>
                         <strong>Parameter Name:</strong> ${parameter.parameter_name}<br>
                         <strong>Parameter Unit:</strong> ${parameter.parameter_unit}<br>
                         <strong>Parameter Result Type:</strong> ${parameter.parameter_result_type}
                        </li><hr class="my-2">`;
+          }
+          testHtml += "</ul>";
+          $("#lab-edit-result-tests-with-parameters").append(testHtml);
         }
-        testHtml += "</ul>";
-        $("#lab-edit-result-tests-with-parameters").append(testHtml);
       }
-      // }
     },
     error: function (xhr, status, error) {
       // Handle any errors that occur during the request
