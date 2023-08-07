@@ -1640,9 +1640,9 @@
       <h1 id="registered-lab-id" align="center">Lab Registration ID #</h1>
       <hr class="my-4">
       <p>Patient ID: <span id="lab-edit-result-patient-id"></span></p>
-      <p>Relation: <span id="lab-edit-result-relation"></span></p>
-      <p>Datetime: <span id="lab-edit-result-datetime"></span></p>
       <p>Patient Name: <span id="lab-edit-result-patient-name"></span></p>
+      <p>Gender: <span id="lab-edit-result-gender"></span></p>
+      <p>Age: <span id="lab-edit-result-age"></span></p>
       <!-- Add other fields from LabRegistration model as needed -->
 
       <div id="lab-edit-result-tests-with-parameters">
@@ -1697,6 +1697,7 @@
     var handle_lab_registration = "{% url 'handle_lab_registration' %}";
     var get_lab_registration_data = "{% url 'get_lab_registration_data' %}";
     var get_complete_lab_data = "{% url 'get_complete_lab_data' %}";
+    var fetch_range_values = "{% url 'fetch_range_values' %}";
 
     var b_patientId = 0;
     var b_patientName = "";

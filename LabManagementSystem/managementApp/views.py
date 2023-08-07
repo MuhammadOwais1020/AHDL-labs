@@ -1197,8 +1197,6 @@ def handle_lab_registrationS(request):
     return redirect('error')
 
 
-
-
 @csrf_exempt
 def get_lab_registration_data(request):
     print('inside function')
@@ -1300,7 +1298,9 @@ def get_complete_lab_data(request):
         data = {
             'lab_registration': {
                 'patient_id': lab_registration.patient_id,
-                'datetime': lab_registration.datetime.strftime('%Y-%m-%d %H:%M:%S'),
+                'age_years': lab_registration.age_years,
+                'age_months': lab_registration.age_months,
+                'age_days': lab_registration.age_days,
                 'patient_name': lab_registration.patient_name,
                 'gender': lab_registration.gender
             },
@@ -1311,3 +1311,35 @@ def get_complete_lab_data(request):
 
     except LabRegistration.DoesNotExist:
         return JsonResponse({'error': 'Lab Registration not found'}, status=404)
+    
+
+@csrf_exempt
+def fetch_range_values(request):
+    parameter_id = request.GET.get('parameter_id')
+    gender = request.GET.get('gender')
+    age_years = int(request.GET.get('age_years'))
+    age_months = int(request.GET.get('age_months'))
+    age_days = int(request.GET.get('age_days'))
+
+    try:
+        range_parameters = RangeParameter.objects.filter(parameter_id=parameter_id, gender=gender)
+
+        # Calculate the age in years for matching with RangeParameter
+        age_in_years = age_years + (age_months / 12) + (age_days / 365)
+
+        # Find the appropriate RangeParameter based on age
+        selected_range_parameter = None
+        for range_param in range_parameters:
+            if range_param.age_from <= age_in_years <= range_param.age_to:
+                selected_range_parameter = range_param
+                break
+
+        if selected_range_parameter:
+            # Assuming you have a field named "values" in the RangeParameter model
+            range_values = selected_range_parameter.values.split(',')  # Adjust field name accordingly
+            return JsonResponse({'values': range_values}, safe=False)
+
+        return JsonResponse({'error': 'Range Parameter not found'}, status=404)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

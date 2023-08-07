@@ -3107,8 +3107,15 @@ function editLabRecord(record) {
       $("#lab-edit-result-patient-id").text(
         response.lab_registration.patient_id
       );
-      $("#lab-edit-result-relation").text(response.lab_registration.relation);
-      $("#lab-edit-result-datetime").text(response.lab_registration.datetime);
+      $("#lab-edit-result-gender").text(response.lab_registration.gender);
+      $("#lab-edit-result-age").text(
+        response.lab_registration.age_years +
+          " years " +
+          response.lab_registration.age_months +
+          " months " +
+          response.lab_registration.age_days +
+          " days"
+      );
       $("#lab-edit-result-patient-name").text(
         response.lab_registration.patient_name
       );
@@ -3120,15 +3127,105 @@ function editLabRecord(record) {
       // Loop through the test data and populate the HTML
       for (const test_data of response.tests_with_parameters) {
         if (test_data.test_id == test_id) {
-          var testHtml = `<hr class="my-4"><h2>${test_data.test_name} (ID: ${test_data.test_id})</h2><hr class="my-4"><ul>`;
+          var testHtml = `
+          <hr class="my-4">
+          <h2>${test_data.test_name} (ID: ${test_data.test_id})</h2>
+          <hr class="my-4">
+          <ul class="list-group">`;
+
           for (const parameter of test_data.parameters) {
-            testHtml += `<li>
-                        <strong>Parameter Name:</strong> ${parameter.parameter_name}<br>
-                        <strong>Parameter Unit:</strong> ${parameter.parameter_unit}<br>
-                        <strong>Parameter Result Type:</strong> ${parameter.parameter_result_type}
-                       </li><hr class="my-2">`;
+            testHtml += `
+              <li class="list-group-item">
+                <h5 class="mb-2"><strong>Parameter Name:</strong> ${parameter.parameter_name}</h5>
+                <p class="mb-1"><strong>Parameter Unit:</strong> ${parameter.parameter_unit}</p>
+                <p class="mb-1"><strong>Parameter Result Type:</strong> ${parameter.parameter_result_type}`;
+
+            // Check if the parameter result type is "PositiveNegative"
+            if (parameter.parameter_result_type === "positiveNegative") {
+              testHtml += `
+                  <hr class="my-2">
+                  <h5>Make Result</h5>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_positive" value="Positive">
+                    <label class="form-check-label" for="radio_${parameter.id}_positive">Positive</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_negative" value="Negative">
+                    <label class="form-check-label" for="radio_${parameter.id}_negative">Negative</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+                    <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                  </div>`;
+            } else if (
+              parameter.parameter_result_type === "detectedNotDetected"
+            ) {
+              testHtml += `
+                  <hr class="my-2">
+                  <h5>Make Result</h5>
+                  <div class="form-check">
+                      <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_detected" value="Detected">
+                      <label class="form-check-label" for="radio_${parameter.id}_detected">Detected</label>
+                  </div>
+                  <div class="form-check">
+                      <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_not_detected" value="Not Detected">
+                      <label class="form-check-label" for="radio_${parameter.id}_not_detected">Not Detected</label>
+                  </div>
+                  <div class="form-check">
+                      <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+                      <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                  </div>
+                  <div class="form-group mt-2">
+                      <label for="values_${parameter.id}">Values:</label>
+                      <input type="text" class="form-control" id="values_${parameter.id}" name="values_${parameter.id}">
+                  </div>`;
+            } else if (parameter.parameter_result_type === "text") {
+              testHtml += `
+                  <hr class="my-2">
+                  <h5>Enter Text Value</h5>
+                  <div class="form-group">
+                      <label for="text_${parameter.id}">Text Value:</label>
+                      <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}">
+                  </div>`;
+            } else if (parameter.parameter_result_type === "range") {
+              testHtml += `
+                  <hr class="my-2">
+                  <h5>Fetch Range Values</h5>
+                  <div class="form-group">
+                      <button class="btn btn-secondary" onclick="fetchRangeValues(${parameter.id})">Fetch Values</button>
+                  </div>
+                  <div id="range_values_${parameter.id}" class="mt-3"></div>`;
+            } else if (parameter.parameter_result_type === "Range") {
+              $.ajax({
+                type: "GET",
+                url: "fetch_range_values/",
+                data: {
+                  parameter_id: parameter.id,
+                  gender: response.lab_registration.gender,
+                  age_years: response.lab_registration.age_years,
+                  age_months: response.lab_registration.age_months,
+                  age_days: response.lab_registration.age_days,
+                },
+                dataType: "json",
+                success: function (rangeResponse) {
+                  var rangeHtml =
+                    '<h5>Range Values:</h5><ul class="list-group">';
+                  for (const value of rangeResponse.values) {
+                    rangeHtml += `<li class="list-group-item">${value}</li>`;
+                  }
+                  rangeHtml += "</ul>";
+                  $(`#range_values_${parameter.id}`).html(rangeHtml);
+                },
+                error: function (xhr, status, error) {
+                  console.error("Error:", error);
+                },
+              });
+              testHtml += `<div id="range_values_${parameter.id}" class="list-group"></div>`;
+            }
+
+            testHtml += `</li>`;
           }
-          testHtml += "</ul>";
+          testHtml += `</ul>`;
           $("#lab-edit-result-tests-with-parameters").append(testHtml);
         }
       }
