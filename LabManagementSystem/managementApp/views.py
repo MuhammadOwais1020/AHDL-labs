@@ -1270,16 +1270,16 @@ def get_lab_registration_data(request):
 @csrf_exempt
 def get_complete_lab_data(request):
     lab_id = request.POST.get('lab_id')
-    print(f"Lab ID: {lab_id}")
+    # print(f"Lab ID: {lab_id}")
     try:
         lab_registration = LabRegistration.objects.get(id=lab_id)
         lab_items = LabItems.objects.filter(lab=lab_registration)
         tests = Test.objects.filter(labitems__in=lab_items)
         parameters = Parameter.objects.filter(testitem__test__in=tests)
 
-        print(f"Lab Registration: {lab_registration}")
-        print(f"Tests: {tests}")
-        print(f"Parameters: {parameters}")
+        # print(f"Lab Registration: {lab_registration}")
+        # print(f"Tests: {tests}")
+        # print(f"Parameters: {parameters}")
 
         # Create a list to store test data along with test_id and parameters
         tests_with_parameters = []
@@ -1315,31 +1315,20 @@ def get_complete_lab_data(request):
 
 @csrf_exempt
 def fetch_range_values(request):
-    parameter_id = request.GET.get('parameter_id')
-    gender = request.GET.get('gender')
-    age_years = int(request.GET.get('age_years'))
-    age_months = int(request.GET.get('age_months'))
-    age_days = int(request.GET.get('age_days'))
+    print('inside fetch_range_values')
+    parameter_id = request.POST.get('parameter_id')
+    gender = request.POST.get('gender')
+    
+    age_years = int(request.POST.get('age_years', 0))
+    age_months = int(request.POST.get('age_months', 0))
+    age_days = int(request.POST.get('age_days', 0))
 
-    try:
-        range_parameters = RangeParameter.objects.filter(parameter_id=parameter_id, gender=gender)
+    print(f"parameter ID: {parameter_id}")
+    print(f"gender: {gender}")
+    print(f"age_years: {age_years}")
+    print(f"age_months: {age_months}")
+    print(f"age_days: {age_days}")
 
-        # Calculate the age in years for matching with RangeParameter
-        age_in_years = age_years + (age_months / 12) + (age_days / 365)
-
-        # Find the appropriate RangeParameter based on age
-        selected_range_parameter = None
-        for range_param in range_parameters:
-            if range_param.age_from <= age_in_years <= range_param.age_to:
-                selected_range_parameter = range_param
-                break
-
-        if selected_range_parameter:
-            # Assuming you have a field named "values" in the RangeParameter model
-            range_values = selected_range_parameter.values.split(',')  # Adjust field name accordingly
-            return JsonResponse({'values': range_values}, safe=False)
-
-        return JsonResponse({'error': 'Range Parameter not found'}, status=404)
-
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    range_parameters = RangeParameter.objects.filter(parameter_id=parameter_id, gender=gender)
+    print(range_parameters)
+    return JsonResponse({'data':'success'})

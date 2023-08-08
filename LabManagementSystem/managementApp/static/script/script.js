@@ -3132,13 +3132,14 @@ function editLabRecord(record) {
           <h2>${test_data.test_name} (ID: ${test_data.test_id})</h2>
           <hr class="my-4">
           <ul class="list-group">`;
-
+          var i = 1;
           for (const parameter of test_data.parameters) {
             testHtml += `
               <li class="list-group-item">
-                <h5 class="mb-2"><strong>Parameter Name:</strong> ${parameter.parameter_name}</h5>
-                <p class="mb-1"><strong>Parameter Unit:</strong> ${parameter.parameter_unit}</p>
-                <p class="mb-1"><strong>Parameter Result Type:</strong> ${parameter.parameter_result_type}`;
+                <h5 class="mb-2">${i}. Parameter Name: <strong>${parameter.parameter_name}</strong></h5>`;
+            i++;
+            // <p class="mb-1"><strong>Parameter Unit:</strong> ${parameter.parameter_unit}</p>
+            // <p class="mb-1"><strong>Parameter Result Type:</strong> ${parameter.parameter_result_type}`;
 
             // Check if the parameter result type is "PositiveNegative"
             if (parameter.parameter_result_type === "positiveNegative") {
@@ -3188,17 +3189,10 @@ function editLabRecord(record) {
                       <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}">
                   </div>`;
             } else if (parameter.parameter_result_type === "range") {
-              testHtml += `
-                  <hr class="my-2">
-                  <h5>Fetch Range Values</h5>
-                  <div class="form-group">
-                      <button class="btn btn-secondary" onclick="fetchRangeValues(${parameter.id})">Fetch Values</button>
-                  </div>
-                  <div id="range_values_${parameter.id}" class="mt-3"></div>`;
-            } else if (parameter.parameter_result_type === "Range") {
+              var url = fetch_range_values;
               $.ajax({
-                type: "GET",
-                url: "fetch_range_values/",
+                type: "POST",
+                url: url,
                 data: {
                   parameter_id: parameter.id,
                   gender: response.lab_registration.gender,
@@ -3208,16 +3202,19 @@ function editLabRecord(record) {
                 },
                 dataType: "json",
                 success: function (rangeResponse) {
-                  var rangeHtml =
-                    '<h5>Range Values:</h5><ul class="list-group">';
-                  for (const value of rangeResponse.values) {
-                    rangeHtml += `<li class="list-group-item">${value}</li>`;
-                  }
-                  rangeHtml += "</ul>";
-                  $(`#range_values_${parameter.id}`).html(rangeHtml);
+                  console.log("inside success");
+                  console.log(rangeResponse);
+                  // var rangeHtml =
+                  //   '<h5>Range Values:</h5><ul class="list-group">';
+                  // for (const value of rangeResponse.values) {
+                  //   rangeHtml += `<li class="list-group-item">${value}</li>`;
+                  // }
+                  // rangeHtml += "</ul>";
+                  // $(`#range_values_${parameter.id}`).html(rangeHtml);
                 },
                 error: function (xhr, status, error) {
-                  console.error("Error:", error);
+                  console.log("inside error");
+                  console.error("Error:");
                 },
               });
               testHtml += `<div id="range_values_${parameter.id}" class="list-group"></div>`;
