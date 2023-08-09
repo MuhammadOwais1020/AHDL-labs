@@ -3189,35 +3189,11 @@ function editLabRecord(record) {
                       <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}">
                   </div>`;
             } else if (parameter.parameter_result_type === "range") {
-              var url = fetch_range_values;
-              $.ajax({
-                type: "POST",
-                url: url,
-                data: {
-                  parameter_id: parameter.id,
-                  gender: response.lab_registration.gender,
-                  age_years: response.lab_registration.age_years,
-                  age_months: response.lab_registration.age_months,
-                  age_days: response.lab_registration.age_days,
-                },
-                dataType: "json",
-                success: function (rangeResponse) {
-                  console.log("inside success");
-                  console.log(rangeResponse);
-                  // var rangeHtml =
-                  //   '<h5>Range Values:</h5><ul class="list-group">';
-                  // for (const value of rangeResponse.values) {
-                  //   rangeHtml += `<li class="list-group-item">${value}</li>`;
-                  // }
-                  // rangeHtml += "</ul>";
-                  // $(`#range_values_${parameter.id}`).html(rangeHtml);
-                },
-                error: function (xhr, status, error) {
-                  console.log("inside error");
-                  console.error("Error:");
-                },
-              });
-              testHtml += `<div id="range_values_${parameter.id}" class="list-group"></div>`;
+              testHtml += `
+                <hr class="my-2">
+                <h5>Load Range Values</h5>
+                <button class="btn btn-primary" onclick="loadRangeValues(${parameter.id}, '${response.lab_registration.gender}', ${response.lab_registration.age_years}, ${response.lab_registration.age_months}, ${response.lab_registration.age_days})">Load Data</button>
+                <div class="range-values" id="range_values_${parameter.id}"></div>`;
             }
 
             testHtml += `</li>`;
@@ -3228,6 +3204,43 @@ function editLabRecord(record) {
       }
     },
     error: function (xhr, status, error) {
+      // Handle any errors that occur during the request
+      console.error("Error:", error);
+    },
+  });
+}
+
+function loadRangeValues(parameterId, gender, ageYears, ageMonths, ageDays) {
+  const requestData = {
+    parameter_id: parameterId,
+    gender: gender,
+    age_years: ageYears,
+    age_days: ageDays,
+    age_months: ageMonths,
+  };
+  var url = fetch_range_values;
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: requestData,
+    success: function (response) {
+      console.log("inside success");
+      // // Handle the response and update the UI with the retrieved values
+      // const rangeValuesHtml = `
+      //           <p>Min Value: ${response.min_value}</p>
+      //           <p>Max Value: ${response.max_value}</p>`;
+
+      // $("#range_values_${parameterId}").html(rangeValuesHtml);
+      console.log(response.message);
+      if ("min_value" in response && "max_value" in response) {
+        console.log("Min Value:", response.min_value);
+        console.log("Max Value:", response.max_value);
+      } else {
+        console.log("No record found");
+      }
+    },
+    error: function (xhr, status, error) {
+      console.log("inside error");
       // Handle any errors that occur during the request
       console.error("Error:", error);
     },

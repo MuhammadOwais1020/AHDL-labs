@@ -1315,20 +1315,35 @@ def get_complete_lab_data(request):
 
 @csrf_exempt
 def fetch_range_values(request):
-    print('inside fetch_range_values')
+    print('----------------------')   
+    print('----------START-------')   
+    print('----------------------')   
     parameter_id = request.POST.get('parameter_id')
     gender = request.POST.get('gender')
+    age_years = int(request.POST.get('age_years') or 0)
+    age_months = int(request.POST.get('age_months') or 0)
+    age_days = int(request.POST.get('age_days') or 0)
+
+    total_age_years = age_years + (age_months / 12) + (age_days / 365)
+
+    print(f"Total age years: {total_age_years}")
     
-    age_years = int(request.POST.get('age_years', 0))
-    age_months = int(request.POST.get('age_months', 0))
-    age_days = int(request.POST.get('age_days', 0))
-
-    print(f"parameter ID: {parameter_id}")
-    print(f"gender: {gender}")
-    print(f"age_years: {age_years}")
-    print(f"age_months: {age_months}")
-    print(f"age_days: {age_days}")
-
-    range_parameters = RangeParameter.objects.filter(parameter_id=parameter_id, gender=gender)
-    print(range_parameters)
-    return JsonResponse({'data':'success'})
+    print("Parameter ID:", parameter_id)  # Debug print statement
+    print("Gender:", gender)  # Debug print statement
+    
+    # return JsonResponse({'message': 'Found'}, status=404)
+    try:
+        print('inside try')
+        range_parameters = RangeParameter.objects.filter(parameter_id=parameter_id, gender=gender,  age_from__lt=total_age_years, age_to__gt=total_age_years)
+        print('after getting record')
+        if range_parameters.exists():
+            range_parameter = range_parameters.first()  # Choose one of the matching records
+            response_data = {
+                'min_value': range_parameter.normal_value_from,
+                'max_value': range_parameter.normal_value_to
+            }
+        print('after getting data from database')
+        return JsonResponse(response_data)
+    except RangeParameter.DoesNotExist:
+        print('inside except rangeparameter')
+        return JsonResponse({'message': 'No record found'}, status=404)
