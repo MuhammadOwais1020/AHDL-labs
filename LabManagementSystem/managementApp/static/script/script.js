@@ -3193,7 +3193,11 @@ function editLabRecord(record) {
                 <hr class="my-2">
                 <h5>Load Range Values</h5>
                 <button class="btn btn-primary" onclick="loadRangeValues(${parameter.id}, '${response.lab_registration.gender}', ${response.lab_registration.age_years}, ${response.lab_registration.age_months}, ${response.lab_registration.age_days})">Load Data</button>
-                <div class="range-values" id="range_values_${parameter.id}"></div>`;
+                <div class="range-values" id="range_values_${parameter.id}"></div>
+                Range Values:<br>
+                      Min Value: <span class="range_values_section_${parameter.id}_min"></span><br>
+                      Max Value: <span class="range_values_section_${parameter.id}_max"></span>
+                `;
             }
 
             testHtml += `</li>`;
@@ -3235,6 +3239,12 @@ function loadRangeValues(parameterId, gender, ageYears, ageMonths, ageDays) {
       if ("min_value" in response && "max_value" in response) {
         console.log("Min Value:", response.min_value);
         console.log("Max Value:", response.max_value);
+        $(`.range_values_section_${parameterId}_min`).text(
+          `Min: ${response.min_value}`
+        );
+        $(`.range_values_section_${parameterId}_max`).text(
+          `Max: ${response.max_value}`
+        );
       } else {
         console.log("No record found");
       }
