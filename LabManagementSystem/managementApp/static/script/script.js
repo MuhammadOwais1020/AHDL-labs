@@ -3198,6 +3198,14 @@ function editLabRecord(record) {
                       Min Value: <span class="range_values_section_${parameter.id}_min"></span><br>
                       Max Value: <span class="range_values_section_${parameter.id}_max"></span>
                 `;
+
+              loadRangeValues(
+                parameter.id,
+                response.lab_registration.gender,
+                response.lab_registration.age_years,
+                response.lab_registration.age_months,
+                response.lab_registration.age_days
+              );
             }
 
             testHtml += `</li>`;
@@ -3215,6 +3223,7 @@ function editLabRecord(record) {
 }
 
 function loadRangeValues(parameterId, gender, ageYears, ageMonths, ageDays) {
+  console.log("range fucntion calls");
   const requestData = {
     parameter_id: parameterId,
     gender: gender,
@@ -3235,7 +3244,7 @@ function loadRangeValues(parameterId, gender, ageYears, ageMonths, ageDays) {
       //           <p>Max Value: ${response.max_value}</p>`;
 
       // $("#range_values_${parameterId}").html(rangeValuesHtml);
-      console.log(response.message);
+
       if ("min_value" in response && "max_value" in response) {
         console.log("Min Value:", response.min_value);
         console.log("Max Value:", response.max_value);
