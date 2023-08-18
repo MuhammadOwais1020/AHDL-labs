@@ -3129,7 +3129,7 @@ function editLabRecord(record) {
         if (test_data.test_id == test_id) {
           var testHtml = `
           <hr class="my-4">
-          <h2>${test_data.test_name} (ID: ${test_data.test_id})</h2>
+          <h2>${test_data.test_name}</h2>
           <hr class="my-4">
           <ul class="list-group">`;
           var i = 1;
@@ -3238,13 +3238,6 @@ function loadRangeValues(parameterId, gender, ageYears, ageMonths, ageDays) {
     data: requestData,
     success: function (response) {
       console.log("inside success");
-      // // Handle the response and update the UI with the retrieved values
-      // const rangeValuesHtml = `
-      //           <p>Min Value: ${response.min_value}</p>
-      //           <p>Max Value: ${response.max_value}</p>`;
-
-      // $("#range_values_${parameterId}").html(rangeValuesHtml);
-
       if ("min_value" in response && "max_value" in response) {
         console.log("Min Value:", response.min_value);
         console.log("Max Value:", response.max_value);
