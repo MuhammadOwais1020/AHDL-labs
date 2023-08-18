@@ -3128,76 +3128,71 @@ function editLabRecord(record) {
       for (const test_data of response.tests_with_parameters) {
         if (test_data.test_id == test_id) {
           var testHtml = `
-          <hr class="my-4">
-          <h2>${test_data.test_name}</h2>
-          <hr class="my-4">
-          <ul class="list-group">`;
+      <hr class="my-4">
+      <h2>${test_data.test_name}</h2>
+      <hr class="my-4">
+      <table class="table table-bordered" id="lab_data_edit">
+        <thead>
+          <tr>
+            <th>Parameter Name</th>
+            <th>Result</th>
+            <th>Normal Range/Type</th>
+          </tr>
+        </thead>
+        <tbody>`;
           var i = 1;
           for (const parameter of test_data.parameters) {
             testHtml += `
-              <li class="list-group-item">
-                <h5 class="mb-2">${i}. Parameter Name: <strong>${parameter.parameter_name}</strong></h5>`;
+        <tr>
+          <td>${i}. ${parameter.parameter_name}</td>
+          <td>`;
             i++;
-            // <p class="mb-1"><strong>Parameter Unit:</strong> ${parameter.parameter_unit}</p>
-            // <p class="mb-1"><strong>Parameter Result Type:</strong> ${parameter.parameter_result_type}`;
 
-            // Check if the parameter result type is "PositiveNegative"
             if (parameter.parameter_result_type === "positiveNegative") {
               testHtml += `
-                  <hr class="my-2">
-                  <h5>Make Result</h5>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_positive" value="Positive">
-                    <label class="form-check-label" for="radio_${parameter.id}_positive">Positive</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_negative" value="Negative">
-                    <label class="form-check-label" for="radio_${parameter.id}_negative">Negative</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
-                    <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
-                  </div>`;
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_positive" value="Positive">
+            <label class="form-check-label" for="radio_${parameter.id}_positive">Positive</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_negative" value="Negative">
+            <label class="form-check-label" for="radio_${parameter.id}_negative">Negative</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+            <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+          </div>`;
             } else if (
               parameter.parameter_result_type === "detectedNotDetected"
             ) {
               testHtml += `
-                  <hr class="my-2">
-                  <h5>Make Result</h5>
-                  <div class="form-check">
-                      <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_detected" value="Detected">
-                      <label class="form-check-label" for="radio_${parameter.id}_detected">Detected</label>
-                  </div>
-                  <div class="form-check">
-                      <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_not_detected" value="Not Detected">
-                      <label class="form-check-label" for="radio_${parameter.id}_not_detected">Not Detected</label>
-                  </div>
-                  <div class="form-check">
-                      <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
-                      <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
-                  </div>
-                  <div class="form-group mt-2">
-                      <label for="values_${parameter.id}">Values:</label>
-                      <input type="text" class="form-control" id="values_${parameter.id}" name="values_${parameter.id}">
-                  </div>`;
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_detected" value="Detected">
+            <label class="form-check-label" for="radio_${parameter.id}_detected">Detected</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_not_detected" value="Not Detected">
+            <label class="form-check-label" for="radio_${parameter.id}_not_detected">Not Detected</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+            <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+          </div>
+          <div class="form-group mt-2">
+            <label for="values_${parameter.id}">Values:</label>
+            <input type="text" class="form-control" id="values_${parameter.id}" name="values_${parameter.id}">
+          </div>`;
             } else if (parameter.parameter_result_type === "text") {
               testHtml += `
-                  <hr class="my-2">
-                  <h5>Enter Text Value</h5>
-                  <div class="form-group">
-                      <label for="text_${parameter.id}">Text Value:</label>
-                      <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}">
-                  </div>`;
+          <div class="form-group">
+            <label for="text_${parameter.id}">Text Value:</label>
+            <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}">
+          </div>`;
             } else if (parameter.parameter_result_type === "range") {
               testHtml += `
-                <hr class="my-2">
-                <h5>Load Range Values</h5>
-                <button class="btn btn-primary" onclick="loadRangeValues(${parameter.id}, '${response.lab_registration.gender}', ${response.lab_registration.age_years}, ${response.lab_registration.age_months}, ${response.lab_registration.age_days})">Load Data</button>
-                <div class="range-values" id="range_values_${parameter.id}"></div>
-                Range Values:<br>
-                      Min Value: <span class="range_values_section_${parameter.id}_min"></span><br>
-                      Max Value: <span class="range_values_section_${parameter.id}_max"></span>
-                `;
+          <div class="form-group">
+            <input type="text" class="form-control" id="range_result_${parameter.id}" name="range_result_${parameter.id} placeholder="Result Value"">
+          </div>`;
 
               loadRangeValues(
                 parameter.id,
@@ -3208,9 +3203,20 @@ function editLabRecord(record) {
               );
             }
 
-            testHtml += `</li>`;
+            testHtml += `</td>`;
+            if (parameter.parameter_result_type === "range") {
+              testHtml += `<td>
+              <span class="range_values_section_${parameter.id}_min"></span> - <span class="range_values_section_${parameter.id}_max"></span>
+              </td>`;
+            } else {
+              testHtml += `<td>${parameter.parameter_result_type}</td>`;
+            }
+
+            testHtml += `</tr>`;
           }
-          testHtml += `</ul>`;
+          testHtml += `
+      </tbody>
+    </table>`;
           $("#lab-edit-result-tests-with-parameters").append(testHtml);
         }
       }
@@ -3242,10 +3248,10 @@ function loadRangeValues(parameterId, gender, ageYears, ageMonths, ageDays) {
         console.log("Min Value:", response.min_value);
         console.log("Max Value:", response.max_value);
         $(`.range_values_section_${parameterId}_min`).text(
-          `Min: ${response.min_value}`
+          `${response.min_value}`
         );
         $(`.range_values_section_${parameterId}_max`).text(
-          `Max: ${response.max_value}`
+          `${response.max_value}`
         );
       } else {
         console.log("No record found");
