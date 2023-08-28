@@ -3088,7 +3088,8 @@ function editLabRecord(record) {
   console.log("kutta ka bacha");
   $(".supper-container").hide();
   $("#edit-lab-results").show();
-  // console.log("1. LAB ID: " + record.lab_id);
+  console.log("1. LAB ID: " + record.lab_id);
+  $("#db-lab-id").val(record.lab_id);
 
   var test_id = record.test_id;
 
@@ -3131,6 +3132,10 @@ function editLabRecord(record) {
         if (test_data.test_id == test_id) {
           console.log("2. LABItem ID: " + test_data.labItem_id);
           console.log("3. Test Name: " + test_data.test_name);
+
+          $("#db-labitem-id").val(test_data.labItem_id);
+          $("#db-test-name").val(test_data.test_name);
+
           var testHtml = `
             <hr class="my-4">
             <h2>${test_data.test_name}</h2>
