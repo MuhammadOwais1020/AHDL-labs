@@ -1284,16 +1284,24 @@ def get_complete_lab_data(request):
         # Create a list to store test data along with test_id and parameters
         tests_with_parameters = []
 
+        i = 0
         for test in tests:
             test_parameters = parameters.filter(testitem__test=test)
             parameters_list = list(test_parameters.values())
+            
+            labItem_ids = lab_items.filter(test=test).values_list('id', flat=True)  # Get labItem_ids for this test
+            labItem_ids = list(labItem_ids)
+            print(f"lab_item_id: {labItem_ids[i]}")
             test_data = {
                 'test_id': test.id,
+                'labItem_id': labItem_ids[i],  # List of labItem_ids for this test
                 'test_name': test.test_name,
                 'parameters': parameters_list,
             }
             tests_with_parameters.append(test_data)
+            i += 1
 
+            
         # Serialize the data and convert it to a JSON response
         data = {
             'lab_registration': {
@@ -1302,7 +1310,8 @@ def get_complete_lab_data(request):
                 'age_months': lab_registration.age_months,
                 'age_days': lab_registration.age_days,
                 'patient_name': lab_registration.patient_name,
-                'gender': lab_registration.gender
+                'gender': lab_registration.gender,
+
             },
             'tests_with_parameters': tests_with_parameters,
         }

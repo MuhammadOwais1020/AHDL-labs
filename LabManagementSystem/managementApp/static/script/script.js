@@ -3085,8 +3085,10 @@ function displayDataInTable(data) {
 
 function editLabRecord(record) {
   console.log("inside editLab record");
+  console.log("kutta ka bacha");
   $(".supper-container").hide();
   $("#edit-lab-results").show();
+  // console.log("1. LAB ID: " + record.lab_id);
 
   var test_id = record.test_id;
 
@@ -3127,72 +3129,74 @@ function editLabRecord(record) {
       // Loop through the test data and populate the HTML
       for (const test_data of response.tests_with_parameters) {
         if (test_data.test_id == test_id) {
+          console.log("2. LABItem ID: " + test_data.labItem_id);
+          console.log("3. Test Name: " + test_data.test_name);
           var testHtml = `
-      <hr class="my-4">
-      <h2>${test_data.test_name}</h2>
-      <hr class="my-4">
-      <table class="table table-bordered" id="lab_data_edit">
-        <thead>
-          <tr>
-            <th>Parameter Name</th>
-            <th>Result</th>
-            <th>Normal Range/Type</th>
-          </tr>
-        </thead>
-        <tbody>`;
+            <hr class="my-4">
+            <h2>${test_data.test_name}</h2>
+            <hr class="my-4">
+            <table class="table table-bordered" id="lab_data_edit">
+              <thead>
+                <tr>
+                  <th>Parameter Name</th>
+                  <th>Result</th>
+                  <th>Normal Range/Type</th>
+                </tr>
+              </thead>
+              <tbody>`;
           var i = 1;
           for (const parameter of test_data.parameters) {
             testHtml += `
-        <tr>
-          <td>${i}. ${parameter.parameter_name}</td>
-          <td>`;
+              <tr>
+                <td>${i}. ${parameter.parameter_name}</td>
+                <td>`;
             i++;
 
             if (parameter.parameter_result_type === "positiveNegative") {
               testHtml += `
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_positive" value="Positive">
-            <label class="form-check-label" for="radio_${parameter.id}_positive">Positive</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_negative" value="Negative">
-            <label class="form-check-label" for="radio_${parameter.id}_negative">Negative</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
-            <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
-          </div>`;
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_positive" value="Positive">
+                  <label class="form-check-label" for="radio_${parameter.id}_positive">Positive</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_negative" value="Negative">
+                  <label class="form-check-label" for="radio_${parameter.id}_negative">Negative</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+                  <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                </div>`;
             } else if (
               parameter.parameter_result_type === "detectedNotDetected"
             ) {
               testHtml += `
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_detected" value="Detected">
-            <label class="form-check-label" for="radio_${parameter.id}_detected">Detected</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_not_detected" value="Not Detected">
-            <label class="form-check-label" for="radio_${parameter.id}_not_detected">Not Detected</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
-            <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
-          </div>
-          <div class="form-group mt-2">
-            <label for="values_${parameter.id}">Values:</label>
-            <input type="text" class="form-control" id="values_${parameter.id}" name="values_${parameter.id}">
-          </div>`;
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_detected" value="Detected">
+                  <label class="form-check-label" for="radio_${parameter.id}_detected">Detected</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_not_detected" value="Not Detected">
+                  <label class="form-check-label" for="radio_${parameter.id}_not_detected">Not Detected</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+                  <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                </div>
+                <div class="form-group mt-2">
+                  <label for="values_${parameter.id}">Values:</label>
+                  <input type="text" class="form-control" id="values_${parameter.id}" name="values_${parameter.id}">
+                </div>`;
             } else if (parameter.parameter_result_type === "text") {
               testHtml += `
-          <div class="form-group">
-            <label for="text_${parameter.id}">Text Value:</label>
-            <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}">
-          </div>`;
+                <div class="form-group">
+                  <label for="text_${parameter.id}">Text Value:</label>
+                  <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}">
+                </div>`;
             } else if (parameter.parameter_result_type === "range") {
               testHtml += `
-          <div class="form-group">
-            <input type="text" class="form-control" id="range_result_${parameter.id}" name="range_result_${parameter.id} placeholder="Result Value"">
-          </div>`;
+                <div class="form-group">
+                  <input type="text" class="form-control" id="range_result_${parameter.id}" name="range_result_${parameter.id} placeholder="Result Value"">
+                </div>`;
 
               loadRangeValues(
                 parameter.id,

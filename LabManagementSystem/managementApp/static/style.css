@@ -53,7 +53,7 @@ body {
     color: var(--mo-text-color);
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
+    overflow: auto !important;
     margin: 0;
     padding: 0;
     font-family: roboto-regular;
@@ -455,4 +455,8 @@ body {
 
 #lab-registration-table {
     text-align: center !important;
+}
+
+#saveResultsButton {
+    float: right;
 }

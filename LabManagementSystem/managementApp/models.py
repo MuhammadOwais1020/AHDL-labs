@@ -164,3 +164,16 @@ class LabItems(models.Model):
 
     def __str__(self):
         return f"LabItem {self.pk}"
+    
+
+class Result(models.Model):
+    lab = models.ForeignKey(LabRegistration, on_delete=models.CASCADE)
+    labitem = models.ForeignKey(LabItems, on_delete=models.CASCADE)
+    test_name = models.CharField(max_length=100)
+
+
+class ResultItems(models.Model):
+    result = models.ForeignKey(Result, on_delete=models.CASCADE)
+    result_value = models.CharField(max_length=100)
+    values = models.CharField(max_length=100)
+    type_normal_range = models.CharField(max_length=100)
