@@ -2830,12 +2830,18 @@ form.addEventListener("submit", function (event) {
       dataType: "json",
       success: function (response) {
         if (response.status == "success") {
+          const tableBodyHidden = document.getElementById(
+            "labTableForTestsBody-invoice"
+          );
+          tableBodyHidden.innerHTML = "";
           if (formData.pannelCase == true) {
+            console.log("inside pannel case true if");
             $("#pannel-case-invoice").show();
             $("#pannel-case-invoice").text(
               "Pannel Case, Pannel ID: " + formData.pannelEmp
             );
           } else {
+            console.log("inside pannel case else");
             $("#pannel-case-invoice").hide();
           }
           $("#patient-id-invoice").text("Patient ID: " + formData.patientId);
@@ -3095,6 +3101,7 @@ function editLabRecord(record) {
 
   const requestData = {
     lab_id: record.lab_id,
+    labitem_id: record.labitem_id,
   };
   var url = get_complete_lab_data;
   // Send an AJAX POST request to the server
@@ -3127,18 +3134,17 @@ function editLabRecord(record) {
       // Clear the previous test data and populate the new test data
       $("#lab-edit-result-tests-with-parameters").empty();
 
+      console.log("2. LABItem ID: " + response.labItem_id);
+      console.log("3. Test Name: " + response.test_name);
+      $("#db-labitem-id").val(response.labItem_id);
+      $("#db-test-name").val(response.test_name);
+
       // Loop through the test data and populate the HTML
-      for (const test_data of response.tests_with_parameters) {
-        if (test_data.test_id == test_id) {
-          console.log("2. LABItem ID: " + test_data.labItem_id);
-          console.log("3. Test Name: " + test_data.test_name);
-
-          $("#db-labitem-id").val(test_data.labItem_id);
-          $("#db-test-name").val(test_data.test_name);
-
-          var testHtml = `
+      // for (const test_data of response.parameters) {
+      // if (test_data.test_id == test_id) {
+      var testHtml = `
             <hr class="my-4">
-            <h2>${test_data.test_name}</h2>
+            <h2>${response.test_name}</h2>
             <hr class="my-4">
             <table class="table table-bordered" id="lab_data_edit">
               <thead>
@@ -3149,16 +3155,16 @@ function editLabRecord(record) {
                 </tr>
               </thead>
               <tbody>`;
-          var i = 1;
-          for (const parameter of test_data.parameters) {
-            testHtml += `
+      var i = 1;
+      for (const parameter of response.parameters) {
+        testHtml += `
               <tr>
                 <td>${i}. ${parameter.parameter_name}</td>
                 <td>`;
-            i++;
+        i++;
 
-            if (parameter.parameter_result_type === "positiveNegative") {
-              testHtml += `
+        if (parameter.parameter_result_type === "positiveNegative") {
+          testHtml += `
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_positive" value="Positive">
                   <label class="form-check-label" for="radio_${parameter.id}_positive">Positive</label>
@@ -3171,10 +3177,8 @@ function editLabRecord(record) {
                   <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
                   <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
                 </div>`;
-            } else if (
-              parameter.parameter_result_type === "detectedNotDetected"
-            ) {
-              testHtml += `
+        } else if (parameter.parameter_result_type === "detectedNotDetected") {
+          testHtml += `
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_detected" value="Detected">
                   <label class="form-check-label" for="radio_${parameter.id}_detected">Detected</label>
@@ -3191,44 +3195,38 @@ function editLabRecord(record) {
                   <label for="values_${parameter.id}">Values:</label>
                   <input type="text" class="form-control" id="values_${parameter.id}" name="values_${parameter.id}">
                 </div>`;
-            } else if (parameter.parameter_result_type === "text") {
-              testHtml += `
+        } else if (parameter.parameter_result_type === "text") {
+          testHtml += `
                 <div class="form-group">
                   <label for="text_${parameter.id}">Text Value:</label>
                   <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}">
                 </div>`;
-            } else if (parameter.parameter_result_type === "range") {
-              testHtml += `
+        } else if (parameter.parameter_result_type === "range") {
+          testHtml += `
                 <div class="form-group">
                   <input type="text" class="form-control" id="range_result_${parameter.id}" name="range_result_${parameter.id} placeholder="Result Value"">
                 </div>`;
+          // console.log("Parameter ID->>>> " + parameter.id);
+          loadRangeValues(parameter.id);
+        }
 
-              loadRangeValues(
-                parameter.id,
-                response.lab_registration.gender,
-                response.lab_registration.age_years,
-                response.lab_registration.age_months,
-                response.lab_registration.age_days
-              );
-            }
-
-            testHtml += `</td>`;
-            if (parameter.parameter_result_type === "range") {
-              testHtml += `<td>
+        testHtml += `</td>`;
+        if (parameter.parameter_result_type === "range") {
+          testHtml += `<td>
               <span class="range_values_section_${parameter.id}_min"></span> - <span class="range_values_section_${parameter.id}_max"></span>
               </td>`;
-            } else {
-              testHtml += `<td>${parameter.parameter_result_type}</td>`;
-            }
+        } else {
+          testHtml += `<td>${parameter.parameter_result_type}</td>`;
+        }
 
-            testHtml += `</tr>`;
-          }
-          testHtml += `
+        testHtml += `</tr>`;
+      }
+      testHtml += `
       </tbody>
     </table>`;
-          $("#lab-edit-result-tests-with-parameters").append(testHtml);
-        }
-      }
+      $("#lab-edit-result-tests-with-parameters").append(testHtml);
+      // }
+      // }
     },
     error: function (xhr, status, error) {
       // Handle any errors that occur during the request
@@ -3237,14 +3235,10 @@ function editLabRecord(record) {
   });
 }
 
-function loadRangeValues(parameterId, gender, ageYears, ageMonths, ageDays) {
+function loadRangeValues(parameterId) {
   console.log("range fucntion calls");
   const requestData = {
     parameter_id: parameterId,
-    gender: gender,
-    age_years: ageYears,
-    age_days: ageDays,
-    age_months: ageMonths,
   };
   var url = fetch_range_values;
   $.ajax({
