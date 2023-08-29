@@ -177,3 +177,4 @@ class ResultItems(models.Model):
     result_value = models.CharField(max_length=100)
     values = models.CharField(max_length=100)
     type_normal_range = models.CharField(max_length=100)
+    remarks = models.CharField(max_length=100)
