@@ -1370,30 +1370,183 @@ def get_complete_lab_data(request):
 #         return JsonResponse({'error': 'Lab Registration not found'}, status=404)
     
 
+# @csrf_exempt
+# def fetch_range_values(request):
+#     print('----------------------')   
+#     print('----------START-------')   
+#     print('----------------------')   
+#     parameter_id = request.POST.get('parameter_id')
+#     gender = request.POST.get('gender')
+
+#     print("Parameter ID:", parameter_id)  # Debug print statement
+#     print("Gender: ", gender)
+    
+#     # return JsonResponse({'message': 'Found'}, status=404)
+#     try:
+#         print('inside try')
+#         range_parameters = RangeParameter.objects.filter(parameter_id=parameter_id)
+#         print('after getting record')
+#         if range_parameters.exists():
+#             range_parameter = range_parameters.first()  # Choose one of the matching records
+#             response_data = {
+#                 'min_value': range_parameter.normal_value_from,
+#                 'max_value': range_parameter.normal_value_to
+#             }
+#         print('after getting data from database')
+#         return JsonResponse(response_data)
+#     except RangeParameter.DoesNotExist:
+#         print('inside except rangeparameter')
+#         return JsonResponse({'message': 'No record found'}, status=404)
+
+
+# @csrf_exempt
+# def fetch_range_values(request):
+#     print('----------------------')   
+#     print('----------START-------')   
+#     print('----------------------')
+#     parameter_id = request.POST.get('parameter_id')
+    
+#     try:
+#         range_parameters = RangeParameter.objects.filter(parameter_id=parameter_id)
+#         genders = []
+
+#         # Step 1: Fetch and save male records
+#         male_records = range_parameters.filter(gender='Male')
+#         male_data = []
+#         if male_records.exists():
+#             for record in male_records:
+#                 male_data.append({
+#                     'gender': record.gender,
+#                     'normal_value_from': record.normal_value_from,
+#                     'normal_value_to': record.normal_value_to,
+#                     'age_from': record.age_from,
+#                     'age_to': record.age_to,
+#                 })
+#             genders.append('Male')
+
+#         # Step 2: Fetch and save female records
+#         female_records = range_parameters.filter(gender='Female')
+#         female_data = []
+#         if female_records.exists():
+#             for record in female_records:
+#                 female_data.append({
+#                     'gender': record.gender,
+#                     'normal_value_from': record.normal_value_from,
+#                     'normal_value_to': record.normal_value_to,
+#                     'age_from': record.age_from,
+#                     'age_to': record.age_to,
+#                 })
+#             genders.append('Female')
+
+#         # Step 3: Fetch and save child records
+#         child_records = range_parameters.filter(gender='Child')
+#         child_data = []
+#         if child_records.exists():
+#             for record in child_records:
+#                 child_data.append({
+#                     'gender': record.gender,
+#                     'normal_value_from': record.normal_value_from,
+#                     'normal_value_to': record.normal_value_to,
+#                     'age_from': record.age_from,
+#                     'age_to': record.age_to,
+#                 })
+#             genders.append('Child')
+
+#         # Step 4: Check for similar records and prepare response
+#         if len(genders) == 1:
+#             response_data = male_data + female_data + child_data
+#             gender_status = genders[0]
+#         else:
+#             # Check if records for all genders are the same
+#             all_records = male_data + female_data + child_data
+#             same_records = all(r == all_records[0] for r in all_records)
+#             if same_records:
+#                 response_data = all_records[:1]  # Return only one record
+#                 gender_status = 'Similar'
+#             else:
+#                 response_data = all_records  # Return all records
+#                 gender_status = 'Dissimilar'
+
+#         # Step 5: Prepare and return the final response
+#         final_response = {
+#             'gender_status': gender_status,
+#             'data': response_data,
+#             'genders':genders
+#         }
+        
+#         return JsonResponse(final_response)
+
+#     except RangeParameter.DoesNotExist:
+#         return JsonResponse({'message': 'No record found'}, status=404)
+
+
+
 @csrf_exempt
 def fetch_range_values(request):
-    print('----------------------')   
-    print('----------START-------')   
-    print('----------------------')   
     parameter_id = request.POST.get('parameter_id')
-    gender = request.POST.get('gender')
-
-    print("Parameter ID:", parameter_id)  # Debug print statement
-    print("Gender: ", gender)
     
-    # return JsonResponse({'message': 'Found'}, status=404)
     try:
-        print('inside try')
-        range_parameters = RangeParameter.objects.filter(parameter_id=parameter_id)
-        print('after getting record')
-        if range_parameters.exists():
-            range_parameter = range_parameters.first()  # Choose one of the matching records
+        # Fetch male records
+        male_records = RangeParameter.objects.filter(parameter_id=parameter_id, gender='Male').values(
+            'gender', 'normal_value_from', 'normal_value_to', 'age_from', 'age_to'
+        )
+        
+        # Fetch female records
+        female_records = RangeParameter.objects.filter(parameter_id=parameter_id, gender='Female').values(
+            'gender', 'normal_value_from', 'normal_value_to', 'age_from', 'age_to'
+        )
+        
+        # Fetch child records
+        child_records = RangeParameter.objects.filter(parameter_id=parameter_id, gender='Child').values(
+            'gender', 'normal_value_from', 'normal_value_to', 'age_from', 'age_to'
+        )
+        
+        genders = []
+        data = []
+        
+        if male_records:
+            genders.append('Male')
+            data.extend(male_records)
+            
+        if female_records:
+            genders.append('Female')
+            data.extend(female_records)
+            
+        if child_records:
+            genders.append('Child')
+            data.extend(child_records)
+        
+        # Check if all records have the same normal_value_from and normal_value_to
+        same_records = all(
+            record['normal_value_from'] == data[0]['normal_value_from'] and
+            record['normal_value_to'] == data[0]['normal_value_to']
+            for record in data
+        )
+        
+        if same_records:
             response_data = {
-                'min_value': range_parameter.normal_value_from,
-                'max_value': range_parameter.normal_value_to
+                'gender_status': 'Single',
+                'data': {
+                    **data[0],
+                    'unit': Parameter.objects.get(id=parameter_id).parameter_unit
+                },
+                'genders': genders
             }
-        print('after getting data from database')
+        else:
+            if len(genders) > 1:
+                gender_status = 'Multiple'
+            else:
+                gender_status = 'Single'
+                
+            response_data = {
+                'gender_status': gender_status,
+                'data': [
+                    {**record, 'unit': Parameter.objects.get(id=parameter_id).parameter_unit}
+                    for record in data
+                ],
+                'genders': genders
+            }
+            
         return JsonResponse(response_data)
     except RangeParameter.DoesNotExist:
-        print('inside except rangeparameter')
         return JsonResponse({'message': 'No record found'}, status=404)

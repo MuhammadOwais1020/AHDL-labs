@@ -3213,7 +3213,7 @@ function editLabRecord(record) {
         testHtml += `</td>`;
         if (parameter.parameter_result_type === "range") {
           testHtml += `<td>
-              <span class="range_values_section_${parameter.id}_min"></span> - <span class="range_values_section_${parameter.id}_max"></span>
+              <span class="range_values_section_${parameter.id}_min_max"></span>
               </td>`;
         } else {
           testHtml += `<td>${parameter.parameter_result_type}</td>`;
@@ -3236,7 +3236,7 @@ function editLabRecord(record) {
 }
 
 function loadRangeValues(parameterId, gender) {
-  console.log("range fucntion calls");
+  console.log("range function called");
   const requestData = {
     parameter_id: parameterId,
     gender: gender,
@@ -3247,22 +3247,26 @@ function loadRangeValues(parameterId, gender) {
     url: url,
     data: requestData,
     success: function (response) {
-      console.log("inside success");
-      if ("min_value" in response && "max_value" in response) {
-        console.log("Min Value:", response.min_value);
-        console.log("Max Value:", response.max_value);
-        $(`.range_values_section_${parameterId}_min`).text(
-          `${response.min_value}`
-        );
-        $(`.range_values_section_${parameterId}_max`).text(
-          `${response.max_value}`
-        );
+      console.log("Response:", response); // Print the response
+      console.log("Gender Status: ", response.gender_status);
+
+      if (response.gender_status === "Single") {
+        const minMaxText = `${response.data.normal_value_from} - ${response.data.normal_value_to} ${response.data.unit}`;
+        $(`.range_values_section_${parameterId}_min_max`).text(minMaxText);
+      } else if (response.gender_status === "Multiple") {
+        const container = $(`.range_values_section_${parameterId}_min_max`);
+        container.empty();
+        response.data.forEach((record) => {
+          const gender = record.gender;
+          const minMaxText = `${record.normal_value_from} - ${record.normal_value_to} ${record.unit}`;
+          container.append(`<div><b>${gender}</b>: ${minMaxText}</div>`);
+        });
       } else {
         console.log("No record found");
       }
     },
     error: function (xhr, status, error) {
-      console.log("inside error");
+      console.log("Inside error");
       // Handle any errors that occur during the request
       console.error("Error:", error);
     },
