@@ -3207,7 +3207,7 @@ function editLabRecord(record) {
                   <input type="text" class="form-control" id="range_result_${parameter.id}" name="range_result_${parameter.id} placeholder="Result Value"">
                 </div>`;
           // console.log("Parameter ID->>>> " + parameter.id);
-          loadRangeValues(parameter.id);
+          loadRangeValues(parameter.id, response.lab_registration.gender);
         }
 
         testHtml += `</td>`;
@@ -3235,10 +3235,11 @@ function editLabRecord(record) {
   });
 }
 
-function loadRangeValues(parameterId) {
+function loadRangeValues(parameterId, gender) {
   console.log("range fucntion calls");
   const requestData = {
     parameter_id: parameterId,
+    gender: gender,
   };
   var url = fetch_range_values;
   $.ajax({

@@ -1376,8 +1376,10 @@ def fetch_range_values(request):
     print('----------START-------')   
     print('----------------------')   
     parameter_id = request.POST.get('parameter_id')
+    gender = request.POST.get('gender')
 
     print("Parameter ID:", parameter_id)  # Debug print statement
+    print("Gender: ", gender)
     
     # return JsonResponse({'message': 'Found'}, status=404)
     try:
