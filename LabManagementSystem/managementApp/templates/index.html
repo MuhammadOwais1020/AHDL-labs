@@ -1641,20 +1641,21 @@
       <h1 id="registered-lab-id" align="center">Lab Registration ID #</h1>
       <hr class="my-4">
 
-      <input type="text" id="db-lab-id">
-      <input type="text" id="db-labitem-id">
-      <input type="text" id="db-test-name">
+      <input type="hidden" id="db-lab-id">
+      <input type="hidden" id="db-labitem-id">
+      <input type="hidden" id="db-test-name">
 
       <p>Patient ID: <span id="lab-edit-result-patient-id"></span></p>
       <p>Patient Name: <span id="lab-edit-result-patient-name"></span></p>
       <p>Gender: <span id="lab-edit-result-gender"></span></p>
       <p>Age: <span id="lab-edit-result-age"></span></p>
-      <p>Normal Value Range: <span id="lab-edit-result-range"></span></p>
       <!-- Add other fields from LabRegistration model as needed -->
 
       <div id="lab-edit-result-tests-with-parameters">
         <!-- Test and parameter data will be dynamically populated here -->
       </div>
+      <label for="remarks">Remakrs:</label>
+      <input type="text" id="remarks" class="form-control">
       <button class="btn btn-primary mt-3" id="saveResultsButton">Save Results</button>
     </div>
   </div>
@@ -1706,6 +1707,7 @@
     var get_lab_registration_data = "{% url 'get_lab_registration_data' %}";
     var get_complete_lab_data = "{% url 'get_complete_lab_data' %}";
     var fetch_range_values = "{% url 'fetch_range_values' %}";
+    var save_lab_results = "{% url 'save_lab_results' %}";
 
     var b_patientId = 0;
     var b_patientName = "";

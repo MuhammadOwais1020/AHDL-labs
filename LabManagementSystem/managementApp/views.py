@@ -1,4 +1,4 @@
-from .models import Patient
+from .models import Patient, Result, ResultItems
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -1550,3 +1550,59 @@ def fetch_range_values(request):
         return JsonResponse(response_data)
     except RangeParameter.DoesNotExist:
         return JsonResponse({'message': 'No record found'}, status=404)
+    
+
+@csrf_exempt
+def save_lab_results(request):
+    if request.method == 'POST':
+        data = request.POST.get('data')
+        dbLabId = request.POST.get('dbLabId')
+        dbLabitemId = request.POST.get('dbLabitemId')
+        dbTestName = request.POST.get('dbTestName')
+
+        # Save dbLabId, dbLabitemId, and dbTestName in the Result model
+        result = Result.objects.create(
+            lab_id=dbLabId,
+            labitem_id=dbLabitemId,
+            test_name=dbTestName
+        )
+
+        # Get the last Result id
+        last_result_id = result.id
+
+        # Loop through the data from the frontend
+        for row_data in data:
+            parameter_name = row_data['parameterName']
+            radio_value = row_data['radioValue']
+            input_value = row_data['inputValue']
+            normal_range = row_data['normalRange']
+            remarks = row_data['remarks']
+
+            # Determine whether to save radio_value or input_value
+            if radio_value is not None:
+                result_value = radio_value
+                values = input_value if input_value is not None else ''
+            else:
+                result_value = input_value if input_value is not None else ''
+                values = ''
+
+            # Determine whether to save type_normal_range
+            type_normal_range = normal_range if normal_range not in ["positiveNegative", "detectedNotDetected", "text"] else ''
+
+            # Create a ResultItems instance
+            result_item = ResultItems.objects.create(
+                result_id=last_result_id,
+                result_value=result_value,
+                values=values,
+                type_normal_range=type_normal_range,
+                remarks=remarks
+            )
+
+        # Update labitem_status to "Processing" in LabItems model
+        labitem = LabItems.objects.get(pk=dbLabitemId)
+        labitem.labitem_status = "Processing"
+        labitem.save()
+
+        return JsonResponse({'message': 'Results saved successfully'})
+
+    return JsonResponse({'message': 'Invalid request method'}, status=400)

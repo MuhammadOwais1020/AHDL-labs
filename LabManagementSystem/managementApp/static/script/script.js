@@ -3091,7 +3091,6 @@ function displayDataInTable(data) {
 
 function editLabRecord(record) {
   console.log("inside editLab record");
-  console.log("kutta ka bacha");
   $(".supper-container").hide();
   $("#edit-lab-results").show();
   console.log("1. LAB ID: " + record.lab_id);
@@ -3267,6 +3266,81 @@ function loadRangeValues(parameterId, gender) {
     },
     error: function (xhr, status, error) {
       console.log("Inside error");
+      // Handle any errors that occur during the request
+      console.error("Error:", error);
+    },
+  });
+}
+
+// Add an event listener to the "Save" button
+document
+  .getElementById("saveResultsButton")
+  .addEventListener("click", function () {
+    saveLabResults();
+  });
+
+function saveLabResults() {
+  // Access the table by its ID
+  var table = document.getElementById("lab_data_edit");
+
+  // Initialize an array to store row data
+  var rowData = [];
+
+  // Access the hidden input fields
+  var dbLabId = document.getElementById("db-lab-id").value;
+  var dbLabitemId = document.getElementById("db-labitem-id").value;
+  var dbTestName = document.getElementById("db-test-name").value;
+  var remarks = document.getElementById("remarks").value;
+
+  // Loop through the rows of the table (skipping the header row)
+  for (var i = 1; i < table.rows.length; i++) {
+    var row = table.rows[i];
+
+    // Access the selected radio button value (if it exists)
+    var selectedRadio = row.querySelector('input[type="radio"]:checked');
+    var radioValue = selectedRadio ? selectedRadio.value : null;
+
+    // Access the input field value (if it exists)
+    var inputField = row.querySelector('input[type="text"]');
+    var inputValue = inputField ? inputField.value : null;
+
+    // Access other data from the row (e.g., parameter name, normal range)
+    var parameterName = row.cells[0].innerText;
+    var normalRange = row.cells[2].innerText;
+
+    // Create an object to represent the row data
+    var rowObject = {
+      parameterName: parameterName,
+      radioValue: radioValue,
+      inputValue: inputValue,
+      normalRange: normalRange,
+    };
+
+    // Push the row data to the array
+    rowData.push(rowObject);
+  }
+
+  // Now you have an array containing structured row data
+  // You can further process or send this data to the server
+  console.log(rowData);
+  var url = save_lab_results;
+  // Send the rowData array to the server via AJAX
+  $.ajax({
+    type: "POST",
+    url: url, // Replace with the actual URL of your Django view
+    data: {
+      data: rowData,
+      dbLabId: dbLabId,
+      dbLabitemId: dbLabitemId,
+      dbTestName: dbTestName,
+      remarks: remarks,
+    }, // Sending the rowData array as 'data' parameter
+    dataType: "json",
+    success: function (response) {
+      // Handle the success response from the server (e.g., show a success message)
+      console.log(response.message);
+    },
+    error: function (xhr, status, error) {
       // Handle any errors that occur during the request
       console.error("Error:", error);
     },
