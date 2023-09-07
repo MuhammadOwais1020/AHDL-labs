@@ -3276,9 +3276,41 @@ function loadRangeValues(parameterId, gender) {
 document
   .getElementById("saveResultsButton")
   .addEventListener("click", function () {
-    saveLabResults();
+    if (validateTable()) {
+      saveLabResults();
+    } else {
+      alert("Please fill in all required fields in the table.");
+    }
   });
 
+function validateTable() {
+  // Access the table by its ID
+  var table = document.getElementById("lab_data_edit");
+
+  // Loop through the rows of the table (skipping the header row)
+  for (var i = 1; i < table.rows.length; i++) {
+    var row = table.rows[i];
+
+    // Access the selected radio button value (if it exists)
+    var selectedRadio = row.querySelector('input[type="radio"]:checked');
+
+    // Access the input field value (if it exists)
+    var inputField = row.querySelector('input[type="text"]');
+
+    // If the row has a radio button, it must be selected
+    if (selectedRadio === null) {
+      return false; // Radio button not selected
+    }
+
+    // If the row has an input field, it must not be empty
+    if (inputField && inputField.value.trim() === "") {
+      return false; // Input field is empty
+    }
+  }
+
+  // All required fields are filled
+  return true;
+}
 function saveLabResults() {
   // Access the table by its ID
   var table = document.getElementById("lab_data_edit");

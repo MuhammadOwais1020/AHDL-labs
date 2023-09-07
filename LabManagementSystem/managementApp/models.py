@@ -118,7 +118,7 @@ class Test(models.Model):
 
     def __str__(self):
         return self.test_name
-    
+
 
 class TestItem(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
@@ -126,7 +126,6 @@ class TestItem(models.Model):
 
     def __str__(self):
         return f"TestItem - Test: {self.test}, Parameter: {self.parameter}"
-    
 
 
 class LabRegistration(models.Model):
@@ -155,7 +154,7 @@ class LabRegistration(models.Model):
 
     def __str__(self):
         return self.patient_name
-    
+
 
 class LabItems(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
@@ -164,7 +163,7 @@ class LabItems(models.Model):
 
     def __str__(self):
         return f"LabItem {self.pk}"
-    
+
 
 class Result(models.Model):
     lab = models.ForeignKey(LabRegistration, on_delete=models.CASCADE)
@@ -174,7 +173,7 @@ class Result(models.Model):
 
 class ResultItems(models.Model):
     result = models.ForeignKey(Result, on_delete=models.CASCADE)
-    result_value = models.CharField(max_length=100)
-    values = models.CharField(max_length=100)
-    type_normal_range = models.CharField(max_length=100)
-    remarks = models.CharField(max_length=100)
+    result_value = models.CharField(max_length=100, null=True, blank=True)
+    values = models.CharField(max_length=100, null=True, blank=True)
+    type_normal_range = models.CharField(max_length=100, null=True, blank=True)
+    remarks = models.CharField(max_length=100, null=True, blank=True)

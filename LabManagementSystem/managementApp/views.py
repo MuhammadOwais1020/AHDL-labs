@@ -926,7 +926,7 @@ def handle_lab_registration_testing(request):
         # Get the test IDs from the hidden input field
         test_ids_string = request.POST.get('labTableForTestsData')
         test_ids = test_ids_string.split(',') if test_ids_string else []
-        
+
         print(f'Test IDs: {test_ids}')
 
         data = {
@@ -936,11 +936,12 @@ def handle_lab_registration_testing(request):
         return render(request, 'invoice.html', data)
     else:
         data = {
-            'hello':'error'
+            'hello': 'error'
         }
         # Render the initial form page here
         return render(request, 'invoice.html', data)
-    
+
+
 @csrf_exempt
 def handle_lab_registration(request):
     if request.method == "POST":
@@ -963,7 +964,7 @@ def handle_lab_registration(request):
                 hospital = request.POST.get('hospital')
                 special_refer = request.POST.get('specialRefer')
                 phlebotomist = request.POST.get('phlebotomist')
-                
+
                 # Retrieve the 'pannelEmp' and other fields with default value of 0
                 try:
                     pannel_emp = int(request.POST.get('pannelEmp'))
@@ -1019,8 +1020,9 @@ def handle_lab_registration(request):
                 test_ids = request.POST.get('labTableForTestsData').split(',')
 
                 for test_id in test_ids:
-                    LabItems.objects.create(test_id=test_id, lab_id=lab_registration.id)
-                    
+                    LabItems.objects.create(
+                        test_id=test_id, lab_id=lab_registration.id)
+
             # Return a success response
             response_data = {
                 "status": "success",
@@ -1028,11 +1030,11 @@ def handle_lab_registration(request):
                 "lab_id": lab_registration.id
             }
             return JsonResponse(response_data)
-        
+
         except Exception as e:
             response_data = {
                 "status": "danger",
-                "message": "error: "+ str(e),
+                "message": "error: " + str(e),
             }
             return JsonResponse(response_data)
     else:
@@ -1049,7 +1051,7 @@ def handle_lab_registrationS(request):
         # Retrieve form data
         patient_id = request.POST.get('patientId')
         relation = request.POST.get('relation')
-        
+
         if relation == 'self':
             relation = 1
         else:
@@ -1067,12 +1069,12 @@ def handle_lab_registrationS(request):
         contact_no = request.POST.get('contact')
         cnic = request.POST.get('cnic')
         pannel_case = 'pannelCase' in request.POST
-        
+
         if pannel_case == True:
             pannel_case = 1
         else:
             pannel_case = 0
-            
+
         print(f'Pannel Case: {pannel_case}')
         print(type(pannel_case))
 
@@ -1130,7 +1132,7 @@ def handle_lab_registrationS(request):
         # Get the test IDs from the hidden input field
         test_ids_string = request.POST.get('labTableForTestsData')
         test_ids = test_ids_string.split(',') if test_ids_string else []
-        
+
         print(f'Test IDs: {test_ids}')
 
         print(f"RELATEION: {relation}")
@@ -1173,16 +1175,16 @@ def handle_lab_registrationS(request):
             for test_id in test_ids:
                 print(f'Test ID: {test_id}')
                 print(f'Lab Registration ID: {lab_registration.id}')
-                LabItems.objects.create(test_id=test_id, lab_id=lab_registration.id, labitem_status=labitem_status)
+                LabItems.objects.create(
+                    test_id=test_id, lab_id=lab_registration.id, labitem_status=labitem_status)
         except:
             print('Error: got error when saving LabItems data in database')
 
-        
          # Fetch records from Test model using test_ids list
         test_records = Test.objects.filter(id__in=test_ids)
 
         final_amount = total_amount - concession
-        
+
         # Prepare the data dictionary to be sent to the template
         data = {
             'lab_registration': lab_registration,
@@ -1228,7 +1230,7 @@ def handle_lab_registrationS(request):
 #             return JsonResponse(data, safe=False)
 #     except Exception as e:
 #         return JsonResponse({'error': str(e)})
-    
+
 
 @csrf_exempt
 def get_lab_registration_data(request):
@@ -1247,7 +1249,8 @@ def get_lab_registration_data(request):
         labitem_id = lab_registration.LAB_Item
         test_id = lab_registration.test_id
         test_name = lab_registration.test_name
-        datetime = lab_registration.datetime.strftime("%Y-%m-%d %H:%M")  # Format datetime as string
+        datetime = lab_registration.datetime.strftime(
+            "%Y-%m-%d %H:%M")  # Format datetime as string
         gender = lab_registration.gender
         pannel_case = lab_registration.pannel_case
         labitem_status = lab_registration.labitem_status
@@ -1274,7 +1277,7 @@ def get_lab_registration_data(request):
 def get_complete_lab_data(request):
     lab_id = request.POST.get('lab_id')
     labitem_id = request.POST.get('labitem_id')
-    
+
     try:
         lab_registration = get_object_or_404(LabRegistration, id=lab_id)
         lab_item = get_object_or_404(LabItems, id=labitem_id)
@@ -1286,9 +1289,10 @@ def get_complete_lab_data(request):
 
         for test_item in test_items:
             parameters = Parameter.objects.filter(testitem=test_item)
-            parameters_data = list(parameters.values('id', 'parameter_name', 'parameter_unit', 'parameter_result_type'))
+            parameters_data = list(parameters.values(
+                'id', 'parameter_name', 'parameter_unit', 'parameter_result_type'))
             parameters_list.extend(parameters_data)
-            
+
         data = {
             'lab_registration': {
                 'lab_id': lab_registration.id,
@@ -1309,7 +1313,6 @@ def get_complete_lab_data(request):
 
     except (LabRegistration.DoesNotExist, LabItems.DoesNotExist, Test.DoesNotExist):
         return JsonResponse({'error': 'Lab Registration, LabItems, or Test not found'}, status=404)
-
 
 
 # @csrf_exempt
@@ -1335,7 +1338,7 @@ def get_complete_lab_data(request):
 #         for test in tests:
 #             test_parameters = parameters.filter(testitem__test=test)
 #             parameters_list = list(test_parameters.values())
-            
+
 #             labItem_ids = lab_items.filter(test=test).values_list('id', flat=True)  # Get labItem_ids for this test
 #             labItem_ids = list(labItem_ids)
 #             print(f'LAB Items-->> {labItem_ids}')
@@ -1349,7 +1352,7 @@ def get_complete_lab_data(request):
 #             tests_with_parameters.append(test_data)
 #             i += 1
 
-            
+
 #         # Serialize the data and convert it to a JSON response
 #         data = {
 #             'lab_registration': {
@@ -1368,19 +1371,19 @@ def get_complete_lab_data(request):
 
 #     except LabRegistration.DoesNotExist:
 #         return JsonResponse({'error': 'Lab Registration not found'}, status=404)
-    
+
 
 # @csrf_exempt
 # def fetch_range_values(request):
-#     print('----------------------')   
-#     print('----------START-------')   
-#     print('----------------------')   
+#     print('----------------------')
+#     print('----------START-------')
+#     print('----------------------')
 #     parameter_id = request.POST.get('parameter_id')
 #     gender = request.POST.get('gender')
 
 #     print("Parameter ID:", parameter_id)  # Debug print statement
 #     print("Gender: ", gender)
-    
+
 #     # return JsonResponse({'message': 'Found'}, status=404)
 #     try:
 #         print('inside try')
@@ -1401,11 +1404,11 @@ def get_complete_lab_data(request):
 
 # @csrf_exempt
 # def fetch_range_values(request):
-#     print('----------------------')   
-#     print('----------START-------')   
+#     print('----------------------')
+#     print('----------START-------')
 #     print('----------------------')
 #     parameter_id = request.POST.get('parameter_id')
-    
+
 #     try:
 #         range_parameters = RangeParameter.objects.filter(parameter_id=parameter_id)
 #         genders = []
@@ -1473,56 +1476,55 @@ def get_complete_lab_data(request):
 #             'data': response_data,
 #             'genders':genders
 #         }
-        
+
 #         return JsonResponse(final_response)
 
 #     except RangeParameter.DoesNotExist:
 #         return JsonResponse({'message': 'No record found'}, status=404)
 
 
-
 @csrf_exempt
 def fetch_range_values(request):
     parameter_id = request.POST.get('parameter_id')
-    
+
     try:
         # Fetch male records
         male_records = RangeParameter.objects.filter(parameter_id=parameter_id, gender='Male').values(
             'gender', 'normal_value_from', 'normal_value_to', 'age_from', 'age_to'
         )
-        
+
         # Fetch female records
         female_records = RangeParameter.objects.filter(parameter_id=parameter_id, gender='Female').values(
             'gender', 'normal_value_from', 'normal_value_to', 'age_from', 'age_to'
         )
-        
+
         # Fetch child records
         child_records = RangeParameter.objects.filter(parameter_id=parameter_id, gender='Child').values(
             'gender', 'normal_value_from', 'normal_value_to', 'age_from', 'age_to'
         )
-        
+
         genders = []
         data = []
-        
+
         if male_records:
             genders.append('Male')
             data.extend(male_records)
-            
+
         if female_records:
             genders.append('Female')
             data.extend(female_records)
-            
+
         if child_records:
             genders.append('Child')
             data.extend(child_records)
-        
+
         # Check if all records have the same normal_value_from and normal_value_to
         same_records = all(
             record['normal_value_from'] == data[0]['normal_value_from'] and
             record['normal_value_to'] == data[0]['normal_value_to']
             for record in data
         )
-        
+
         if same_records:
             response_data = {
                 'gender_status': 'Single',
@@ -1537,72 +1539,75 @@ def fetch_range_values(request):
                 gender_status = 'Multiple'
             else:
                 gender_status = 'Single'
-                
+
             response_data = {
                 'gender_status': gender_status,
                 'data': [
-                    {**record, 'unit': Parameter.objects.get(id=parameter_id).parameter_unit}
+                    {**record,
+                        'unit': Parameter.objects.get(id=parameter_id).parameter_unit}
                     for record in data
                 ],
                 'genders': genders
             }
-            
+
         return JsonResponse(response_data)
     except RangeParameter.DoesNotExist:
         return JsonResponse({'message': 'No record found'}, status=404)
-    
+
 
 @csrf_exempt
 def save_lab_results(request):
     if request.method == 'POST':
-        data = request.POST.get('data')
+        data = request.POST.getlist('data[]')
         dbLabId = request.POST.get('dbLabId')
         dbLabitemId = request.POST.get('dbLabitemId')
         dbTestName = request.POST.get('dbTestName')
+        remarks = request.POST.get('remarks')
 
-        # Save dbLabId, dbLabitemId, and dbTestName in the Result model
-        result = Result.objects.create(
-            lab_id=dbLabId,
-            labitem_id=dbLabitemId,
-            test_name=dbTestName
-        )
+        try:
+            with transaction.atomic():
+                # Create a savepoint before starting the transaction
+                sid = transaction.savepoint()
 
-        # Get the last Result id
-        last_result_id = result.id
+                # Save data to Result model ONCE
+                result = Result.objects.create(
+                    lab_id=dbLabId,
+                    labitem_id=dbLabitemId,
+                    test_name=dbTestName
+                )
 
-        # Loop through the data from the frontend
-        for row_data in data:
-            parameter_name = row_data['parameterName']
-            radio_value = row_data['radioValue']
-            input_value = row_data['inputValue']
-            normal_range = row_data['normalRange']
-            remarks = row_data['remarks']
+                for item in data:
+                    print('inside result item loop')
+                    parameterName = item['parameterName']
+                    radioValue = item.get('radioValue', None)
+                    inputValue = item.get('inputValue', None)
+                    normalRange = item['normalRange']
 
-            # Determine whether to save radio_value or input_value
-            if radio_value is not None:
-                result_value = radio_value
-                values = input_value if input_value is not None else ''
-            else:
-                result_value = input_value if input_value is not None else ''
-                values = ''
+                    # Save data to ResultItems model
+                    result_item = ResultItems(
+                        result=result,
+                        result_value=radioValue if radioValue else inputValue,
+                        values=inputValue if radioValue else '',
+                        type_normal_range=normalRange if normalRange not in [
+                            'positiveNegative', 'detectedNotDetected', 'text'] else '',
+                        remarks=remarks if remarks else ''
+                    )
+                    result_item.save()
 
-            # Determine whether to save type_normal_range
-            type_normal_range = normal_range if normal_range not in ["positiveNegative", "detectedNotDetected", "text"] else ''
+                # Update LabItems status to 'Processing'
+                lab_item = LabItems.objects.get(pk=dbLabitemId)
+                lab_item.labitem_status = 'Processing'
+                lab_item.save()
 
-            # Create a ResultItems instance
-            result_item = ResultItems.objects.create(
-                result_id=last_result_id,
-                result_value=result_value,
-                values=values,
-                type_normal_range=type_normal_range,
-                remarks=remarks
-            )
+                # If all data is saved successfully, commit the transaction
+                transaction.savepoint_commit(sid)
 
-        # Update labitem_status to "Processing" in LabItems model
-        labitem = LabItems.objects.get(pk=dbLabitemId)
-        labitem.labitem_status = "Processing"
-        labitem.save()
-
-        return JsonResponse({'message': 'Results saved successfully'})
-
-    return JsonResponse({'message': 'Invalid request method'}, status=400)
+                return JsonResponse({'message': 'Results saved successfully.'})
+        except Exception as e:
+            # If an error occurs during saving, handle it here.
+            # You may need to reverse previously saved data.
+            transaction.savepoint_rollback(sid)
+            print(f'Error: {str(e)}')
+            return JsonResponse({'message': f'Error: {str(e)}'}, status=500)
+    else:
+        return JsonResponse({'message': 'Invalid request method.'}, status=400)
