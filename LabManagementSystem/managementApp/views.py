@@ -1576,6 +1576,7 @@ def save_lab_results(request):
                     test_name=dbTestName
                 )
 
+                print('outside result item loop')
                 for item in data:
                     print('inside result item loop')
                     parameterName = item['parameterName']

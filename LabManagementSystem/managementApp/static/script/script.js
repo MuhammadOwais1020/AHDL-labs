@@ -3311,6 +3311,7 @@ function validateTable() {
   // All required fields are filled
   return true;
 }
+
 function saveLabResults() {
   // Access the table by its ID
   var table = document.getElementById("lab_data_edit");
@@ -3361,13 +3362,14 @@ function saveLabResults() {
     type: "POST",
     url: url, // Replace with the actual URL of your Django view
     data: {
-      data: rowData,
+      data: JSON.stringify(rowData), // Sending the rowData array as 'data' parameter, converted to JSON
       dbLabId: dbLabId,
       dbLabitemId: dbLabitemId,
       dbTestName: dbTestName,
       remarks: remarks,
-    }, // Sending the rowData array as 'data' parameter
+    },
     dataType: "json",
+    contentType: "application/json", // Set the content type to JSON
     success: function (response) {
       // Handle the success response from the server (e.g., show a success message)
       console.log(response.message);
