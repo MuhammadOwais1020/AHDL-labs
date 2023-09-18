@@ -1236,7 +1236,7 @@ def handle_lab_registrationS(request):
 def get_lab_registration_data(request):
     print('inside lab registration get data')
     sql_query = '''
-        SELECT lr.id, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
+        SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
     '''
 
     # Execute the raw query using the manager for the model
@@ -1246,6 +1246,7 @@ def get_lab_registration_data(request):
     data = []
     for lab_registration in lab_registrations:
         lab_id = lab_registration.id
+        patient_name = lab_registration.patient_name
         labitem_id = lab_registration.LAB_Item
         test_id = lab_registration.test_id
         test_name = lab_registration.test_name
@@ -1260,6 +1261,7 @@ def get_lab_registration_data(request):
         # Add the data for the current LabRegistration object to the list
         data.append({
             'lab_id': lab_id,
+            'patient_name': patient_name,
             'labitem_id': labitem_id,
             'test_id': test_id,
             'test_name': test_name,

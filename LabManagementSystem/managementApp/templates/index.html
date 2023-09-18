@@ -660,14 +660,21 @@
         <div class="wind" id="lab-wind-2">
           <div class="sub-wind">
 
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Enter LAB ID" id="labIdInput">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="searchLabButton">Search</button>
+              </div>
+            </div>
+
             <table id="lab-registration-table" class="table table-hover">
               <thead>
                 <tr>
                   <th>LAB ID</th>
-                  <th>TEST ID</th>
-                  <th>TEST NAME</th>
                   <th>DATE</th>
+                  <th class="text-left">PATIENT NAME</th>
                   <th>GENDER</th>
+                  <th class="text-left">TEST NAME</th>
                   <th>PANNEL CASE</th>
                   <th>ACTION</th>
                   <th>LAB RESULT</th>

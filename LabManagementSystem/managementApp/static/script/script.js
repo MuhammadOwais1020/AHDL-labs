@@ -3032,23 +3032,25 @@ function displayDataInTable(data) {
     labIdCell.textContent = record.lab_id;
     row.appendChild(labIdCell);
 
-    const testIdCell = document.createElement("td");
-    testIdCell.textContent = record.test_id;
-    row.appendChild(testIdCell);
-
-    console.log("Test ID: " + record.test_id);
-
-    const testNameCell = document.createElement("td");
-    testNameCell.textContent = record.test_name;
-    row.appendChild(testNameCell);
-
     const datetimeCell = document.createElement("td");
     datetimeCell.textContent = record.datetime;
     row.appendChild(datetimeCell);
 
+    const testPatientCell = document.createElement("td");
+    testPatientCell.textContent = record.patient_name;
+    testPatientCell.classList.add("text-left");
+    row.appendChild(testPatientCell);
+
     const genderCell = document.createElement("td");
     genderCell.textContent = record.gender;
     row.appendChild(genderCell);
+    // console.log("Patient Name: " + record.patient_name);
+    // console.log("Test ID: " + record.test_id);
+
+    const testNameCell = document.createElement("td");
+    testNameCell.textContent = record.test_name;
+    testNameCell.classList.add("text-left");
+    row.appendChild(testNameCell);
 
     const pannelCaseCell = document.createElement("td");
     pannelCaseCell.textContent = record.pannel_case;

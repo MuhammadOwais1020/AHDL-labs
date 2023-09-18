@@ -61,12 +61,11 @@ body {
 
 /* side panel */
 .side-panel-div {
-    width: 20vw;
-    height: 100vh;
-    overflow: hidden;
+    width: 100%;
     background-color: var(--mo-primary-color);
     text-align: center;
     float: left;
+    position: sticky;
 }
 
 /* side panel logo div */
@@ -76,7 +75,7 @@ body {
     border-radius: 50%;
     margin: 50px auto 3px;
     background-color: var(--mo-sections-color);
-    overflow: hidden;
+    display: none;
 }
 
 /* side panel logo image */
@@ -94,7 +93,8 @@ body {
 
 /* menu box */
 .menu-box {
-    margin-top: 100px;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 /* menu buttons */
@@ -112,7 +112,7 @@ body {
 
 /* main window */
 .main-window {
-    width: 80vw;
+    width: 100%;
     height: 100vh;
     overflow: hidden;
     float: right;
@@ -131,6 +131,7 @@ body {
     font-family: roboto-bold;
     font-size: 35px;
     color: var(--mo-text-color);
+    margin: 0 auto;
 }
 
 .profile-section {
@@ -459,4 +460,8 @@ body {
 
 #saveResultsButton {
     float: right;
+}
+
+.text-left {
+    text-align: left !important;
 }
