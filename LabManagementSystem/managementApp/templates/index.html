@@ -1664,6 +1664,8 @@
       <label for="remarks">Remakrs:</label>
       <input type="text" id="remarks" class="form-control">
       <button class="btn btn-primary mt-3" id="saveResultsButton">Save Results</button>
+
+      <div id="editResultAlert" class="mt-3"></div>
     </div>
   </div>
 
@@ -1715,6 +1717,7 @@
     var get_complete_lab_data = "{% url 'get_complete_lab_data' %}";
     var fetch_range_values = "{% url 'fetch_range_values' %}";
     var save_lab_results = "{% url 'save_lab_results' %}";
+    var save_lab_results_too = "{% url 'save_lab_results_too' %}";
 
     var b_patientId = 0;
     var b_patientName = "";

@@ -161,6 +161,7 @@ function hideAlert(time) {
     $("#addTestAlert").hide();
     $("#updateTestAlert").hide();
     $("#addLabAlert").hide();
+    $("#editResultAlert").hide();
   }, time); // Hide after time seconds
 }
 // Fetch doctor names using AJAX
@@ -274,7 +275,7 @@ function labExpendedMenu(n) {
     getDoctors();
     loadTestData();
   } else if (n == 2) {
-    fetchLabRegistrationData();
+    fetchLabRegistrationData("all", "all");
     $("#main-heading").html("Lab History");
   }
 }
@@ -3003,7 +3004,7 @@ function addValuesToRows() {
 }
 
 // load lab registration data
-function fetchLabRegistrationData() {
+function fetchLabRegistrationData(type, values) {
   var url = get_lab_registration_data;
   fetch(url)
     .then((response) => response.json())
@@ -3076,7 +3077,7 @@ function displayDataInTable(data) {
       labitemStatusCell.style.color = "red";
     } else if (record.labitem_status === "Processing") {
       labitemStatusCell.textContent = record.labitem_status;
-      labitemStatusCell.style.color = "yellow";
+      labitemStatusCell.style.color = "#ffa906";
     } else if (record.labitem_status === "Ready") {
       const printButton = document.createElement("button");
       printButton.textContent = "Print";
@@ -3095,7 +3096,8 @@ function editLabRecord(record) {
   console.log("inside editLab record");
   $(".supper-container").hide();
   $("#edit-lab-results").show();
-  console.log("1. LAB ID: " + record.lab_id);
+  $("#saveResultsButton").show();
+  // console.log("1. LAB ID: " + record.lab_id);
   $("#db-lab-id").val(record.lab_id);
 
   var test_id = record.test_id;
@@ -3313,6 +3315,7 @@ function validateTable() {
   // All required fields are filled
   return true;
 }
+var jsonData = [];
 
 function saveLabResults() {
   // Access the table by its ID
@@ -3320,7 +3323,7 @@ function saveLabResults() {
 
   // Initialize an array to store row data
   var rowData = [];
-
+  var resultData = "";
   // Access the hidden input fields
   var dbLabId = document.getElementById("db-lab-id").value;
   var dbLabitemId = document.getElementById("db-labitem-id").value;
@@ -3351,6 +3354,16 @@ function saveLabResults() {
       normalRange: normalRange,
     };
 
+    resultData +=
+      parameterName +
+      ",," +
+      radioValue +
+      ",," +
+      inputValue +
+      ",," +
+      normalRange +
+      "/nl/";
+
     // Push the row data to the array
     rowData.push(rowObject);
   }
@@ -3359,26 +3372,38 @@ function saveLabResults() {
   // You can further process or send this data to the server
   console.log(rowData);
   var url = save_lab_results;
+  jsonData = JSON.stringify(rowData);
+  console.log("JSON Data: " + jsonData);
+
+  console.log("Result Data: " + resultData);
+
   // Send the rowData array to the server via AJAX
   $.ajax({
     type: "POST",
     url: url, // Replace with the actual URL of your Django view
     data: {
-      data: JSON.stringify(rowData), // Sending the rowData array as 'data' parameter, converted to JSON
+      data: jsonData,
+      resultData: resultData,
       dbLabId: dbLabId,
       dbLabitemId: dbLabitemId,
       dbTestName: dbTestName,
       remarks: remarks,
     },
-    dataType: "json",
-    contentType: "application/json", // Set the content type to JSON
+    // Set the content type to JSON
     success: function (response) {
-      // Handle the success response from the server (e.g., show a success message)
       console.log(response.message);
+      if (response.status == "success") {
+        $("#saveResultsButton").hide();
+      }
+      $("#editResultAlert").html(showAlert(response.status, response.message));
+      hideAlert(3000);
     },
     error: function (xhr, status, error) {
       // Handle any errors that occur during the request
       console.error("Error:", error);
+
+      $("#editResultAlert").html(showAlert("danger", error));
+      hideAlert(3000);
     },
   });
 }

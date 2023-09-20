@@ -1559,25 +1559,20 @@ def fetch_range_values(request):
 
 @csrf_exempt
 def save_lab_results(request):
+    print('funciton one')
     if request.method == 'POST':
-        data = request.POST.getlist('data[]')
+        resultData = request.POST.get('resultData')
         dbLabId = request.POST.get('dbLabId')
         dbLabitemId = request.POST.get('dbLabitemId')
         dbTestName = request.POST.get('dbTestName')
         remarks = request.POST.get('remarks')
 
-        # # Get the raw JSON data from the request
-        json_data = json.loads(request.body)
-        data3 = json.loads(request.POST.get('data'))
+        print(f"Result DATA: {resultData}")
 
-        # # Extract the necessary data from the JSON
-        data2 = json_data.get('data')
-        # dbLabId = json_data['dbLabId']
-        # dbLabitemId = json_data['dbLabitemId']
-        # dbTestName = json_data['dbTestName']
-        # remarks = json_data['remarks']
+        resultData = resultData.split('/nl/')
 
-        print(f"data: {data3}")
+        if resultData:
+            resultData = resultData[:-1]
 
         try:
             with transaction.atomic():
@@ -1592,12 +1587,13 @@ def save_lab_results(request):
                 )
 
                 print('outside result item loop')
-                for item in data:
+                for item in resultData:
+                    item = item.split(',,')
                     print('inside result item loop')
-                    parameterName = item['parameterName']
-                    radioValue = item.get('radioValue', None)
-                    inputValue = item.get('inputValue', None)
-                    normalRange = item['normalRange']
+                    parameterName = item[0]
+                    radioValue = item[1]
+                    inputValue = item[2]
+                    normalRange = item[3]
 
                     # Save data to ResultItems model
                     result_item = ResultItems(
@@ -1606,7 +1602,7 @@ def save_lab_results(request):
                         values=inputValue if radioValue else '',
                         type_normal_range=normalRange if normalRange not in [
                             'positiveNegative', 'detectedNotDetected', 'text'] else '',
-                        remarks=remarks if remarks else ''
+                        remarks=remarks if remarks else '', parameterName=parameterName
                     )
                     result_item.save()
 
@@ -1618,12 +1614,28 @@ def save_lab_results(request):
                 # If all data is saved successfully, commit the transaction
                 transaction.savepoint_commit(sid)
 
-                return JsonResponse({'message': 'Results saved successfully.'})
+                return JsonResponse({'status': 'success', 'message': 'Results saved successfully.'})
         except Exception as e:
             # If an error occurs during saving, handle it here.
             # You may need to reverse previously saved data.
             transaction.savepoint_rollback(sid)
             print(f'Error: {str(e)}')
-            return JsonResponse({'message': f'Error: {str(e)}'}, status=500)
+            return JsonResponse({'status': 'danger', 'message': f'Error: {str(e)}'}, status=500)
+    else:
+        return JsonResponse({'status': 'danger', 'message': 'Invalid request method.'}, status=400)
+
+
+@csrf_exempt
+def save_lab_results_too(request):
+    if request.method == 'POST':
+        # Get the JSON data sent from the JavaScript code
+        resultData = request.POST.get('resultData')
+        remarks = request.POST.get('remarks')
+
+        print(f"ResultData: {resultData}")
+        print(f"Remarks {remarks}")
+
+        return JsonResponse({'message': 'Results saved successfully.'})
+
     else:
         return JsonResponse({'message': 'Invalid request method.'}, status=400)
