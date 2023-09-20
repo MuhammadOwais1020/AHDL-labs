@@ -1566,6 +1566,19 @@ def save_lab_results(request):
         dbTestName = request.POST.get('dbTestName')
         remarks = request.POST.get('remarks')
 
+        # # Get the raw JSON data from the request
+        json_data = json.loads(request.body)
+        data3 = json.loads(request.POST.get('data'))
+
+        # # Extract the necessary data from the JSON
+        data2 = json_data.get('data')
+        # dbLabId = json_data['dbLabId']
+        # dbLabitemId = json_data['dbLabitemId']
+        # dbTestName = json_data['dbTestName']
+        # remarks = json_data['remarks']
+
+        print(f"data: {data3}")
+
         try:
             with transaction.atomic():
                 # Create a savepoint before starting the transaction
