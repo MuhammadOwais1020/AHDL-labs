@@ -465,3 +465,8 @@ body {
 .text-left {
     text-align: left !important;
 }
+
+#searchResultLabIdBtn {
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+}

@@ -3005,16 +3005,27 @@ function addValuesToRows() {
 
 // load lab registration data
 function fetchLabRegistrationData(type, values) {
-  var url = get_lab_registration_data;
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
+  var url = "get_lab_registration_data";
+
+  // Define the data to send in the request
+  var requestData = {
+    type_param: type,
+    values_param: values,
+  };
+
+  // Make the AJAX request
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: requestData,
+    success: function (data) {
       // Call a function to display the data in the table
       displayDataInTable(data);
-    })
-    .catch((error) => {
+    },
+    error: function (error) {
       console.error("Error fetching data:", error);
-    });
+    },
+  });
 }
 
 // Function to display the data in the table
@@ -3407,3 +3418,56 @@ function saveLabResults() {
     },
   });
 }
+
+document
+  .getElementById("searchResultLabIdBtn")
+  .addEventListener("click", function () {
+    // Get the value from the input field
+    var labIdInput = document.getElementById("searchResultLabId");
+    var labIdValue = labIdInput.value;
+
+    // Check if the input value is a valid number
+    if (!isNaN(labIdValue) && labIdValue.trim() !== "") {
+      // It's a valid number, call the function with arguments
+      fetchLabRegistrationData("id", labIdValue);
+    } else {
+      // It's not a valid number, show an alert
+      alert("Please enter a valid number.");
+    }
+  });
+
+document
+  .getElementById("searchResultNameBtn")
+  .addEventListener("click", function () {
+    // Get the value from the input field
+    var nameInput = document.getElementById("searchResultName");
+    var nameValue = nameInput.value.trim(); // Trim leading/trailing whitespace
+    console.log("Name: " + nameValue);
+    // Check if the input value is a valid name
+    if (isValidName(nameValue)) {
+      // It's a valid name, call the function with arguments
+      fetchLabRegistrationData("name", nameValue);
+    } else {
+      // It's not a valid name, show an alert
+      alert("Please enter a valid name.");
+    }
+  });
+
+function isValidName(name) {
+  // Add your validation logic here
+  // For example, you can check if the name contains only letters and spaces
+  // You can use a regular expression for this purpose
+  var nameRegex = /^[A-Za-z\s]+$/;
+  return nameRegex.test(name);
+}
+
+const radioButtons = document.querySelectorAll('input[name="resultFilter"]');
+
+radioButtons.forEach((radioButton) => {
+  radioButton.addEventListener("click", function () {
+    if (this.checked) {
+      const selectedValue = this.value;
+      console.log(`Selected Value: ${selectedValue}`);
+    }
+  });
+});

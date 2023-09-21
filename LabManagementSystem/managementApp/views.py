@@ -1200,50 +1200,37 @@ def handle_lab_registrationS(request):
     return redirect('error')
 
 
-# @csrf_exempt
-# def get_lab_registration_data(request):
-#     print('inside function')
-#     try:
-#         print('inside try')
-#         with connection.cursor() as cursor:
-#             sql_query = '''
-#                 SELECT lr.id, li.test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
-#             '''
-
-#             cursor.execute(sql_query)
-#             records = cursor.fetchall()
-
-#             # Convert the records to a list of dictionaries
-#             data = []
-#             for record in records:
-#                 lab_id, datetime, gender, pannel_case, test_name, labitem_status = record
-#                 print(record)
-#                 data.append({
-#                     'lab_id': lab_id,
-#                     'datetime': datetime.strftime('%Y-%m-%d %H:%M'),  # Convert to string
-#                     'gender': gender,
-#                     'pannel_case': pannel_case,
-#                     'test_name': test_name,
-#                     'labitem_status': labitem_status,
-#                 })
-
-#             return JsonResponse(data, safe=False)
-#     except Exception as e:
-#         return JsonResponse({'error': str(e)})
-
-
+# new get lab registration data
 @csrf_exempt
 def get_lab_registration_data(request):
-    print('inside lab registration get data')
-    sql_query = '''
-        SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
-    '''
+    data = []  # Create an empty list to store the data
+
+    type_param = request.POST.get('type_param')
+    values_param = request.POST.get('values_param')
+
+    print(f"Type: {type_param}")
+    print(f"Value: {values_param}")
+
+    # Check the value of type_param
+    if type_param == "all":
+        # Retrieve all data
+        sql_query = '''
+            SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
+        '''
+    elif type_param == "id":
+        # Retrieve data where lr.id matches values_param
+        sql_query = '''
+            SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id AND lr.id = %s;
+        '''
+    else:
+        # Handle invalid type_param value
+        return JsonResponse({"error": "Invalid type_param value"}, status=400)
 
     # Execute the raw query using the manager for the model
-    lab_registrations = LabRegistration.objects.raw(sql_query)
+    lab_registrations = LabRegistration.objects.raw(
+        sql_query, [values_param] if type_param == "id" else [])
 
-    # Create a list to store the data for each LabRegistration object
-    data = []
+    # Loop through the results and format the data
     for lab_registration in lab_registrations:
         lab_id = lab_registration.id
         patient_name = lab_registration.patient_name
@@ -1255,8 +1242,6 @@ def get_lab_registration_data(request):
         gender = lab_registration.gender
         pannel_case = lab_registration.pannel_case
         labitem_status = lab_registration.labitem_status
-
-        print(f"Test ID: {test_id}")
 
         # Add the data for the current LabRegistration object to the list
         data.append({

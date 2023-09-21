@@ -659,12 +659,50 @@
         <!-- lab history -->
         <div class="wind" id="lab-wind-2">
           <div class="sub-wind">
-
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" placeholder="Enter LAB ID" id="labIdInput">
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="button" id="searchLabButton">Search</button>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" placeholder="Enter LAB ID" id="searchResultLabId">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="searchResultLabIdBtn">Search</button>
+                  </div>
+                </div>
               </div>
+              <div class="col-sm-3">
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" placeholder="Enter Patient Name" id="searchResultName">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="searchResultNameBtn">Search</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="resultFilter" id="allOption" value="all" checked>
+                    <label class="form-check-label" for="allOption">All</label>
+                  </div>
+
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="resultFilter" id="pendingOption" value="pending">
+                    <label class="form-check-label" for="pendingOption">Pending</label>
+                  </div>
+
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="resultFilter" id="processingOption"
+                      value="processing">
+                    <label class="form-check-label" for="processingOption">Processing</label>
+                  </div>
+
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="resultFilter" id="readyToPrintOption"
+                      value="ready_to_print">
+                    <label class="form-check-label" for="readyToPrintOption">Ready to Print</label>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-sm-3"></div>
             </div>
 
             <table id="lab-registration-table" class="table table-hover">
@@ -1713,11 +1751,11 @@
     var update_test_record = "{% url 'update_test_record' %}";
     var load_test_data = "{% url 'load_test_data' %}";
     var handle_lab_registration = "{% url 'handle_lab_registration' %}";
-    var get_lab_registration_data = "{% url 'get_lab_registration_data' %}";
     var get_complete_lab_data = "{% url 'get_complete_lab_data' %}";
     var fetch_range_values = "{% url 'fetch_range_values' %}";
     var save_lab_results = "{% url 'save_lab_results' %}";
     var save_lab_results_too = "{% url 'save_lab_results_too' %}";
+    var get_lab_registration_data = "{% url 'get_lab_registration_data' %}";
 
     var b_patientId = 0;
     var b_patientName = "";

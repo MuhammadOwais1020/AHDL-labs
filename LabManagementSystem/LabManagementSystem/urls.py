@@ -55,10 +55,13 @@ urlpatterns = [
     path('load_test_data', ma.load_test_data, name="load_test_data"),
     path('handle_lab_registration/', ma.handle_lab_registration,
          name="handle_lab_registration"),
+
     path('get_lab_registration_data', ma.get_lab_registration_data,
-         name="get_lab_registration_data"),
+         name='get_lab_registration_data'),
+
     path('get_complete_lab_data', ma.get_complete_lab_data,
          name="get_complete_lab_data"),
+
     path('fetch_range_values', ma.fetch_range_values, name="fetch_range_values"),
     path('save_lab_results', ma.save_lab_results, name="save_lab_results"),
     path('save_lab_results_too', ma.save_lab_results_too,
