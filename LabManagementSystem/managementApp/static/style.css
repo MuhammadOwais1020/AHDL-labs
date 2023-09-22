@@ -421,7 +421,8 @@ body {
     display: none;
 }
 
-.close-svg {
+.close-svg,
+.close-svg2 {
     position: relative;
     top: 0;
     right: 0;

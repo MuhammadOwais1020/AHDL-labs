@@ -1,5 +1,7 @@
 var profileExpended = false;
 var buttonGroupExpended = false;
+var labProcessingStatus = "";
+var labProcessingStatusType = "";
 var today = new Date().toLocaleDateString();
 
 $(document).ready(function () {
@@ -2904,7 +2906,20 @@ $(".close-svg").on("click", function () {
   form.reset();
   $("#labTableForTestsBody")[0].innerHTML = "";
 });
+$(".close-svg2").on("click", function () {
+  $("#invoice").hide();
+  $("#edit-lab-results").hide();
+  $("#complete-body").show();
+  // Get the form element
+  const form = document.getElementById("labRegistrationFrom");
 
+  // Reset the form to its initial state
+  form.reset();
+  $("#labTableForTestsBody")[0].innerHTML = "";
+  console.log("Type: " + labProcessingStatusType);
+  console.log("Value: " + labProcessingStatus);
+  fetchLabRegistrationData(labProcessingStatusType, labProcessingStatus);
+});
 // Function to add values to individual rows in the table
 function addValuesToRows() {
   // Load selected rows
@@ -3071,7 +3086,12 @@ function displayDataInTable(data) {
     // Add a button in the 7th column for edit
     const editCell = document.createElement("td");
     const editButton = document.createElement("button");
-    editButton.textContent = "Edit";
+    if (record.labitem_status === "Processing") {
+      editButton.textContent = "Verify";
+    } else {
+      editButton.textContent = "Edit";
+    }
+
     editButton.className = "btn btn-primary max-width";
     editButton.addEventListener("click", () => {
       // Call the editRecord function and pass the lab_id for editing
@@ -3294,7 +3314,7 @@ document
     if (validateTable()) {
       saveLabResults();
     } else {
-      alert("Please fill in all required fields in the table.");
+      alert("Please fill all required fields in the table.");
     }
   });
 
@@ -3307,23 +3327,26 @@ function validateTable() {
     var row = table.rows[i];
 
     // Access the selected radio button value (if it exists)
-    var selectedRadio = row.querySelector('input[type="radio"]:checked');
+    var selectedRadio = row.querySelector('input[type="radio"]');
 
     // Access the input field value (if it exists)
     var inputField = row.querySelector('input[type="text"]');
 
-    // If the row has a radio button, it must be selected
-    if (selectedRadio === null) {
-      return false; // Radio button not selected
-    }
-
-    // If the row has an input field, it must not be empty
-    if (inputField && inputField.value.trim() === "") {
-      return false; // Input field is empty
+    // Check if both radio and input field exist in the same row
+    if (selectedRadio && inputField) {
+      // If the radio button is not checked, return false
+      if (!selectedRadio.checked) {
+        return false; // Radio button not checked
+      }
+    } else {
+      // If there is no radio button, the input field must not be empty
+      if (inputField && inputField.value.trim() === "") {
+        return false; // Input field is empty
+      }
     }
   }
 
-  // All required fields are filled
+  // All required fields are filled or radio buttons are checked
   return true;
 }
 var jsonData = [];
@@ -3434,6 +3457,8 @@ document
       // It's not a valid number, show an alert
       alert("Please enter a valid number.");
     }
+    labProcessingStatus = labIdValue;
+    labProcessingStatusType = "id";
   });
 
 document
@@ -3451,6 +3476,8 @@ document
       // It's not a valid name, show an alert
       alert("Please enter a valid name.");
     }
+    labProcessingStatus = nameValue;
+    labProcessingStatusType = "name";
   });
 
 function isValidName(name) {
@@ -3468,6 +3495,28 @@ radioButtons.forEach((radioButton) => {
     if (this.checked) {
       const selectedValue = this.value;
       console.log(`Selected Value: ${selectedValue}`);
+
+      if (selectedValue == "all") {
+        fetchLabRegistrationData("all", "all");
+        labProcessingStatus = "all";
+        labProcessingStatusType = "all";
+      } else if (selectedValue == "pending") {
+        fetchLabRegistrationData("status", "Pending");
+        labProcessingStatus = "Pending";
+        labProcessingStatusType = "status";
+      } else if (selectedValue == "processing") {
+        fetchLabRegistrationData("status", "Processing");
+        labProcessingStatus = "Processing";
+        labProcessingStatusType = "status";
+      } else if (selectedValue == "ready_to_print") {
+        fetchLabRegistrationData("status", "Ready To Print");
+        labProcessingStatus = "Ready To Print";
+        labProcessingStatusType = "status";
+      } else if (selectedValue == "printed") {
+        fetchLabRegistrationData("status", "Printed");
+        labProcessingStatus = "Printed";
+        labProcessingStatusType = "status";
+      }
     }
   });
 });

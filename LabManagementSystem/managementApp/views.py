@@ -1213,22 +1213,48 @@ def get_lab_registration_data(request):
 
     # Check the value of type_param
     if type_param == "all":
-        # Retrieve all data
+        # Retrieve all data in reverse order of lr.id
         sql_query = '''
-            SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id;
+            SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status 
+            FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t 
+            WHERE lr.id = li.lab_id AND li.test_id = t.id
+            ORDER BY lr.id DESC;
         '''
     elif type_param == "id":
-        # Retrieve data where lr.id matches values_param
+        # Retrieve data where lr.id matches values_param in reverse order of lr.id
         sql_query = '''
-            SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t WHERE lr.id = li.lab_id AND li.test_id = t.id AND lr.id = %s;
+            SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status 
+            FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t 
+            WHERE lr.id = li.lab_id AND li.test_id = t.id AND lr.id = %s
+            ORDER BY lr.id DESC;
+        '''
+    elif type_param == "name":
+        # Retrieve data where lr.patient_name matches values_param in reverse order of lr.id
+        sql_query = '''
+            SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status 
+            FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t 
+            WHERE lr.id = li.lab_id AND li.test_id = t.id AND lr.patient_name = %s
+            ORDER BY lr.id DESC;
+        '''
+    elif type_param == "status":
+        # Retrieve data where li.labitem_status matches values_param in reverse order of lr.id
+        sql_query = '''
+            SELECT lr.id, lr.patient_name, li.id AS LAB_Item, t.id AS test_id, t.test_name, datetime, lr.gender, lr.pannel_case, li.labitem_status 
+            FROM managementApp_labregistration lr, managementApp_labitems li, managementApp_test t 
+            WHERE lr.id = li.lab_id AND li.test_id = t.id AND li.labitem_status = %s
+            ORDER BY lr.id DESC;
         '''
     else:
         # Handle invalid type_param value
         return JsonResponse({"error": "Invalid type_param value"}, status=400)
 
-    # Execute the raw query using the manager for the model
-    lab_registrations = LabRegistration.objects.raw(
-        sql_query, [values_param] if type_param == "id" else [])
+    if type_param == 'all':
+        # Execute the raw query using the manager for the model
+        lab_registrations = LabRegistration.objects.raw(sql_query)
+    else:
+        # Execute the raw query using the manager for the model
+        lab_registrations = LabRegistration.objects.raw(
+            sql_query, [values_param])
 
     # Loop through the results and format the data
     for lab_registration in lab_registrations:
