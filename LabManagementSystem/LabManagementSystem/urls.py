@@ -65,5 +65,6 @@ urlpatterns = [
     path('fetch_range_values', ma.fetch_range_values, name="fetch_range_values"),
     path('save_lab_results', ma.save_lab_results, name="save_lab_results"),
     path('save_lab_results_too', ma.save_lab_results_too,
-         name="save_lab_results_too")
+         name="save_lab_results_too"),
+    path("get_result_items", ma.get_result_items, name="get_result_items")
 ]

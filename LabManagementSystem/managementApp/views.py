@@ -1571,12 +1571,19 @@ def fetch_range_values(request):
 @csrf_exempt
 def save_lab_results(request):
     print('funciton one')
+
+    inputValue = ''
+    resultValue = ''
+    resultType = ''
+
     if request.method == 'POST':
         resultData = request.POST.get('resultData')
         dbLabId = request.POST.get('dbLabId')
         dbLabitemId = request.POST.get('dbLabitemId')
         dbTestName = request.POST.get('dbTestName')
         remarks = request.POST.get('remarks')
+        record_type = request.POST.get('record_type')
+        result_id_pg = request.POST.get('result_id_pg')
 
         print(f"Result DATA: {resultData}")
 
@@ -1590,12 +1597,13 @@ def save_lab_results(request):
                 # Create a savepoint before starting the transaction
                 sid = transaction.savepoint()
 
-                # Save data to Result model ONCE
-                result = Result.objects.create(
-                    lab_id=dbLabId,
-                    labitem_id=dbLabitemId,
-                    test_name=dbTestName
-                )
+                if record_type == "create":
+                    # Save data to Result model ONCE
+                    result = Result.objects.create(
+                        lab_id=dbLabId,
+                        labitem_id=dbLabitemId,
+                        test_name=dbTestName
+                    )
 
                 print('outside result item loop')
                 for item in resultData:
@@ -1606,21 +1614,60 @@ def save_lab_results(request):
                     inputValue = item[2]
                     normalRange = item[3]
 
-                    # Save data to ResultItems model
-                    result_item = ResultItems(
-                        result=result,
-                        result_value=radioValue if radioValue else inputValue,
-                        values=inputValue if radioValue else '',
-                        type_normal_range=normalRange if normalRange not in [
-                            'positiveNegative', 'detectedNotDetected', 'text'] else '',
-                        remarks=remarks if remarks else '', parameterName=parameterName
-                    )
-                    result_item.save()
+                    if radioValue != '':
+                        resultValue = radioValue
+                        values = inputValue
+                    else:
+                        resultValue = inputValue
+                        values = ''
 
-                # Update LabItems status to 'Processing'
-                lab_item = LabItems.objects.get(pk=dbLabitemId)
-                lab_item.labitem_status = 'Processing'
-                lab_item.save()
+                    if normalRange not in ['positiveNegative', 'detectedNotDetected', 'text']:
+                        resultType = 'range'
+                    else:
+                        resultType = normalRange
+
+                    if record_type == "create":
+                        # Save data to ResultItems model
+                        result_item = ResultItems(
+                            result=result,
+                            result_value=resultValue,
+                            values=values,
+                            type_normal_range=normalRange if normalRange not in [
+                                'positiveNegative', 'detectedNotDetected', 'text'] else '',
+                            remarks=remarks if remarks else '',
+                            parameterName=parameterName,
+                            result_type=resultType
+
+                        )
+                        result_item.save()
+
+                        # Update LabItems status to 'Processing'
+                        lab_item = LabItems.objects.get(pk=dbLabitemId)
+                        lab_item.labitem_status = 'Processing'
+                        lab_item.save()
+
+                    else:
+                        result_item_to_delete = ResultItems.objects.get(
+                            result=result_id_pg)
+                        result_item_to_delete.delete()
+
+                        # Create a new record with the same information, but replace result with result_id_pg
+                        result_item = ResultItems(
+                            result=result_id_pg,  # Replace with the new result_id_pg
+                            result_value=resultValue,
+                            values=values,
+                            type_normal_range=normalRange if normalRange not in [
+                                'positiveNegative', 'detectedNotDetected', 'text'] else '',
+                            remarks=remarks if remarks else '',
+                            parameterName=parameterName,
+                            result_type=resultType
+                        )
+                        result_item.save()
+
+                        # Update LabItems status to 'Processing'
+                        lab_item = LabItems.objects.get(pk=dbLabitemId)
+                        lab_item.labitem_status = 'Ready To Print'
+                        lab_item.save()
 
                 # If all data is saved successfully, commit the transaction
                 transaction.savepoint_commit(sid)
@@ -1650,3 +1697,19 @@ def save_lab_results_too(request):
 
     else:
         return JsonResponse({'message': 'Invalid request method.'}, status=400)
+
+
+@csrf_exempt
+def get_result_items(request):
+    # You can change this to POST if needed
+    labitem_id = request.GET.get('labitem_id')
+
+    # Query the ResultItems model to get data based on labitem_id
+    result_items = ResultItems.objects.filter(result__labitem_id=labitem_id)
+
+    # Serialize the data into a JSON format
+    data = [{'result_id': item.result_id, 'result_value': item.result_value, 'values': item.values, 'type_normal_range': item.type_normal_range,
+             'remarks': item.remarks, 'parameterName': item.parameterName, 'result_type': item.result_type} for item in result_items]
+
+    print(f"Data: {data}")
+    return JsonResponse(data, safe=False)

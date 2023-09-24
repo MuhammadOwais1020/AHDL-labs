@@ -2,6 +2,7 @@ var profileExpended = false;
 var buttonGroupExpended = false;
 var labProcessingStatus = "";
 var labProcessingStatusType = "";
+var labItem_id_g = 0;
 var today = new Date().toLocaleDateString();
 
 $(document).ready(function () {
@@ -3088,17 +3089,25 @@ function displayDataInTable(data) {
     const editButton = document.createElement("button");
     if (record.labitem_status === "Processing") {
       editButton.textContent = "Verify";
+
+      editButton.className = "btn btn-primary max-width";
+      editButton.addEventListener("click", () => {
+        // Call the editRecord function and pass the lab_id for editing
+        verifyLabRecord(record);
+      });
+      editCell.appendChild(editButton);
+      row.appendChild(editCell);
     } else {
       editButton.textContent = "Edit";
-    }
 
-    editButton.className = "btn btn-primary max-width";
-    editButton.addEventListener("click", () => {
-      // Call the editRecord function and pass the lab_id for editing
-      editLabRecord(record);
-    });
-    editCell.appendChild(editButton);
-    row.appendChild(editCell);
+      editButton.className = "btn btn-primary max-width";
+      editButton.addEventListener("click", () => {
+        // Call the editRecord function and pass the lab_id for editing
+        editLabRecord(record);
+      });
+      editCell.appendChild(editButton);
+      row.appendChild(editCell);
+    }
 
     const labitemStatusCell = document.createElement("td");
 
@@ -3269,6 +3278,297 @@ function editLabRecord(record) {
   });
 }
 
+function verifyLabRecord(record) {
+  console.log("inside editLab record");
+  $(".supper-container").hide();
+  $("#edit-lab-results").show();
+  $("#saveResultsButton").show();
+  // console.log("1. LAB ID: " + record.lab_id);
+  $("#db-lab-id").val(record.lab_id);
+
+  console.log("LAB ITEM IDD: " + record.labitem_id);
+  labItem_id_g = record.labItem_id;
+
+  var test_id = record.test_id;
+
+  const requestData = {
+    lab_id: record.lab_id,
+    labitem_id: record.labitem_id,
+  };
+  var url = get_complete_lab_data;
+  // Send an AJAX POST request to the server
+  $.ajax({
+    type: "POST",
+    url: url, // Replace this with the actual URL to your Django view
+    data: requestData,
+    dataType: "json",
+    success: function (response) {
+      console.log(response);
+      $("#registered-lab-id").text("Lab Registration ID #" + record.lab_id);
+      // Populate the lab registration details
+      $("#lab-edit-result-patient-id").text(
+        response.lab_registration.patient_id
+      );
+      $("#lab-edit-result-gender").text(response.lab_registration.gender);
+      $("#lab-edit-result-age").text(
+        response.lab_registration.age_years +
+          " years " +
+          response.lab_registration.age_months +
+          " months " +
+          response.lab_registration.age_days +
+          " days"
+      );
+      $("#lab-edit-result-patient-name").text(
+        response.lab_registration.patient_name
+      );
+      // Add other fields from LabRegistration model as needed
+
+      // Clear the previous test data and populate the new test data
+      $("#lab-edit-result-tests-with-parameters").empty();
+
+      console.log("2. LABItem ID: " + response.labItem_id);
+      console.log("3. Test Name: " + response.test_name);
+      $("#db-labitem-id").val(response.labItem_id);
+      $("#db-test-name").val(response.test_name);
+
+      // Loop through the test data and populate the HTML
+      // for (const test_data of response.parameters) {
+      // if (test_data.test_id == test_id) {
+      var testHtml = `
+            <hr class="my-4">
+            <h2>${response.test_name}</h2>
+            <hr class="my-4">
+            <table class="table table-bordered" id="lab_data_edit">
+              <thead>
+                <tr>
+                  <th>Parameter Name</th>
+                  <th>Result</th>
+                  <th>Normal Range/Type</th>
+                </tr>
+              </thead>
+              <tbody>`;
+      var i = 0;
+
+      console.log("Lab Item IDDDDD: " + response.labItem_id);
+
+      $.when(getResultItems(response.labItem_id)).done(function (x) {
+        console.log(x);
+
+        console.log("before getResultItems function calls");
+        var resultItemsData = response.labItem_id;
+        console.log("Result Items Data: " + resultItemsData);
+        console.log("after getResultItems function calls");
+
+        for (const parameter of response.parameters) {
+          testHtml += `<input type="hidden" value="${x[i]["result_id"]}" id="result_id_pg">
+              <tr>
+                <td>${(i+1)}. ${parameter.parameter_name}</td>
+                <td>`;
+          console.log('before if ');
+          console.log(parameter.parameter_result_type);
+          if (parameter.parameter_result_type == "positiveNegative") {
+            
+            if (x[i]["result_type"] == "positiveNegative") {
+              if (x[i]["result_value"] == "Positive") {
+                testHtml += `
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_positive" value="Positive" checked>
+                  <label class="form-check-label" for="radio_${parameter.id}_positive">Positive</label>
+                </div>`;
+              } else {
+                testHtml += `
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_positive" value="Positive">
+                  <label class="form-check-label" for="radio_${parameter.id}_positive">Positive</label>
+                </div>`;
+              }
+
+              if (x[i]["result_value"] == "Negative") {
+                testHtml += `<div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_negative" value="Negative" checked>
+                  <label class="form-check-label" for="radio_${parameter.id}_negative">Negative</label>
+                </div>`;
+              } else {
+                testHtml += `<div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_negative" value="Negative">
+                  <label class="form-check-label" for="radio_${parameter.id}_negative">Negative</label>
+                </div>`;
+              }
+
+              if (x[i]["result_value"] == "Nill") {
+                testHtml += `<div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill" checked>
+                  <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                </div>`;
+              } else {
+              testHtml += `<div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+                  <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                </div>`;  
+              }
+              
+            } else {
+              testHtml += `
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_positive" value="Positive">
+                  <label class="form-check-label" for="radio_${parameter.id}_positive">Positive</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_negative" value="Negative">
+                  <label class="form-check-label" for="radio_${parameter.id}_negative">Negative</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+                  <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                </div>`;
+            }
+          } else if (parameter.parameter_result_type == "detectedNotDetected") {
+            if (x[i]["result_type"] == "detectedNotDetected") {
+              if (x[i]["result_value"] == "Detected") {
+                 testHtml += `
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_detected" value="Detected" checked>
+                  <label class="form-check-label" for="radio_${parameter.id}_detected">Detected</label>
+                </div>`;
+              } else {
+                 testHtml += `
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_detected" value="Detected">
+                  <label class="form-check-label" for="radio_${parameter.id}_detected">Detected</label>
+                </div>`;
+              }
+             
+              if (x[i]["result_value"] == "Not Detected") {
+                testHtml += `<div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_not_detected" value="Not Detected" checked>
+                  <label class="form-check-label" for="radio_${parameter.id}_not_detected">Not Detected</label>
+                </div>`;
+              } else {
+                 testHtml += `<div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_not_detected" value="Not Detected">
+                  <label class="form-check-label" for="radio_${parameter.id}_not_detected">Not Detected</label>
+                </div>`;
+             }
+              if (x[i]["result_value"] == "Nill") {
+                  testHtml += `<div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill" checked>
+                  <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                </div>`;
+              } else {
+                 testHtml += `<div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+                  <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                </div>`;
+               }
+               
+                testHtml += `<div class="form-group mt-2">
+                  <label for="values_${parameter.id}">Values:</label>
+                  <input type="text" class="form-control" id="values_${parameter.id}" name="values_${parameter.id}" value="${x[i]["values"]}">
+                </div>`;
+            } else {
+              testHtml += `
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_detected" value="Detected">
+                  <label class="form-check-label" for="radio_${parameter.id}_detected">Detected</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_not_detected" value="Not Detected">
+                  <label class="form-check-label" for="radio_${parameter.id}_not_detected">Not Detected</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radio_${parameter.id}" id="radio_${parameter.id}_nill" value="Nill">
+                  <label class="form-check-label" for="radio_${parameter.id}_nill">Nill</label>
+                </div>
+                <div class="form-group mt-2">
+                  <label for="values_${parameter.id}">Values:</label>
+                  <input type="text" class="form-control" id="values_${parameter.id}" name="values_${parameter.id}">
+                </div>`;
+            }
+            
+          } else if (parameter.parameter_result_type == "text") {
+            if (x[i]["result_type"] == "text") {
+              testHtml += `
+                <div class="form-group">
+                  <label for="text_${parameter.id}">Text Value:</label>
+                  <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}" value="${x[i]["result_value"]}">
+                </div>`;
+            } else {
+              testHtml += `
+                <div class="form-group">
+                  <label for="text_${parameter.id}">Text Value:</label>
+                  <input type="text" class="form-control" id="text_${parameter.id}" name="text_${parameter.id}">
+                </div>`;
+            }
+            
+          } else if (parameter.parameter_result_type == "range") {
+            console.log("X value: "+x[i]);
+            if (x[i]["result_type"] == "range") {
+               testHtml += `
+                <div class="form-group">
+                  <input type="text" class="form-control" id="range_result_${parameter.id}" name="range_result_${parameter.id} placeholder="Result Value" value="${x[i]["result_value"]}">
+                </div>`;
+            } else {
+               testHtml += `
+                <div class="form-group">
+                  <input type="text" class="form-control" id="range_result_${parameter.id}" name="range_result_${parameter.id} placeholder="Result Value">
+                </div>`;
+            }
+           
+            // console.log("Parameter ID->>>> " + parameter.id);
+            loadRangeValues(parameter.id, response.lab_registration.gender);
+          }
+
+          testHtml += `</td>`;
+          if (parameter.parameter_result_type === "range") {
+            testHtml += `<td>
+              <span class="range_values_section_${parameter.id}_min_max"></span>
+              </td>`;
+          } else {
+            testHtml += `<td>${parameter.parameter_result_type}</td>`;
+          }
+
+          testHtml += `</tr>`;
+          $("#remarks").val(x[i]["remarks"]);
+          // console.log("Remarks Data: " + x[i]["remarks"]);
+          i++;
+        }
+        testHtml += `
+      </tbody>
+    </table>`;
+        $("#lab-edit-result-tests-with-parameters").append(testHtml);
+      });
+    },
+    error: function (xhr, status, error) {
+      // Handle any errors that occur during the request
+      console.error("Error:", error);
+    },
+  });
+
+  $("#saveResultsButton").text("Verify");
+}
+
+function getResultItems(labItem_id) {
+  console.log("inside hello function");
+  console.log("Lab Item Id: " + labItem_id);
+  datas = [];
+  var url = get_result_items;
+
+  return $.ajax({
+    type: "GET",
+    url: url, // Replace with the actual URL
+    data: { labitem_id: labItem_id }, // Replace with the actual labitem_id
+    dataType: "json",
+    success: function (data) {
+      // Handle the data received from the server here
+      console.log("response data: " + data);
+      return data;
+    },
+    error: function (xhr, status, error) {
+      console.error("Error:", error);
+    },
+  });
+}
+
 function loadRangeValues(parameterId, gender) {
   console.log("range function called");
   const requestData = {
@@ -3352,6 +3652,14 @@ function validateTable() {
 var jsonData = [];
 
 function saveLabResults() {
+  var record_type = $("#saveResultsButton").text();
+
+  if (record_type == "Verify"){
+    record_type = "verify";
+  } else {
+    record_type = "create";
+  }
+
   // Access the table by its ID
   var table = document.getElementById("lab_data_edit");
 
@@ -3410,7 +3718,7 @@ function saveLabResults() {
   console.log("JSON Data: " + jsonData);
 
   console.log("Result Data: " + resultData);
-
+  var result_id_pg = $("#result_id_pg").vl();
   // Send the rowData array to the server via AJAX
   $.ajax({
     type: "POST",
@@ -3422,6 +3730,8 @@ function saveLabResults() {
       dbLabitemId: dbLabitemId,
       dbTestName: dbTestName,
       remarks: remarks,
+      record_type: record_type,
+      result_id_pg: result_id_pg
     },
     // Set the content type to JSON
     success: function (response) {
@@ -3517,6 +3827,6 @@ radioButtons.forEach((radioButton) => {
         labProcessingStatus = "Printed";
         labProcessingStatusType = "status";
       }
-    }
+                    }
   });
 });
