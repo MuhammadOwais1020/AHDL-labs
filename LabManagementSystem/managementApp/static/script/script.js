@@ -3087,6 +3087,8 @@ function displayDataInTable(data) {
     // Add a button in the 7th column for edit
     const editCell = document.createElement("td");
     const editButton = document.createElement("button");
+
+
     if (record.labitem_status === "Processing") {
       editButton.textContent = "Verify";
 
@@ -3097,7 +3099,7 @@ function displayDataInTable(data) {
       });
       editCell.appendChild(editButton);
       row.appendChild(editCell);
-    } else {
+    } else if(record.labitem_status === "Pending"){
       editButton.textContent = "Edit";
 
       editButton.className = "btn btn-primary max-width";
@@ -3108,6 +3110,44 @@ function displayDataInTable(data) {
       editCell.appendChild(editButton);
       row.appendChild(editCell);
     }
+    else if (record.labitem_status === "Ready") {
+      var url = print_lab_record;
+  // Create a form element
+  const form = document.createElement("form");
+
+  // Set the form's method and action attributes as needed
+  form.method = "POST"; // Use POST or GET as needed
+  form.action = url; // Replace with your server endpoint
+
+  // Create an input field for labitem_id
+  const labitemIdInput = document.createElement("input");
+  labitemIdInput.type = "hidden"; // Hidden input
+  labitemIdInput.name = "labitem_id"; // Input name
+  labitemIdInput.value = record.labitem_id; // Input value
+
+  // Create the button inside the form
+  const editButton = document.createElement("button");
+  editButton.type = "submit"; // Set the button type to submit
+  editButton.textContent = "Print";
+  editButton.className = "btn btn-primary max-width";
+
+  // Add a click event listener to the button to submit the form
+  editButton.addEventListener("click", () => {
+    // Submit the form when the button is clicked
+    form.submit();
+  });
+
+  // Append the labitemIdInput and editButton to the form
+  form.appendChild(labitemIdInput);
+  form.appendChild(editButton);
+
+  // Append the form to the cell
+  editCell.appendChild(form);
+
+  // Append the cell to the row
+  row.appendChild(editCell);
+}
+
 
     const labitemStatusCell = document.createElement("td");
 
@@ -3119,10 +3159,12 @@ function displayDataInTable(data) {
       labitemStatusCell.textContent = record.labitem_status;
       labitemStatusCell.style.color = "#ffa906";
     } else if (record.labitem_status === "Ready") {
-      const printButton = document.createElement("button");
-      printButton.textContent = "Print";
-      printButton.className = "btn btn-success";
-      labitemStatusCell.appendChild(printButton);
+      // const printButton = document.createElement("button");
+      // printButton.textContent = "Print";
+      // printButton.className = "btn btn-success";
+      // labitemStatusCell.appendChild(printButton);
+      labitemStatusCell.textContent = record.labitem_status;
+      labitemStatusCell.style.color = "green";
     }
 
     row.appendChild(labitemStatusCell);
@@ -3546,6 +3588,7 @@ function verifyLabRecord(record) {
 
   $("#saveResultsButton").text("Verify");
 }
+
 
 function getResultItems(labItem_id) {
   console.log("inside hello function");

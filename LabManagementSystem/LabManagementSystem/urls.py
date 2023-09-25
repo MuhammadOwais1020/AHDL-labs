@@ -66,5 +66,6 @@ urlpatterns = [
     path('save_lab_results', ma.save_lab_results, name="save_lab_results"),
     path('save_lab_results_too', ma.save_lab_results_too,
          name="save_lab_results_too"),
-    path("get_result_items", ma.get_result_items, name="get_result_items")
+    path("get_result_items", ma.get_result_items, name="get_result_items"),
+    path("print_lab_record", ma.print_lab_record, name="print_lab_record")
 ]

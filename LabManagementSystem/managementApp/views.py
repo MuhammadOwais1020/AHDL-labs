@@ -1666,7 +1666,7 @@ def save_lab_results(request):
 
                         # Update LabItems status to 'Processing'
                         lab_item = LabItems.objects.get(pk=dbLabitemId)
-                        lab_item.labitem_status = 'Ready To Print'
+                        lab_item.labitem_status = 'Ready'
                         lab_item.save()
 
                 # If all data is saved successfully, commit the transaction
@@ -1713,3 +1713,76 @@ def get_result_items(request):
 
     print(f"Data: {data}")
     return JsonResponse(data, safe=False)
+
+
+@csrf_exempt
+def print_lab_record(request):
+    labitem_id = request.POST.get('labitem_id')
+
+    try:
+        # Get LabItems details
+        lab_item = LabItems.objects.get(id=labitem_id)
+
+        # Get LabRegistration details
+        lab_registration = LabRegistration.objects.get(id=lab_item.lab_id)
+
+        # Get Result details
+        result = Result.objects.get(labitem=lab_item)
+
+        # Get ResultItems details (multiple records)
+        result_items = ResultItems.objects.filter(result=result)
+
+        # Get Test name from the associated Test model
+        test_name = lab_item.test.test_name
+
+        # Extract relevant fields from LabRegistration
+        patient_name = lab_registration.patient_name
+        age_years = lab_registration.age_years
+        age_months = lab_registration.age_months
+        age_days = lab_registration.age_days
+        gender = lab_registration.gender
+        lab_date = lab_registration.datetime
+        lab_id = lab_registration.id
+        refered_by = lab_registration.refered_by
+        pannel_emp = lab_registration.pannel_emp
+
+        # Create a dictionary to organize the collected data
+        labitem_details = {
+            'patient_name': patient_name,
+            'age_years': age_years,
+            'age_months': age_months,
+            'age_days': age_days,
+            'gender': gender,
+            'lab_date': lab_date,
+            'lab_id': lab_id,
+            'refered_by': refered_by,
+            'pannel_emp': pannel_emp,
+            'test_name': test_name, 
+            'result_items': result_items,  # Directly include result_items
+        }
+
+        pdf = render_to_pdf('reports.html', labitem_details)
+        return HttpResponse(pdf, content_type='application/pdf')
+
+    except LabItems.DoesNotExist:
+        return None  # LabItem with the given labitem_id doesn't exist
+
+    except Result.DoesNotExist:
+        return None  # Result associated with the LabItem doesn't exist
+
+    except ResultItems.DoesNotExist:
+        return None  # No ResultItems associated with the Result
+
+    except LabRegistration.DoesNotExist:
+        return None  # LabRegistration associated with the LabItem doesn't exist
+
+
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    # , link_callback=fetch_resources)
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
