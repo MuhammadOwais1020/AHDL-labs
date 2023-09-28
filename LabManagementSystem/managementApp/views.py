@@ -1719,6 +1719,16 @@ def get_result_items(request):
 def print_lab_record(request):
     labitem_id = request.POST.get('labitem_id')
 
+    variables = {
+        "text": 0,
+        "range": 0,
+        "positive": 0,
+        "detective": 0
+    }
+
+    report = ""
+    remarks = ""
+
     try:
         # Get LabItems details
         lab_item = LabItems.objects.get(id=labitem_id)
@@ -1731,6 +1741,21 @@ def print_lab_record(request):
 
         # Get ResultItems details (multiple records)
         result_items = ResultItems.objects.filter(result=result)
+
+        for ri in result_items:
+            remarks = ri.remarks
+            if ri.result_type == "text":
+                variables["text"] += 1
+            elif ri.result_type == "range":
+                variables["range"] += 1
+            elif ri.result_type == "positiveNegative":
+                variables["positive"] += 1
+            elif ri.result_type == "detectedNotDetected":
+                variables["detective"] += 1
+
+        max_variable = max(variables, key=variables.get)
+
+        report = max_variable
 
         # Get Test name from the associated Test model
         test_name = lab_item.test.test_name
@@ -1757,11 +1782,12 @@ def print_lab_record(request):
             'lab_id': lab_id,
             'refered_by': refered_by,
             'pannel_emp': pannel_emp,
-            'test_name': test_name, 
-            'result_items': result_items,  # Directly include result_items
+            'test_name': test_name,
+            'remarks': remarks,
+            'result_items': result_items  # Directly include result_items
         }
 
-        pdf = render_to_pdf('reports.html', labitem_details)
+        pdf = render_to_pdf(f'{report}.html', labitem_details)
         return HttpResponse(pdf, content_type='application/pdf')
 
     except LabItems.DoesNotExist:

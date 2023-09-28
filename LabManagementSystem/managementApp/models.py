@@ -178,4 +178,5 @@ class ResultItems(models.Model):
     type_normal_range = models.CharField(max_length=100, null=True, blank=True)
     remarks = models.CharField(max_length=100, null=True, blank=True)
     parameterName = models.CharField(max_length=100, null=True, blank=True)
-    result_type = models.CharField(max_length=100, null=True, blank=True)
+    result_type = models.CharField(max_length=100, null=True, blank=True),
+    

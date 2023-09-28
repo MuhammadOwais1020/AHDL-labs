@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: roboto;
+            box-sizing: border-box;
+        }
+
+        .logo-size {
+            width: 100px;
+        }
+
+        .container {
+            width: 100vw;
+        }
+
+        .header {
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 45px;
+            text-align: center;
+            margin: 0px 30px;
+            color: #049196;
+        }
+
+        hr {
+            border-color: red;
+            margin: 2px;
+        }
+
+        .sub-container {
+            width: 1200px;
+            margin: 0 auto;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .information {
+            width: 100%;
+            height: 150px;
+            margin: 20px 0;
+            padding: 10px;
+            border: solid 1px black;
+        }
+
+        .information .left {
+            width: 50%;
+            float: left;
+            text-align: left;
+        }
+
+        .information .right {
+            width: 50%;
+            float: right;
+            text-align: left;
+        }
+
+        .test-name {
+            text-align: center;
+        }
+
+        .age-month {
+            text-align: center !important;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .text-result {
+            text-align: center;
+        }
+
+        .signature {
+            text-align: right;
+        }
+
+        .signature p {
+            font-size: 20px;
+            margin-bottom: 0px;
+            color: #049196;
+            font-weight: bold;
+        }
+
+        .footer .valid {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .footer .valid .not-valid {
+            font-size: 18px;
+            border: solid 2px red;
+            background: none;
+            border-radius: 24px;
+            padding: 5px 10px;
+            color: red;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- header -->
+        <div class="header">
+            <img src="24hour.png" class="logo-size" alt="LAB Logo">
+            <h1>AL Hyder Diagnostic & Research Laboratory <br>Digital X-Ray & ECG Center</h1>
+            <img src="24hour.png" class="logo-size" alt="Logo">
+        </div>
+
+        <hr>
+        <hr>
+        <div class="sub-container">
+
+            <!-- information -->
+            <div class="information">
+                <div class="left">
+                    <p>Name: <b>{{patient_name}}</b></p>
+                    <p>Age: <b>{{age_years}} Years {{age_months}} Months {{age_days}} Days</b></p>
+                    <p>Gender: <b>{{gender}}</b></p>
+                    <p>MR No#: <b>{{pannel_emp}}</b></p>
+                </div>
+                <div class="right">
+                    <p>Date: <b>{{lab_date}}</b></p>
+                    <p>Lab No#: <b>{{lab_id}}</b></p>
+                    <p>Refer By: <b>{{refered_by}}</b></p>
+                </div>
+            </div>
+
+            <!-- Test Name -->
+            <h1 class="test-name">{{test_name}}</h1>
+
+            <!-- age month -->
+            <!-- <span class="age-month">{{}}</span> -->
+
+
+            <!-- if positiveNegative -->
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>TEST</th>
+                        <th>RESULT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ri in result_items %}
+                    <tr>
+                        <td>{{ri.parameterName}}</td>
+                        <td>{{ri.result_value}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+
+            <!-- remarks -->
+            <div>
+                <!-- remarks -->
+                <p>Remarks: {{remarks}}</p>
+                <!-- note -->
+                <p>{{}}</p>
+            </div>
+
+            <div class="signature">
+                <p>Dr. Shahnawaz Memon</p>
+                <span>Consultant Pathologist</span>
+            </div>
+            <!-- Footer -->
+            <div class="footer">
+                <!-- <img src="24hour.png" class="logo-size" alt="24 Hour Service" /> -->
+                <div class="valid">
+                    <button class="not-valid">NOT VALID FOR COURT MATTER</button>
+                    <p class="address">Address: Near Allied Bank Qazi Ahmed Moar Nawabsha. Contact:
+                        0313-3850727,0324-3849741</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
